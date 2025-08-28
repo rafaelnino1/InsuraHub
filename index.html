@@ -302,7 +302,32 @@
       zurich:{deductible:"9% o $2.000.000",extras:"RC ampliada + asistencia jurídica",details:"- Cobertura integral + RC ampliada.\n- Deducible: 9% o $2.000.000.\n- Asistencia jurídica.\n- Coberturas internacionales acotadas.\n- Exclusiones: uso comercial sin declaración."},
       liberty:{deductible:"10% o $1.900.000",extras:"Pérdida de llaves + grúa",details:"- Cobertura estándar.\n- Deducible: 10% o $1.900.000.\n- Pérdida de llaves.\n- Grúa 2 eventos/año.\n- Exclusiones: desgaste normal."}
     };
-    const typeIcons = {auto:"car",home:"home",life:"heart",health:"heartbeat",travel:"plane",business:"briefcase"};
+    $1
+
+    // ===== Cargador inteligente de logos (tolerante a mayúsculas/extensiones/rutas) =====
+    const LOGO_EXTS = ['png','svg','jpg','jpeg','webp','PNG','SVG','JPG','JPEG','WEBP'];
+    function logoCandidates(key){
+      const base = (key||'').toLowerCase();
+      const cap = base.charAt(0).toUpperCase()+base.slice(1);
+      const upper = base.toUpperCase();
+      const nameVariants = [base, cap, upper, `${base}-logo`, `logo-${base}`];
+      const paths = [];
+      nameVariants.forEach(n=> LOGO_EXTS.forEach(ext=> paths.push(`logos/${n}.${ext}`)) );
+      return paths;
+    }
+    function loadLogoSmart(img){
+      const key = (img.dataset.insurer||'').toLowerCase();
+      const friendly = img.dataset.friendly || key || 'Logo';
+      const first = (typeof insurerLogos!== 'undefined' && insurerLogos[key]) ? insurerLogos[key] : null;
+      const list = [...new Set([first, ...logoCandidates(key)].filter(Boolean))];
+      let i = -1;
+      const tryNext = ()=>{
+        i++;
+        if(i < list.length){ img.onerror = tryNext; img.src = list[i]; }
+        else { img.onerror = null; img.style.display='none'; const ph=document.createElement('div'); ph.className='logo-placeholder'; ph.textContent=friendly; img.parentNode.appendChild(ph); }
+      };
+      tryNext();
+    }
 
     // ===== Utilidades =====
     const fmtCOP=n=>new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',minimumFractionDigits:0,maximumFractionDigits:0}).format(n);
@@ -378,6 +403,8 @@
         card.querySelector('.conditions-btn').addEventListener('click',()=>openConditions('Condiciones de la Póliza',`${p.policyNumber} · ${p.insurerName}`,p.conditions));
         card.querySelector('.renew-btn').addEventListener('click',()=>openRenewal(p));
         policyGrid.appendChild(card);
+      // Cargar logo grande con tolerancia de nombres/extension
+      (function(){ const img = card.querySelector('img.company-logo'); if(!img) return; img.dataset.insurer = p.insurer; img.dataset.friendly = p.insurerName; loadLogoSmart(img); })();
       });
       totalPoliciesEl.textContent=policies.length; expiringPoliciesEl.textContent=exp; totalCoverageEl.textContent=fmtCOP(total);
     }
@@ -391,6 +418,8 @@
           <div class="insurer-details"><div>${insurerNames[k]}</div><div class="coverage-amount">Cobertura: ${fmtCOP(coverageAmounts[k])}</div></div>
           <div class="insurer-price">${fmtCOP(renewalPrices[k])}</div>`;
         renewalOptions.appendChild(div);
+        // Cargar logo pequeño en opciones
+        (function(){ const img = div.querySelector('img'); if(!img) return; img.dataset.insurer = k; img.dataset.friendly = insurerNames[k]; loadLogoSmart(img); })();
       });
       highlightCheapest();
     }
@@ -408,6 +437,8 @@
           <td>${cond.extras||'-'}</td>
           <td><div class="table-actions"><button class="btn-mini details" data-key="${k}"><i class="fas fa-eye"></i> Ver detalles</button></div></td>`;
         compareTableBody.appendChild(tr);
+        // Cargar logo en tabla comparativa
+        (function(){ const img = tr.querySelector('img'); if(!img) return; img.dataset.insurer = k; img.dataset.friendly = insurerNames[k]; loadLogoSmart(img); })();
       });
       qs('#compareTable').onclick=e=>{const btn=e.target.closest('button.details');if(!btn)return;const k=btn.dataset.key;openConditions(`Condiciones de la oferta · ${insurerNames[k]}`,`Propuesta para ${policy.policyNumber}`,(offerConditions[k]||{}).details||'Sin detalles.')};
     }
