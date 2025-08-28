@@ -81,7 +81,7 @@
     /* Header de tarjeta: LOGO IZQ + (tipo + icono) DER */
     .card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid rgba(52,152,219,.12)}
     .insurer-logo-header{
-      width:48px;height:48px; /* 1.3x del tamaño anterior (36px) */
+      width:48px;height:48px; /* 1.3x del tamaño base (~36px) */
       border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;
       border:1px solid rgba(52,152,219,.18);box-shadow:var(--depth-1);overflow:hidden;flex:0 0 48px
     }
@@ -143,7 +143,7 @@
     @media(max-width:1180px){.renewal-layout{grid-template-columns:1fr}}
     .renewal-col{background:linear-gradient(180deg,#fff,#f9fbff);border:1px solid rgba(52,152,219,.12);border-radius:14px;box-shadow:var(--depth-1);padding:16px}
 
-    /* Tamaños controlados de logos en Renovación (para que no salgan gigantes) */
+    /* Tamaños controlados de logos en Renovación */
     .insurer-option{display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;padding:12px;border:2px solid #ecf0f1;border-radius:12px;margin-bottom:10px;cursor:pointer;transition:transform .25s,border-color .25s,background-color .25s;background:#fff;box-shadow:var(--depth-1)}
     .insurer-option:hover{border-color:var(--primary);transform:translateX(6px)}
     .insurer-option.selected{border-color:var(--primary);background:rgba(52,152,219,.06)}
@@ -157,7 +157,7 @@
     .compare-table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border-radius:12px;box-shadow:var(--depth-1)}
     .compare-table thead th{background:linear-gradient(180deg,#eef6ff,#e8f1ff);color:#1f2d3d;text-align:left;font-weight:800;padding:12px;border-bottom:1px solid rgba(52,152,219,.15)}
     .compare-table tbody td{background:#fff;padding:12px;border-bottom:1px solid #f0f3f7}
-    .compare-table img{width:28px;height:28px;object-fit:contain} /* ← fija tamaño de logos en tabla */
+    .compare-table img{width:28px;height:28px;object-fit:contain}
     .pill{display:inline-block;padding:4px 10px;border-radius:999px;font-weight:700;font-size:12px;background:linear-gradient(180deg,#f7fbff,#eef6ff);border:1px solid rgba(52,152,219,.2);color:#2c3e50}
     .btn-mini{padding:8px 12px;border-radius:10px;font-weight:700;border:1px solid rgba(52,152,219,.2);background:#fff;box-shadow:var(--depth-1);cursor:pointer}
     .selected-row{box-shadow:inset 0 0 0 2px rgba(52,152,219,.35)}
@@ -188,7 +188,7 @@
       }
       .renewal-layout{display:block}
       .renewal-col{box-shadow:none;border-radius:12px;margin-bottom:12px}
-      .insurer-logo-small{width:40px;height:40px} /* más compacto en móvil */
+      .insurer-logo-small{width:40px;height:40px}
       .insurer-option{grid-template-columns:44px 1fr auto}
       .table-responsive{overflow-x:auto;-webkit-overflow-scrolling:touch}
       #confirmRenewal{position:sticky;bottom:0;z-index:2}
@@ -433,7 +433,7 @@
       const key=(img.dataset.insurer||'').toLowerCase(); const friendly=img.dataset.friendly||key||'Logo';
       const first=(typeof insurerLogos!=='undefined'&&insurerLogos[key])?insurerLogos[key]:null;
       const list=[...new Set([first,...logoCandidates(key)].filter(Boolean))];
-      let i=-1; const next=()=>{i++; if(i<list.length){img.onerror=next; img.src=list[i]} else {img.onerror=null; img.style.display='none'; const ph=document.createElement('div'); ph.className='logo-placeholder'; ph.textContent=friendly; img.parentNode.appendChild(ph)}};
+      let i=-1; const next=()=>{i++; if(i<list.length){img.onerror=next; img.src=list[i];} else {img.onerror=null; img.style.display='none'; const ph=document.createElement('div'); ph.className='logo-placeholder'; ph.textContent=friendly; img.parentNode.appendChild(ph);} };
       next();
     }
 
@@ -463,27 +463,51 @@
 
     /* ===== DOM ===== */
     const qs=s=>document.querySelector(s),qsa=s=>document.querySelectorAll(s);
-    const loginBtn=qs('#loginBtn'),loginModal=qs('#loginModal'),addPolicyBtn=qs('#addPolicyBtn'),policyModal=qs('#policyModal'),renewalModal=qs('#renewalModal'),conditionsModal=qs('#conditionsModal'),paymentModal=qs('#paymentModal'),successModal=qs('#successModal');
-    const policyForm=qs('#policyForm'),renewalOptions=qs('#renewalOptions'),compareTableBody=qs('#compareTable tbody'),currentPolicyChip=qs('#currentPolicyChip'),confirmRenewalBtn=qs('#confirmRenewal'),policyGrid=qs('#policyGrid'),totalPoliciesEl=qs('#totalPolicies'),expiringPoliciesEl=qs('#expiringPolicies'),totalCoverageEl=qs('#totalCoverage'),payTabs=qs('#payTabs'),payHint=qs('#payHint'),payMethodLabel=qs('#payMethodLabel');
-    let currentRenewPolicyId=null,selectedPayment={method:null};
+    const loginBtn=qs('#loginBtn');
+    const loginModal=qs('#loginModal');
+    const addPolicyBtn=qs('#addPolicyBtn');
+    const policyModal=qs('#policyModal');
+    const renewalModal=qs('#renewalModal');
+    const conditionsModal=qs('#conditionsModal');
+    const paymentModal=qs('#paymentModal');
+    const successModal=qs('#successModal');
+
+    const policyForm=qs('#policyForm');
+    const renewalOptions=qs('#renewalOptions');
+    const compareTableBody=qs('#compareTable tbody');
+    const currentPolicyChip=qs('#currentPolicyChip');
+    const confirmRenewalBtn=qs('#confirmRenewal');
+    const policyGrid=qs('#policyGrid');
+    const totalPoliciesEl=qs('#totalPolicies');
+    const expiringPoliciesEl=qs('#expiringPolicies');
+    const totalCoverageEl=qs('#totalCoverage');
+    const payTabs=qs('#payTabs');
+    const payHint=qs('#payHint');
+    const payMethodLabel=qs('#payMethodLabel');
+
+    let currentRenewPolicyId=null;
+    let selectedPayment={method:null};
 
     /* ===== Modals open/close ===== */
-    const bindClose=(id,modal)=>qs(id).addEventListener('click',()=>modal.style.display='none');
+    const bindClose=(btnSel,modal)=>qs(btnSel).addEventListener('click',()=>{ modal.style.display='none'; });
     bindClose('#closeLoginModal',loginModal);
     bindClose('#closePolicyModal',policyModal);
     bindClose('#closeRenewalModal',renewalModal);
     bindClose('#closeConditionsModal',conditionsModal);
     bindClose('#closePaymentModal',paymentModal);
 
-    loginBtn.addEventListener('click',()=>loginModal.style.display='flex'));
-    addPolicyBtn.addEventListener('click',()=>policyModal.style.display='flex'));
-    [loginModal,policyModal,renewalModal,conditionsModal,paymentModal,successModal].forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.style.display='none'}));
+    loginBtn.addEventListener('click',()=>{ loginModal.style.display='flex'; });
+    addPolicyBtn.addEventListener('click',()=>{ policyModal.style.display='flex'; });
+
+    [loginModal,policyModal,renewalModal,conditionsModal,paymentModal,successModal]
+      .forEach(m=>m.addEventListener('click',e=>{ if(e.target===m) m.style.display='none'; }));
+
     qs('#loginGoogle')?.addEventListener('click',()=>alert('Continuar con Google (conectar OAuth aquí)'));
     qs('#loginFacebook')?.addEventListener('click',()=>alert('Continuar con Facebook (conectar OAuth aquí)'));
     qs('#loginApple')?.addEventListener('click',()=>alert('Continuar con Apple (conectar OAuth aquí)'));
 
-    const openConditions=(t,st,b)=>{qs('#conditionsTitle').textContent=t||'Condiciones';qs('#conditionsSubtitle').textContent=st||'';qs('#conditionsBody').textContent=b||'Sin información.';conditionsModal.style.display='flex'};
-    const toast=(t,s)=>{qs('#successMessage').textContent=t||'¡Operación exitosa!';qs('#successSub').textContent=s||'';successModal.style.display='flex';setTimeout(()=>successModal.style.display='none',1600)};
+    const openConditions=(t,st,b)=>{qs('#conditionsTitle').textContent=t||'Condiciones';qs('#conditionsSubtitle').textContent=st||'';qs('#conditionsBody').textContent=b||'Sin información.';conditionsModal.style.display='flex';};
+    const toast=(t,s)=>{qs('#successMessage').textContent=t||'¡Operación exitosa!';qs('#successSub').textContent=s||'';successModal.style.display='flex';setTimeout(()=>successModal.style.display='none',1600);};
 
     /* ===== Render tarjetas ===== */
     function renderPolicies(){
@@ -534,8 +558,8 @@
     }
 
     /* ===== Renovación ===== */
-    function highlightCheapest(){const opts=[...qsa('.insurer-option')];let m=Infinity,el=null;opts.forEach(o=>{const p=+o.dataset.price||0;if(p<m){m=p;el=o}});opts.forEach(o=>o.classList.remove('cheapest'));if(el)el.classList.add('cheapest')}
-    function highlightRow(k){compareTableBody.querySelectorAll('tr').forEach(r=>r.classList.remove('selected-row'));const r=compareTableBody.querySelector(`tr[data-insurer="${k}"]`);if(r)r.classList.add('selected-row')}
+    function highlightCheapest(){const opts=[...qsa('.insurer-option')];let m=Infinity,el=null;opts.forEach(o=>{const p=+o.dataset.price||0;if(p<m){m=p;el=o;}});opts.forEach(o=>o.classList.remove('cheapest'));if(el)el.classList.add('cheapest');}
+    function highlightRow(k){compareTableBody.querySelectorAll('tr').forEach(r=>r.classList.remove('selected-row'));const r=compareTableBody.querySelector(`tr[data-insurer="${k}"]`);if(r)r.classList.add('selected-row');}
 
     function renderRenewalOptions(keys){
       renewalOptions.innerHTML='';
@@ -579,13 +603,13 @@
 
     function selectInsurerOption(el){
       if(!el) return;
-      qsa('.insurer-option').forEach(o=>{o.classList.remove('selected');o.setAttribute('aria-selected','false')});
+      qsa('.insurer-option').forEach(o=>{o.classList.remove('selected');o.setAttribute('aria-selected','false');});
       el.classList.add('selected'); el.setAttribute('aria-selected','true');
       const k=el.dataset.insurer; highlightRow(k);
       qs('#paymentSubtitle').textContent=`Método para ${insurerNames[k]}`; paymentModal.style.display='flex';
     }
-    renewalOptions.addEventListener('click',e=>{const el=e.target.closest('.insurer-option');if(!el)return;selectInsurerOption(el)});
-    renewalOptions.addEventListener('keydown',e=>{const el=e.target.closest('.insurer-option');if(!el)return;if(e.key==='Enter'||e.key===' '){e.preventDefault();selectInsurerOption(el)}});
+    renewalOptions.addEventListener('click',e=>{const el=e.target.closest('.insurer-option');if(!el)return;selectInsurerOption(el);});
+    renewalOptions.addEventListener('keydown',e=>{const el=e.target.closest('.insurer-option');if(!el)return;if(e.key==='Enter'||e.key===' '){e.preventDefault();selectInsurerOption(el);}});
 
     function openRenewal(p){
       currentRenewPolicyId=p.id; qs('#renewalPolicyNumber').textContent=p.policyNumber;
@@ -604,12 +628,12 @@
       const m=tab.dataset.method; qsa('.pay-form').forEach(f=>f.style.display=f.dataset.method===m?'block':'none');
     });
     qs('#savePayment').addEventListener('click',()=>{
-      const m=qs('.pay-tab.active')?.dataset.method; if(!m){alert('Selecciona un método de pago.');return}
+      const m=qs('.pay-tab.active')?.dataset.method; if(!m){alert('Selecciona un método de pago.');return;}
       if(m==='tarjeta'){
         const n=qs('#cardNumber').value.replace(/\s+/g,''),nm=qs('#cardName').value.trim(),ex=qs('#cardExp').value.trim(),cv=qs('#cardCVV').value.trim();
-        if(!nm||n.length<12||!/^\d{2}\/\d{2}$/.test(ex)||cv.length<3){alert('Completa los datos de la tarjeta correctamente.');return}
+        if(!nm||n.length<12||!/^\d{2}\/\d{2}$/.test(ex)||cv.length<3){alert('Completa los datos de la tarjeta correctamente.');return;}
       }
-      if(m==='pse'&&(!qs('#pseBank').value||!qs('#pseEmail').value)){alert('Selecciona banco e ingresa correo.');return}
+      if(m==='pse'&&(!qs('#pseBank').value||!qs('#pseEmail').value)){alert('Selecciona banco e ingresa correo.');return;}
       selectedPayment.method=m; payHint.style.display='block'; payMethodLabel.textContent=m.toUpperCase(); paymentModal.style.display='none'; toast('Forma de pago guardada',`Método: ${m.toUpperCase()}`);
     });
 
@@ -623,8 +647,8 @@
 
     /* Confirmar renovación (+1 año) */
     confirmRenewalBtn.addEventListener('click',()=>{
-      const sel=qs('.insurer-option.selected'); if(!sel){alert('Selecciona una aseguradora.');return}
-      if(!selectedPayment.method){alert('Selecciona una forma de pago.');paymentModal.style.display='flex';return}
+      const sel=qs('.insurer-option.selected'); if(!sel){alert('Selecciona una aseguradora.');return;}
+      if(!selectedPayment.method){alert('Selecciona una forma de pago.');paymentModal.style.display='flex';return;}
       const k=sel.dataset.insurer; const i=policies.findIndex(p=>p.id===currentRenewPolicyId);
       if(i!==-1){
         const newExp=iso(addYears(new Date(),1));
@@ -650,7 +674,7 @@
       if(!('serviceWorker' in navigator))return;
       const isLocal=['localhost','127.0.0.1','[::1]'].includes(location.hostname);
       const isSecure=location.protocol==='https:'||isLocal;
-      if(!isSecure){console.warn('SW deshabilitado: usa https o localhost.');return}
+      if(!isSecure){console.warn('SW deshabilitado: usa https o localhost.');return;}
       const sw=`const C='insurahub-app-v1';const CORE=[self.location.href];
       self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
       self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.map(k=>k===C?null:caches.delete(k)))));self.clients.claim()});
