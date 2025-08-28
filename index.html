@@ -25,7 +25,7 @@
     header{background:linear-gradient(135deg,var(--primary),var(--primary-dark));padding:22px 30px;border-radius:18px;margin-bottom:30px;box-shadow:var(--depth-3);display:flex;justify-content:space-between;align-items:center;color:#fff;position:relative;overflow:hidden}
     header::before{content:"";position:absolute;inset:-30% -20% auto auto;width:120%;height:220%;background:radial-gradient(closest-side,rgba(255,255,255,.18),transparent 60%);transform:rotate(25deg)}
     .app-title{display:flex;align-items:center;gap:16px;position:relative;z-index:1}
-    .app-icon{width:88px;height:88px;border-radius:16px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:32px;backdrop-filter:blur(10px);box-shadow:var(--depth-2) inset 0 1px 0 rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.35);overflow:hidden}
+    .app-icon{width:88px;height:88px;border-radius:16px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:32px;backdrop-filter:blur(10px);box-shadow:var(--depth-2), inset 0 1px 0 rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.35);overflow:hidden}
     .app-icon img{width:88px;height:88px;object-fit:contain;display:block}
     .app-title-text h1{font-size:28px;font-weight:800;margin-bottom:6px}
     .user-actions{display:flex;gap:14px;z-index:1}
@@ -151,10 +151,8 @@
 
     /* ===== MODO APP (móvil) PARA RENOVACIÓN ===== */
     @media (max-width: 720px){
-      /* bottom sheet a pantalla completa para la modal de renovación */
       #renewalModal .modal-content{
-        width:100vw; height:100svh; max-height:100svh;
-        border-radius:0; padding:16px;
+        width:100vw;height:100svh;max-height:100svh;border-radius:0;padding:16px;
         padding-left:calc(16px + env(safe-area-inset-left));
         padding-right:calc(16px + env(safe-area-inset-right));
         padding-bottom:calc(18px + env(safe-area-inset-bottom));
@@ -162,9 +160,7 @@
       .renewal-layout{display:block}
       .renewal-col{box-shadow:none;border-radius:12px;margin-bottom:12px}
       .table-responsive{overflow-x:auto;-webkit-overflow-scrolling:touch}
-      /* botón de confirmar ancho completo y “pegado” visualmente al final */
       #confirmRenewal{position:sticky;bottom:0;z-index:2}
-      /* agrandar blancos táctiles */
       .insurer-option{padding:14px}
     }
 
@@ -523,7 +519,6 @@
     }
 
     /* Pago */
-    const payTabs=qs('#payTabs');
     payTabs.addEventListener('click',e=>{
       const tab=e.target.closest('.pay-tab'); if(!tab) return;
       qsa('.pay-tab').forEach(t=>t.classList.remove('active')); tab.classList.add('active');
@@ -548,7 +543,6 @@
     });
 
     /* Confirmar renovación (+1 año) */
-    const confirmRenewalBtn=qs('#confirmRenewal');
     confirmRenewalBtn.addEventListener('click',()=>{
       const sel=qs('.insurer-option.selected'); if(!sel){alert('Selecciona una aseguradora.');return}
       if(!selectedPayment.method){alert('Selecciona una forma de pago.');paymentModal.style.display='flex';return}
