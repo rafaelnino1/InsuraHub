@@ -345,7 +345,7 @@
     };
     const typeIcons = {auto:"car",home:"home",life:"heart",health:"heartbeat",travel:"plane",business:"briefcase"};
 
-    // ===== Loader inteligente de logos (prueba mayúsculas/minúsculas y varias extensiones) =====
+    // ===== Loader inteligente de logos =====
     const LOGO_EXTS = ['png','svg','jpg','jpeg','webp','PNG','SVG','JPG','JPEG','WEBP'];
     function logoCandidates(key){
       const base = (key||'').toLowerCase();
@@ -400,7 +400,7 @@
     const policyForm=qs('#policyForm'),renewalOptions=qs('#renewalOptions'),compareTableBody=qs('#compareTable tbody'),currentPolicyChip=qs('#currentPolicyChip'),confirmRenewalBtn=qs('#confirmRenewal'),policyGrid=qs('#policyGrid'),totalPoliciesEl=qs('#totalPolicies'),expiringPoliciesEl=qs('#expiringPolicies'),totalCoverageEl=qs('#totalCoverage'),payTabs=qs('#payTabs'),payHint=qs('#payHint'),payMethodLabel=qs('#payMethodLabel');
     let currentRenewPolicyId=null,selectedPayment={method:null};
 
-    // Cerrar/abrir modales
+    // Cerrar/abrir modales  (FIX: sin paréntesis extra)
     const bindClose=(id,modal)=>qs(id).addEventListener('click',()=>modal.style.display='none');
     bindClose('#closeLoginModal',loginModal);
     bindClose('#closePolicyModal',policyModal);
@@ -408,8 +408,8 @@
     bindClose('#closeConditionsModal',conditionsModal);
     bindClose('#closePaymentModal',paymentModal);
 
-    loginBtn.addEventListener('click',()=>loginModal.style.display='flex'));
-    addPolicyBtn.addEventListener('click',()=>policyModal.style.display='flex'));
+    loginBtn.addEventListener('click',()=>loginModal.style.display='flex');
+    addPolicyBtn.addEventListener('click',()=>policyModal.style.display='flex');
     [loginModal,policyModal,renewalModal,conditionsModal,paymentModal,successModal].forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.style.display='none'}));
     qs('#loginGoogle')?.addEventListener('click',()=>alert('Continuar con Google (conectar OAuth aquí)'));
     qs('#loginFacebook')?.addEventListener('click',()=>alert('Continuar con Facebook (conectar OAuth aquí)'));
@@ -574,4 +574,3 @@
   </script>
 </body>
 </html>
-
