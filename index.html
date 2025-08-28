@@ -17,7 +17,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    /* ===== Variables / base ===== */
     :root{
       --primary:#3498db; --primary-light:#5dade2; --primary-dark:#2c80b9;
       --secondary:#2ecc71; --accent:#e74c3c;
@@ -30,7 +29,7 @@
       --specular: inset 0 1px 0 rgba(255,255,255,.6);
       --ring-bg:#edf2f7;
     }
-    *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins','Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins','Segoe UI',Tahoma,Verdana,sans-serif}
     html,body{height:100%}
     body{
       color:var(--text-dark); line-height:1.6; min-height:100vh; padding:20px;
@@ -41,7 +40,6 @@
     }
     .container{max-width:1300px;margin:0 auto}
 
-    /* ===== Header ===== */
     header{
       background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
       padding:22px 30px;border-radius:18px;margin-bottom:30px;
@@ -62,16 +60,14 @@
       border:1px solid rgba(255,255,255,.35); transition: transform .35s ease;
       overflow:hidden;
     }
-    .app-icon img{
-      width:88px;height:88px;object-fit:contain;display:block
-    }
+    .app-icon img{width:88px;height:88px;object-fit:contain;display:block}
     .app-icon:hover{transform: translateY(-2px)}
     .app-title-text h1{font-size:28px;font-weight:800;margin-bottom:6px;letter-spacing:.2px}
     .app-title-text p{font-size:14px;opacity:.95}
     .user-actions{display:flex;gap:14px;position:relative;z-index:1}
     .btn{
       display:inline-flex;align-items:center;gap:10px;padding:12px 22px;background-color:white;color:var(--primary);
-      border:none;border-radius:12px;cursor:pointer;font-weight:700;transition:transform .2s ease, box-shadow .2s ease, filter .2s ease;
+      border:none;border-radius:12px;cursor:pointer;font-weight:700;transition:transform .2s ease, box-shadow .2s ease;
       text-decoration:none;box-shadow: var(--depth-1);
     }
     .btn:hover{transform: translateY(-2px); box-shadow: var(--depth-2)}
@@ -82,7 +78,6 @@
     .btn-danger{background:linear-gradient(180deg,#ef6b61,#e0443a); color:white}
     .btn-soft{background:linear-gradient(180deg,#f7fbff,#eef6ff); color:#2c3e50; border:1px solid rgba(52,152,219,.2)}
 
-    /* ===== Stats ===== */
     .stats-bar{
       display:flex;justify-content:space-around;background: var(--card-bg);
       border-radius:18px;padding:22px;margin-bottom:30px;box-shadow: var(--depth-2);
@@ -103,7 +98,6 @@
     }
     .stat-label{color:var(--text-light);font-size:13px;font-weight:700;letter-spacing:.3px}
 
-    /* ===== Cards ===== */
     .card-grid{display:grid;grid-template-columns: repeat(auto-fill, minmax(320px,1fr));gap:26px;margin-bottom:42px}
     .card{
       background: var(--card-bg); border-radius:18px; padding:20px;
@@ -147,12 +141,10 @@
     .detail-label{color:var(--text-light);font-size:14px}
     .detail-value{font-weight:700;color:var(--text-dark)}
 
-    /* Logos pólizas */
     .logo-container{height:64px;display:flex;align-items:center;margin-bottom:16px;justify-content:center}
     .company-logo{max-height:64px;max-width:238px;object-fit:contain;filter: drop-shadow(0 2px 4px rgba(0,0,0,.15))}
     .logo-placeholder{width:238px;height:64px;background:#ecf0f1;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#95a5a6;font-weight:800;font-size:16px;box-shadow: inset 0 1px 0 rgba(255,255,255,.7)}
 
-    /* Teléfono de contacto */
     .contact-line{
       display:flex; align-items:center; justify-content:center;
       gap:8px; font-weight:800; color:#105b96; background:linear-gradient(180deg,#f7fbff,#eef6ff);
@@ -161,7 +153,6 @@
     }
     .contact-line i{color:#2c80b9}
 
-    /* Anillo 3D */
     .status-container{display:flex;flex-direction:column;align-items:center;margin:12px 0 0}
     .status-ring{
       position:relative;width:96px;height:96px;border-radius:50%;
@@ -187,7 +178,6 @@
       position:relative; z-index:2; width:72px;height:72px;border-radius:50%;
       display:flex;align-items:center;justify-content:center;color:#2c3e50;
       text-shadow:0 1px 0 rgba(255,255,255,.7);
-      background: transparent;
     }
     .days-text{font-size:12px;text-align:center;margin-top:8px;color:var(--text-light);font-weight:700}
     .status-ring-good{ --ring-color: var(--success); }
@@ -200,11 +190,8 @@
       border-radius:14px; box-shadow: var(--depth-2);
     }
 
-    /* ===== Modales ===== */
-    .modal{
-      display:none; position:fixed; inset:0; background-color: rgba(0,0,0,.45);
-      z-index: 9999; justify-content:center; align-items:center; backdrop-filter: blur(6px);
-    }
+    .modal{display:none; position:fixed; inset:0; background-color: rgba(0,0,0,.45);
+      z-index: 9999; justify-content:center; align-items:center; backdrop-filter: blur(6px);}
     .modal-content{
       background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.98));
       border-radius:18px; width:96%; max-width:1400px; padding:28px;
@@ -218,11 +205,10 @@
       box-shadow: 0 6px 12px rgba(231, 76, 60,.35)
     }
 
-    /* ===== LOGIN (social) ===== */
     .social-login{display:grid;grid-template-columns:1fr;gap:10px;margin:16px 0 6px;}
     .btn-social{
       display:flex;align-items:center;gap:10px;justify-content:center;padding:12px;border-radius:12px;font-weight:800;border:none;cursor:pointer;
-      background:#fff; box-shadow: var(--depth-1); transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+      background:#fff; box-shadow: var(--depth-1); transition: transform .2s ease, box-shadow .2s ease;
     }
     .btn-social:hover{transform: translateY(-2px); box-shadow: var(--depth-2)}
     .btn-google{border:2px solid #ececec}
@@ -232,111 +218,73 @@
     .btn-apple{background:#000;color:#fff}
     .btn-apple i{color:#fff}
 
-    /* ===== Formulario Nueva Póliza (rediseño pro) ===== */
-    #policyForm .form-grid{
-      display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:14px;
-    }
+    #policyForm .form-grid{display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:14px;}
     @media (max-width:720px){ #policyForm .form-grid{ grid-template-columns: 1fr } }
     .form-group{display:flex;flex-direction:column;gap:8px}
-    .form-label{
-      font-weight:800; color:#1f2d3d; font-size:14px;
-      display:flex; align-items:center; gap:8px;
-    }
+    .form-label{font-weight:800; color:#1f2d3d; font-size:14px; display:flex; align-items:center; gap:8px;}
     .hint{font-size:12px; color:#567; font-weight:600}
-    .input-wrap{
-      display:flex; align-items:center; gap:10px; padding:12px 14px; border-radius:12px;
-      background:linear-gradient(180deg,#ffffff,#f7faff);
-      border:1px solid rgba(52,152,219,.18); box-shadow: var(--depth-1);
-    }
+    .input-wrap{display:flex; align-items:center; gap:10px; padding:12px 14px; border-radius:12px;
+      background:linear-gradient(180deg,#ffffff,#f7faff); border:1px solid rgba(52,152,219,.18); box-shadow: var(--depth-1);}
     .input-wrap i{color:#2c80b9}
-    .input-wrap input, .input-wrap select, .input-wrap textarea{
-      width:100%; border:none; outline:none; background:transparent; font-size:15px; color:#1f2d3d;
-    }
+    .input-wrap input, .input-wrap select, .input-wrap textarea{width:100%; border:none; outline:none; background:transparent; font-size:15px; color:#1f2d3d;}
     .input-wrap textarea{min-height:120px; resize:vertical}
-    .section-card{
-      background:linear-gradient(180deg,#ffffff,#f6f8ff);
-      border:1px solid rgba(52,152,219,.15); border-radius:16px; padding:16px; box-shadow: var(--depth-1); margin-bottom:14px
-    }
+    .section-card{background:linear-gradient(180deg,#ffffff,#f6f8ff);
+      border:1px solid rgba(52,152,219,.15); border-radius:16px; padding:16px; box-shadow: var(--depth-1); margin-bottom:14px}
     .section-title{font-weight:900; color:#155a8f; margin-bottom:8px; display:flex; align-items:center; gap:8px}
 
-    /* ===== Renovación ===== */
     .renewal-layout{display:grid; grid-template-columns: 1fr 1.25fr; gap:20px; align-items:start;}
     @media (max-width:1180px){ .renewal-layout{grid-template-columns:1fr} }
-    .renewal-col{
-      background: linear-gradient(180deg,#ffffff,#f9fbff);
-      border:1px solid rgba(52,152,219,.12); border-radius:14px; box-shadow: var(--depth-1); padding:16px;
-      align-self: start;
-    }
+    .renewal-col{background: linear-gradient(180deg,#ffffff,#f9fbff);
+      border:1px solid rgba(52,152,219,.12); border-radius:14px; box-shadow: var(--depth-1); padding:16px; align-self: start;}
     .renewal-col h3{margin:4px 0 12px; font-size:16px; color:#1f2d3d}
     .renewal-options{max-height:none; overflow:visible}
     .insurer-option{
-      display:grid; grid-template-columns: 52px 1fr auto; gap:12px;
-      align-items:center; padding:12px; border:2px solid #ecf0f1; border-radius:12px; margin-bottom:10px;
-      cursor:pointer; transition: transform .25s, border-color .25s, background-color .25s;
-      background:#fff; box-shadow: var(--depth-1); outline:none; will-change: transform;
+      display:grid; grid-template-columns: 52px 1fr auto; gap:12px; align-items:center; padding:12px;
+      border:2px solid #ecf0f1; border-radius:12px; margin-bottom:10px; cursor:pointer;
+      transition: transform .25s, border-color .25s, background-color .25s; background:#fff; box-shadow: var(--depth-1); outline:none;
     }
     .insurer-option:hover{border-color: var(--primary); transform: translateX(6px)}
     .insurer-option.selected{border-color: var(--primary); background-color: rgba(52,152,219,.06)}
-    .insurer-logo-small{
-      width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-weight:800;color:white;border-radius:10px;background: var(--primary);
-      flex:0 0 52px; overflow:hidden;
-    }
-    .insurer-logo-small img{width:100%;height:100%;object-fit:contain;transform:none!important;transition:none!important;pointer-events:none}
+    .insurer-logo-small{width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-weight:800;color:white;border-radius:10px;background: var(--primary);flex:0 0 52px; overflow:hidden;}
+    .insurer-logo-small img{width:100%;height:100%;object-fit:contain}
     .insurer-details{display:flex;flex-direction:column; gap:2px}
     .insurer-details .coverage-amount{color:#567; font-weight:600}
     .insurer-price{font-weight:900;color:var(--primary-dark); text-align:right; min-width:130px}
 
-    /* Parpadeo para opción más económica */
-    @keyframes blink-green {
-      0%, 100 { box-shadow: 0 0 0 2px rgba(46,204,113,.9), 0 0 12px rgba(46,204,113,.35); }
-      50% { box-shadow: 0 0 0 2px rgba(46,204,113,.3), 0 0 2px rgba(46,204,113,.1); }
-    }
+    @keyframes blink-green{0%,100%{box-shadow:0 0 0 2px rgba(46,204,113,.9),0 0 12px rgba(46,204,113,.35)}50%{box-shadow:0 0 0 2px rgba(46,204,113,.3),0 0 2px rgba(46,204,113,.1)}}
     .insurer-option.cheapest{border-color:#2ecc71 !important; animation: blink-green 1.2s infinite;}
 
-    /* Tabla Comparativa */
     .compare-title{font-weight:800; color:#1f2d3d; margin-bottom:8px; display:flex; align-items:center; gap:8px;}
     .compare-table{width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border-radius:12px; box-shadow: var(--depth-1)}
-    .compare-table thead th{
-      background: linear-gradient(180deg,#eef6ff,#e8f1ff);
-      color:#1f2d3d; text-align:left; font-weight:800; padding:12px; border-bottom:1px solid rgba(52,152,219,.15);
-    }
+    .compare-table thead th{background: linear-gradient(180deg,#eef6ff,#e8f1ff); color:#1f2d3d; text-align:left; font-weight:800; padding:12px; border-bottom:1px solid rgba(52,152,219,.15);}
     .compare-table tbody td{background:#fff; padding:12px; border-bottom:1px solid #f0f3f7; vertical-align:middle}
     .compare-table tbody tr:last-child td{border-bottom:none}
-    .compare-table img{width:28px;height:28px;object-fit:contain;transform:none!important;transition:none!important;pointer-events:none}
+    .compare-table img{width:28px;height:28px;object-fit:contain}
     .pill{display:inline-block; padding:4px 10px; border-radius:999px; font-weight:700; font-size:12px; background: linear-gradient(180deg,#f7fbff,#eef6ff); border:1px solid rgba(52,152,219,.2); color:#2c3e50;}
     .table-actions{display:flex; gap:8px; flex-wrap:wrap}
     .btn-mini{padding:8px 12px; border-radius:10px; font-weight:700; border:1px solid rgba(52,152,219,.2); background:#fff; box-shadow: var(--depth-1); cursor:pointer}
     .selected-row{box-shadow: inset 0 0 0 2px rgba(52,152,219,.35)}
 
-    /* Pago */
     #paymentModal .modal-content{max-width:720px}
     .pay-tabs{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px}
-    .pay-tab{
-      padding:10px 14px; border-radius:10px; border:1px solid rgba(52,152,219,.2); background:#fff; box-shadow: var(--depth-1);
-      cursor:pointer; font-weight:700; display:flex; align-items:center; gap:8px;
-    }
+    .pay-tab{padding:10px 14px; border-radius:10px; border:1px solid rgba(52,152,219,.2); background:#fff; box-shadow: var(--depth-1); cursor:pointer; font-weight:700; display:flex; align-items:center; gap:8px;}
     .pay-tab.active{background:linear-gradient(180deg,#f1f9ff,#e7f2ff); border-color:rgba(52,152,219,.45)}
     .pay-help{color:#567; font-weight:600; margin-bottom:10px}
     .inline-2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
     @media (max-width:560px){ .inline-2{grid-template-columns:1fr} }
 
-    /* Success */
     #successModal .success-card{
       background: linear-gradient(180deg,#ffffff,#f6fffb);
       padding:30px;border-radius:18px;box-shadow: var(--depth-3); text-align:center; width:min(520px, 92vw);
       border:1px solid rgba(46,204,113,.2)
     }
-    .checkmark{
-      width:100px;height:100px;border-radius:50%;margin:0 auto 16px;position:relative; background: radial-gradient(circle at 30% 30%, #8ef0be, #2ecc71);
-      box-shadow: inset 0 8px 14px rgba(255,255,255,.6), inset 0 -8px 12px rgba(0,0,0,.08), 0 12px 22px rgba(46,204,113,.35);
-      animation: popScale .5s ease-out both;
-    }
+    .checkmark{width:100px;height:100px;border-radius:50%;margin:0 auto 16px;position:relative; background: radial-gradient(circle at 30% 30%, #8ef0be, #2ecc71);
+      box-shadow: inset 0 8px 14px rgba(255,255,255,.6), inset 0 -8px 12px rgba(0,0,0,.08), 0 12px 22px rgba(46,204,113,.35); animation: popScale .5s ease-out both;}
     @keyframes popScale{0%{transform:scale(.8);opacity:.0}100%{transform:scale(1);opacity:1}}
     .checkmark svg{position:absolute; inset:0; margin:auto; width:64px;height:64px;filter: drop-shadow(0 2px 2px rgba(0,0,0,.15))}
     .checkmark .path{stroke:#fff; stroke-width:8; stroke-linecap:round; stroke-linejoin:round; fill:none; stroke-dasharray: 100; stroke-dashoffset: 100; animation: draw .7s .2s ease forwards;}
     @keyframes draw{to{stroke-dashoffset:0}}
 
-    /* Responsivo general */
     @media (max-width:768px){
       .stats-bar{flex-direction:column;gap:20px}
       .stat-item:not(:last-child)::after{display:none}
@@ -351,7 +299,8 @@
     <header>
       <div class="app-title">
         <div class="app-icon">
-          <img src="logos/insurahublogo.png" alt="InsuraHub" onerror="this.remove(); this.parentNode.textContent='IH'">
+          <!-- SIN src: lo resuelve el cargador robusto -->
+          <img data-logo-key="insurahublogo" data-logo-name="InsuraHub" alt="InsuraHub">
         </div>
         <div class="app-title-text">
           <h1>InsuraHub</h1>
@@ -413,7 +362,7 @@
     </div>
   </div>
 
-  <!-- Nueva Póliza (form pro 3D) -->
+  <!-- Nueva Póliza -->
   <div class="modal" id="policyModal" aria-hidden="true">
     <div class="modal-content" role="dialog" aria-modal="true">
       <div class="modal-header">
@@ -423,7 +372,6 @@
       </div>
 
       <form id="policyForm">
-        <!-- Asegurado -->
         <div class="section-card">
           <div class="section-title"><i class="fas fa-id-card"></i> Datos del asegurado</div>
           <div class="form-grid">
@@ -439,7 +387,6 @@
           </div>
         </div>
 
-        <!-- Póliza -->
         <div class="section-card">
           <div class="section-title"><i class="fas fa-shield-halved"></i> Datos de la póliza</div>
           <div class="form-grid">
@@ -512,32 +459,44 @@
           <h3>Selecciona una aseguradora</h3>
           <div class="renewal-options" id="renewalOptions">
             <div class="insurer-option" data-insurer="allianz" data-price="850000" tabindex="0" role="button" aria-selected="false">
-              <div class="insurer-logo-small"><img src="logos/allianz.png" alt="Allianz" onerror="this.style.display='none'; this.parentNode.innerHTML='A';"></div>
+              <div class="insurer-logo-small">
+                <img data-logo-key="allianz" data-logo-name="Allianz" alt="Allianz">
+              </div>
               <div class="insurer-details"><div>Allianz Seguros</div><div class="coverage-amount">Cobertura: $200.000.000</div></div>
               <div class="insurer-price">$850.000</div>
             </div>
             <div class="insurer-option" data-insurer="axa" data-price="920000" tabindex="0" role="button" aria-selected="false">
-              <div class="insurer-logo-small"><img src="logos/axa.png" alt="AXA" onerror="this.style.display='none'; this.parentNode.innerHTML='A';"></div>
+              <div class="insurer-logo-small">
+                <img data-logo-key="axa" data-logo-name="AXA" alt="AXA">
+              </div>
               <div class="insurer-details"><div>AXA Seguros</div><div class="coverage-amount">Cobertura: $220.000.000</div></div>
               <div class="insurer-price">$920.000</div>
             </div>
             <div class="insurer-option" data-insurer="generali" data-price="780000" tabindex="0" role="button" aria-selected="false">
-              <div class="insurer-logo-small"><img src="logos/generali.png" alt="Generali" onerror="this.style.display='none'; this.parentNode.innerHTML='G';"></div>
+              <div class="insurer-logo-small">
+                <img data-logo-key="generali" data-logo-name="Generali" alt="Generali">
+              </div>
               <div class="insurer-details"><div>Generali Seguros</div><div class="coverage-amount">Cobertura: $180.000.000</div></div>
               <div class="insurer-price">$780.000</div>
             </div>
             <div class="insurer-option" data-insurer="cigna" data-price="950000" tabindex="0" role="button" aria-selected="false">
-              <div class="insurer-logo-small"><img src="logos/cigna.png" alt="Cigna" onerror="this.style.display='none'; this.parentNode.innerHTML='C';"></div>
+              <div class="insurer-logo-small">
+                <img data-logo-key="cigna" data-logo-name="Cigna" alt="Cigna">
+              </div>
               <div class="insurer-details"><div>Cigna Seguros</div><div class="coverage-amount">Cobertura: $240.000.000</div></div>
               <div class="insurer-price">$950.000</div>
             </div>
             <div class="insurer-option" data-insurer="zurich" data-price="890000" tabindex="0" role="button" aria-selected="false">
-              <div class="insurer-logo-small"><img src="logos/zurich.png" alt="Zurich" onerror="this.style.display='none'; this.parentNode.innerHTML='Z';"></div>
+              <div class="insurer-logo-small">
+                <img data-logo-key="zurich" data-logo-name="Zurich" alt="Zurich">
+              </div>
               <div class="insurer-details"><div>Zurich Seguros</div><div class="coverage-amount">Cobertura: $210.000.000</div></div>
               <div class="insurer-price">$890.000</div>
             </div>
             <div class="insurer-option" data-insurer="liberty" data-price="810000" tabindex="0" role="button" aria-selected="false">
-              <div class="insurer-logo-small"><img src="logos/liberty.png" alt="Liberty Mutual" onerror="this.style.display='none'; this.parentNode.innerHTML='L';"></div>
+              <div class="insurer-logo-small">
+                <img data-logo-key="liberty" data-logo-name="Liberty Mutual" alt="Liberty Mutual">
+              </div>
               <div class="insurer-details"><div>Liberty Mutual</div><div class="coverage-amount">Cobertura: $190.000.000</div></div>
               <div class="insurer-price">$810.000</div>
             </div>
@@ -664,14 +623,6 @@
 
   <script>
     /* ===== Datos base ===== */
-    const insurerLogos = {
-      allianz:"logos/allianz.png",
-      axa:"logos/axa.png",
-      generali:"logos/generali.png",
-      cigna:"logos/cigna.png",
-      zurich:"logos/zurich.png",
-      liberty:"logos/liberty.png"
-    };
     const insurerNames = { allianz:"Allianz", axa:"AXA", generali:"Generali", cigna:"Cigna", zurich:"Zurich", liberty:"Liberty Mutual" };
     const insurerPhones = { allianz:"+57 01 8000 510 510", axa:"+57 01 8000 123 456", generali:"+57 01 8000 345 678", cigna:"+57 01 8000 765 432", zurich:"+57 01 8000 111 222", liberty:"+57 01 8000 999 888" };
 
@@ -687,15 +638,57 @@
       liberty:{deductible:"10% o $1.900.000", extras:"Pérdida de llaves + grúa", details:"- Cobertura estándar.\n- Deducible: 10% o $1.900.000.\n- Pérdida de llaves.\n- Grúa 2 eventos/año.\n- Exclusiones: desgaste normal."}
     };
 
+    /* ===== Utilidades ===== */
     function formatCurrencyCOP(amount){
       return new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',minimumFractionDigits:0,maximumFractionDigits:0}).format(amount);
     }
     function addDays(date,days){const r=new Date(date); r.setDate(r.getDate()+days); return r;}
-    function addYears(date, years){ const d=new Date(date); const y=d.getFullYear()+years; d.setFullYear(y); return d; } // evita 366 por TZ/DST
+    function addYears(date, years){ const d=new Date(date); const y=d.getFullYear()+years; d.setFullYear(y); return d; }
     function formatDateISO(date){return date.toISOString().split('T')[0];}
     function formatDateHuman(dateStr){const d=new Date(dateStr); return d.toLocaleDateString('es-ES',{year:'numeric',month:'long',day:'numeric'});}
     function telFor(insurer){ return insurerPhones[insurer] || "N/A"; }
 
+    /* ===== CARGA ROBUSTA DE LOGOS =====
+       Prueba variantes de nombres/extensiones bajo /logos/ hasta que una cargue.
+       Soporta: key / DisplayName / minúsculas / MAYÚSCULAS / sin espacios / con guiones
+       Extensiones probadas: .png .PNG .jpg .JPG .jpeg .JPEG .webp .svg
+    */
+    const LOGO_EXTS = [".png",".PNG",".jpg",".JPG",".jpeg",".JPEG",".webp",".svg"];
+    function buildLogoCandidates(key, displayName){
+      const base = key || "";
+      const name = (displayName || "").trim();
+      const tokens = new Set([
+        base, base.toLowerCase(), base.toUpperCase(),
+        name, name.toLowerCase(), name.toUpperCase(),
+        name.replace(/\s+/g,''), name.replace(/\s+/g,'-')
+      ]);
+      const cands = [];
+      tokens.forEach(t=>{
+        LOGO_EXTS.forEach(ext=> cands.push(`logos/${t}${ext}`));
+      });
+      return cands;
+    }
+    function attachSmartLogo(imgEl, key, displayName, placeholderText){
+      const candidates = buildLogoCandidates(key, displayName);
+      let i = 0;
+      const tryNext = ()=>{
+        if(i >= candidates.length){
+          // Fallback: placeholder
+          const ph = document.createElement('div');
+          ph.className = 'logo-placeholder';
+          ph.textContent = placeholderText || displayName || key || 'Logo';
+          const wrap = imgEl.parentNode;
+          imgEl.remove();
+          wrap && wrap.appendChild(ph);
+          return;
+        }
+        imgEl.src = candidates[i++];
+      };
+      imgEl.onerror = tryNext;
+      tryNext();
+    }
+
+    /* ===== Datos demo ===== */
     const today = new Date();
     const expirationDates = [
       formatDateISO(addDays(today,28)), formatDateISO(addDays(today,120)),
@@ -746,7 +739,7 @@
     let currentRenewPolicyId = null;
     let selectedPayment = { method: null };
 
-    /* ===== Modals open/close ===== */
+    /* ===== Modales ===== */
     document.getElementById('closeLoginModal').addEventListener('click',()=> loginModal.style.display='none');
     document.getElementById('closePolicyModal').addEventListener('click',()=> policyModal.style.display='none');
     document.getElementById('closeRenewalModal').addEventListener('click',()=> renewalModal.style.display='none');
@@ -765,7 +758,7 @@
     document.getElementById('loginFacebook')?.addEventListener('click',()=> alert('Continuar con Facebook (conectar OAuth aquí)'));
     document.getElementById('loginApple')?.addEventListener('click',()=> alert('Continuar con Apple (conectar OAuth aquí)'));
 
-    /* ===== Helpers ===== */
+    /* ===== Helpers visuales ===== */
     function getDaysRemaining(expirationDate){
       const t=new Date(); t.setHours(0,0,0,0);
       const exp=new Date(expirationDate);
@@ -812,8 +805,7 @@
 
           <div class="card-details">
             <div class="logo-container">
-              <img src="${insurerLogos[policy.insurer]}" alt="${policy.insurerName}" class="company-logo"
-                   onerror="this.style.display='none'; this.parentNode.innerHTML='<div class=\'logo-placeholder\'>${policy.insurerName}</div>';"/>
+              <img class="company-logo" data-logo-key="${policy.insurer}" data-logo-name="${policy.insurerName}" alt="${policy.insurerName}">
             </div>
 
             <div class="detail-item"><span class="detail-label">Asegurado:</span><span class="detail-value">${policy.insuredName}</span></div>
@@ -840,8 +832,12 @@
           </div>
         `;
 
+        // Eventos de la tarjeta
         card.querySelector('.conditions-btn').addEventListener('click', ()=>{
           openConditionsModal("Condiciones de la Póliza", `${policy.policyNumber} · ${policy.insurerName}`, policy.conditions);
+        });
+        card.querySelectorAll('img[data-logo-key]').forEach(img=>{
+          attachSmartLogo(img, img.dataset.logoKey, img.dataset.logoName, policy.insurerName);
         });
 
         const renewBtn = card.querySelector('.renew-btn');
@@ -856,18 +852,15 @@
           payHint.style.display='none';
           payMethodLabel.textContent = '—';
 
-          // Refrescar precios/coberturas
+          // Refrescar UI
           document.querySelectorAll('.insurer-option').forEach(opt=>{
-            const insurer = opt.getAttribute('data-insurer');
-            opt.querySelector('.insurer-price').textContent = formatCurrencyCOP(renewalPrices[insurer]);
-            opt.querySelector('.coverage-amount').textContent = `Cobertura: ${formatCurrencyCOP(coverageAmounts[insurer])}`;
+            const logo = opt.querySelector('img[data-logo-key]');
+            attachSmartLogo(logo, logo.dataset.logoKey, logo.dataset.logoName, logo.dataset.logoName || 'Logo');
             opt.classList.remove('selected','cheapest'); opt.setAttribute('aria-selected','false');
           });
 
-          // Opción más económica
           highlightCheapestOption();
 
-          // Chip de póliza actual
           currentPolicyChip.innerHTML = `<span class="pill">Actual: ${p.insurerName} · Cobertura ${formatCurrencyCOP(p.coverage)} · Vence ${new Date(p.expirationDate).toLocaleDateString('es-ES')} <span style="font-size:11px; font-weight:800; color:#2cb56f; margin-left:6px">vigente</span></span>`;
 
           buildCompareTable(p);
@@ -899,7 +892,7 @@
         tr.innerHTML = `
           <td data-label="Aseguradora">
             <div style="display:flex;align-items:center;gap:8px">
-              <img src="${insurerLogos[key]}" alt="${name}">
+              <img data-logo-key="${key}" data-logo-name="${name}" alt="${name}">
               <strong>${name}</strong>
             </div>
           </td>
@@ -914,6 +907,11 @@
           </td>
         `;
         compareTableBody.appendChild(tr);
+      });
+
+      // Cargar logos de la tabla con el cargador robusto
+      compareTableBody.querySelectorAll('img[data-logo-key]').forEach(img=>{
+        attachSmartLogo(img, img.dataset.logoKey, img.dataset.logoName, img.dataset.logoName);
       });
 
       document.getElementById('compareTable').onclick = (e)=>{
@@ -956,12 +954,12 @@
       document.getElementById('paymentSubtitle').textContent = `Método para ${insurerNames[key]}`;
       paymentModal.style.display='flex';
     }
-    renewalOptions.addEventListener('click',(e)=>{
+    document.getElementById('renewalOptions').addEventListener('click',(e)=>{
       const option = e.target.closest('.insurer-option');
       if(!option) return;
       selectInsurerOption(option);
     });
-    renewalOptions.addEventListener('keydown',(e)=>{
+    document.getElementById('renewalOptions').addEventListener('keydown',(e)=>{
       const option = e.target.closest('.insurer-option');
       if(!option) return;
       if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); selectInsurerOption(option); }
@@ -1042,7 +1040,6 @@
       if(currentRenewPolicyId != null){
         const idx = policies.findIndex(p => p.id === currentRenewPolicyId);
         if(idx !== -1){
-          // +1 año exacto (evita 366)
           const newExpISO = formatDateISO(addYears(new Date(), 1));
           policies[idx].expirationDate = newExpISO;
           policies[idx].insurer = insurerKey;
@@ -1061,14 +1058,19 @@
       payMethodLabel.textContent = '—';
     });
 
-    // Inicio
+    // ===== Inicialización =====
+    // Cargar logos estáticos (header + opciones)
+    document.querySelectorAll('img[data-logo-key]').forEach(img=>{
+      attachSmartLogo(img, img.dataset.logoKey, img.dataset.logoName, img.dataset.logoName);
+    });
+
+    // Render inicial
     renderPolicies();
   </script>
 
   <!-- ===== Manifest y Service Worker en memoria, con guard de https/localhost ===== -->
   <script>
     (function createManifest(){
-      // Sólo sirve plenamente bajo http(s). En file:// no es necesario.
       const manifest = {
         name: "InsuraHub",
         short_name: "InsuraHub",
@@ -1090,7 +1092,6 @@
       document.head.appendChild(link);
     })();
 
-    // Registra un Service Worker generado por Blob, sólo en https o localhost (evita error de 'null origin')
     (function registerInlineSW(){
       if (!('serviceWorker' in navigator)) return;
       const isLocalhost = ['localhost','127.0.0.1','[::1]'].includes(location.hostname);
