@@ -1,737 +1,851 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"/>
-  <title>InsuraHub App</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"/>
+<title>InsuraHub · NeoDash</title>
 
-  <!-- PWA meta -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#3498db">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
+<!-- PWA -->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#6a5af9">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 
-  <!-- Iconos / fuentes -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- Fuentes / Iconos -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-  <style>
-    :root{
-      --primary:#3498db;--primary-light:#5dade2;--primary-dark:#2c80b9;
-      --background:#eef4ff;--card-bg:#fff;--text-dark:#1f2d3d;--text-light:#7f8c8d;
-      --success:#2ecc71;--warning:#f39c12;--danger:#e74c3c;
-      --depth-1:0 6px 14px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.06);
-      --depth-2:0 12px 28px rgba(0,0,0,.12),0 4px 10px rgba(0,0,0,.08);
-      --depth-3:0 22px 50px rgba(0,0,0,.18),0 8px 16px rgba(0,0,0,.12);
-      --ring-bg:#edf2f7
-    }
-    *{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,Segoe UI,Tahoma,Verdana,sans-serif}
-    body{
-      min-height:100vh;color:var(--text-dark);line-height:1.6;padding:20px;
-      background:
-        radial-gradient(1000px 500px at 10% 0%,rgba(93,173,226,.25),transparent 60%),
-        radial-gradient(900px 500px at 100% 30%,rgba(46,204,113,.18),transparent 60%),
-        linear-gradient(135deg,#e6f0ff 0%,#d6ecff 40%,#cfeef0 100%)
-    }
-    .container{max-width:1300px;margin:0 auto}
+<style>
+:root{
+  /* Paleta neo-3D */
+  --bg-1:#0e1021; --bg-2:#111433; --bg-3:#151848;
+  --card:#181b4f; --card-2:#1b1f5d;
+  --text:#e7e9ff; --muted:#a7abda;
+  --primary:#6a5af9; --primary-2:#7b6cfe;
+  --teal:#27d7a1; --pink:#ff6ec7; --amber:#ffb44c; --red:#ff5f6d;
+  --ring:#2430a3; --ring-bg:#222761;
+  --depth-1: 0 6px 14px rgba(0,0,0,.35), 0 2px 4px rgba(0,0,0,.25);
+  --depth-2: 0 22px 45px rgba(0,0,0,.45), 0 8px 16px rgba(0,0,0,.35);
+  --glass: rgba(255,255,255,.06);
+  --br: 16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:Poppins,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  color:var(--text);
+  background:
+   radial-gradient(1200px 700px at -10% -10%, #6a5af91f, transparent 60%),
+   radial-gradient(1000px 600px at 110% 20%, #27d7a118, transparent 60%),
+   linear-gradient(180deg, var(--bg-1), var(--bg-2) 40%, var(--bg-3));
+}
 
-    /* Header */
-    header{
-      background:linear-gradient(135deg,var(--primary),var(--primary-dark));
-      padding:22px 30px;border-radius:18px;margin-bottom:22px;box-shadow:var(--depth-3);
-      display:flex;justify-content:space-between;align-items:center;color:#fff;position:relative;overflow:hidden
-    }
-    header::before{content:"";position:absolute;inset:-30% -20% auto auto;width:120%;height:220%;background:radial-gradient(closest-side,rgba(255,255,255,.18),transparent 60%);transform:rotate(25deg)}
-    .app-title{display:flex;align-items:center;gap:16px;position:relative;z-index:1}
-    .app-icon{width:72px;height:72px;border-radius:16px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:28px;backdrop-filter:blur(10px);box-shadow:var(--depth-2), inset 0 1px 0 rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.35);overflow:hidden}
-    .app-icon img{width:72px;height:72px;object-fit:contain;display:block}
-    .app-title-text h1{font-size:26px;font-weight:800;margin-bottom:4px}
-    .user-actions{display:flex;gap:10px;z-index:1}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 18px;background:#fff;color:var(--primary);border:none;border-radius:12px;cursor:pointer;font-weight:700;transition:transform .2s,box-shadow .2s;text-decoration:none;box-shadow:var(--depth-1);min-height:40px}
-    .btn:hover{transform:translateY(-2px);box-shadow:var(--depth-2)}
-    .btn-outline{background:transparent;border:2px solid #fff;color:#fff;box-shadow:none}
-    .btn-outline:hover{background:#fff;color:var(--primary)}
-    .btn-success{background:linear-gradient(180deg,#35d07f,#2cb56f);color:#fff}
-    .btn-warning{background:linear-gradient(180deg,#f6b449,#e99a10);color:#fff}
-    .btn-danger{background:linear-gradient(180deg,#ef6b61,#e0443a);color:#fff}
-    .btn-soft{background:linear-gradient(180deg,#f7fbff,#eef6ff);color:#2c3e50;border:1px solid rgba(52,152,219,.2)}
+/* Layout base */
+.app{display:grid;grid-template-columns:280px 1fr;min-height:100dvh}
+@media (max-width:960px){ .app{grid-template-columns:1fr} }
 
-    /* Stats */
-    .stats-bar{display:flex;justify-content:space-around;background:var(--card-bg);border-radius:16px;padding:14px 16px;margin-bottom:18px;box-shadow:var(--depth-2);background:linear-gradient(180deg,#fff 0%,#f3f8ff 100%),radial-gradient(120% 80% at 20% 0%,rgba(93,173,226,.1),transparent 60%);border:1px solid rgba(52,152,219,.12)}
-    .stat-item{text-align:center;padding:0 12px;position:relative}
-    .stat-item:not(:last-child)::after{content:"";position:absolute;right:0;top:18%;height:64%;width:1px;background:linear-gradient(to bottom,transparent,rgba(52,152,219,.35),transparent)}
-    .stat-value{font-size:28px;font-weight:900;margin-bottom:2px;background:linear-gradient(180deg,#2c80b9,#3498db);-webkit-background-clip:text;background-clip:text;color:transparent}
-    .stat-label{color:var(--text-light);font-size:12px;font-weight:700;letter-spacing:.3px}
+.sidebar{
+  position:sticky;top:0;height:100dvh;overflow:auto;
+  background:linear-gradient(180deg,#161947,#0f1234);
+  border-right:1px solid #262a72; box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+  padding:18px; z-index:10;
+}
+@media (max-width:960px){
+  .sidebar{position:fixed;inset:0 auto 0 0;width:84vw;max-width:320px;transform:translateX(-105%);transition:transform .28s ease;box-shadow:var(--depth-2);border-right:0;border-radius:0 20px 20px 0}
+  .sidebar.open{transform:none}
+}
+.brand{
+  display:flex;align-items:center;gap:12px;margin-bottom:16px
+}
+.cube{
+  width:46px;height:46px;border-radius:12px;
+  background:linear-gradient(135deg,#7b6cfe 0%,#27d7a1 100%);
+  box-shadow: 0 16px 40px #6a5af955, inset 0 1px 0 rgba(255,255,255,.35);
+  display:grid;place-items:center;font-weight:800;color:#0f1234
+}
+.brand h1{font-size:20px;font-weight:800;letter-spacing:.3px}
 
-    /* Cards */
-    .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:26px}
-    .card{
-      background:var(--card-bg);border-radius:14px;padding:14px;box-shadow:var(--depth-2);
-      transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column;position:relative;overflow:hidden;
-      border:1px solid rgba(52,152,219,.1);
-      background-image:radial-gradient(800px 240px at -10% 0%,rgba(93,173,226,.12),transparent 40%),linear-gradient(180deg,#fff 0%,#f7f9ff 100%)
-    }
-    .card:hover{transform:translateY(-2px);box-shadow:var(--depth-3)}
-    .card.status-good::after,.card.status-warning::after,.card.status-danger::after{content:"";position:absolute;left:0;top:0;bottom:0;width:5px}
-    .card.status-good::after{background:linear-gradient(180deg,#41d98b,#2cb56f)}
-    .card.status-warning::after{background:linear-gradient(180deg,#f7c052,#e99a10)}
-    .card.status-danger::after{background:linear-gradient(180deg,#f07b72,#e0443a)}
+.nav{display:flex;flex-direction:column;gap:8px;margin:12px 0 18px}
+.nav a{
+  display:flex;align-items:center;gap:12px;
+  padding:12px;border-radius:12px;
+  color:var(--text);text-decoration:none;font-weight:700;
+  background:transparent;border:1px solid transparent
+}
+.nav a:hover{background:var(--glass);border-color:#2a2f7a}
+.nav a.active{background:linear-gradient(180deg,#1b1f5d,#161a4a);border-color:#2f358a;box-shadow:0 14px 40px #00000055}
 
-    /* Header de tarjeta: LOGO IZQ + (tipo + icono) DER */
-    .card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid rgba(52,152,219,.12)}
-    .insurer-logo-header{
-      width:48px;height:48px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;
-      border:1px solid rgba(52,152,219,.18);box-shadow:var(--depth-1);overflow:hidden;flex:0 0 48px
-    }
-    .insurer-logo-header img{width:100%;height:100%;object-fit:contain}
-    .logo-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:#95a5a6;background:#ecf0f1;border-radius:inherit}
+.sidebar .tools{
+  margin-top:auto;display:flex;flex-direction:column;gap:10px
+}
+.toggle-theme{
+  display:flex;align-items:center;gap:10px;justify-content:center;
+  background:linear-gradient(180deg,#1b1f5d,#161a4a);
+  border:1px solid #2a2f7a;border-radius:12px;padding:10px;font-weight:800;cursor:pointer
+}
 
-    .header-right{display:flex;align-items:center;gap:10px}
-    .insurance-type{
-      display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;
-      background:linear-gradient(180deg,rgba(52,152,219,.14),rgba(52,152,219,.06));
-      border:1px solid rgba(52,152,219,.18);font-weight:800;font-size:14px;color:var(--primary-dark)
-    }
-    .insurance-icon{
-      width:40px;height:40px;background:linear-gradient(180deg,var(--primary-light),var(--primary));
-      border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;
-      box-shadow:0 6px 12px rgba(52,152,219,.3);border:1px solid rgba(255,255,255,.4)
-    }
-    .insurance-icon i{font-size:16px}
+.main{display:flex;flex-direction:column;min-height:100dvh}
+.topbar{
+  position:sticky;top:0;z-index:5;
+  display:flex;gap:12px;align-items:center;justify-content:space-between;
+  padding:16px 18px;border-bottom:1px solid #262a72;background:linear-gradient(180deg,#12153b,#101334de);
+  backdrop-filter:saturate(1.2);
+}
+.hamb{display:none}
+@media (max-width:960px){
+  .hamb{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:12px;background:#1a1d51;border:1px solid #2a2f7a;box-shadow:var(--depth-1);cursor:pointer}
+}
+.search{
+  flex:1;display:flex;align-items:center;gap:10px;background:#14174a;border:1px solid #2a2f7a;border-radius:14px;padding:10px 12px;max-width:680px
+}
+.search input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-size:14px}
+.actions{display:flex;align-items:center;gap:10px}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;justify-content:center;
+  padding:10px 14px;border-radius:12px;border:1px solid #2a2f7a;background:#1a1e56;color:var(--text);cursor:pointer;font-weight:800;box-shadow:var(--depth-1)
+}
+.btn.primary{background:linear-gradient(180deg,#7b6cfe,#6a5af9);border-color:#7b6cfe;color:#0f1234}
+.btn.soft{background:#151956}
+.btn.ghost{background:transparent;border-color:#2a2f7a}
+.btn:hover{transform:translateY(-1px)}
 
-    .card-details{flex-grow:1}
-    .detail-item{display:flex;justify-content:space-between;margin:8px 0}
-    .detail-label{color:var(--text-light);font-size:13px}
-    .detail-value{font-weight:700;color:var(--text-dark);font-size:14px}
+.page{
+  padding:18px;flex:1;display:flex;flex-direction:column;gap:16px
+}
 
-    /* >>> CONTACTO: más chico (alto y tipografía) <<< */
-    .contact-line{
-      display:flex;align-items:center;justify-content:center;gap:6px;
-      font-weight:700;color:#105b96;background:linear-gradient(180deg,#f7fbff,#eef6ff);
-      border:1px solid rgba(52,152,219,.18);padding:6px 8px;border-radius:10px;margin:6px 0;
-      box-shadow:var(--depth-1);line-height:1.2;font-size:12px
-    }
-    .contact-line i{font-size:12px;color:#2c80b9}
-    .contact-line span:last-child{font-size:12px;font-weight:800}
+/* Stats neo-3D */
+.stats{
+  display:grid;grid-template-columns:repeat(4, minmax(0,1fr));gap:14px
+}
+@media (max-width:1100px){ .stats{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:560px){ .stats{grid-template-columns:1fr} }
+.stat{
+  background:linear-gradient(180deg,#1b1f5d,#171b54);
+  border:1px solid #2a2f7a;border-radius:16px;padding:16px;box-shadow:var(--depth-2);position:relative;overflow:hidden
+}
+.stat .label{color:var(--muted);font-size:12px;font-weight:700}
+.stat .value{font-size:28px;font-weight:900;letter-spacing:.3px;margin-top:6px;background:linear-gradient(180deg,#ffffff,#aab0ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat .glow{position:absolute;inset:auto -20% -60% -20%;height:120%;background:radial-gradient(closest-side,#7b6cfe22,transparent 60%)}
 
-    /* Anillo + acciones al costado */
-    .ring-row{display:flex;align-items:center;gap:12px;margin-top:6px}
-    .status-container{display:flex;flex-direction:column;align-items:center}
-    .status-ring{
-      position:relative;width:80px;height:80px;border-radius:50%;
-      display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;
-      background:conic-gradient(var(--ring-color,var(--success)) 0 var(--progress,100%),var(--ring-bg) var(--progress,100%) 100%);
-      box-shadow:0 12px 22px rgba(0,0,0,.18),0 6px 10px rgba(0,0,0,.1)
-    }
-    .status-ring::before{content:"";position:absolute;inset:-2px;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.85),rgba(255,255,255,.25) 40%,rgba(255,255,255,0) 60%),conic-gradient(from -90deg,rgba(255,255,255,.25),rgba(0,0,0,.08),rgba(255,255,255,.25))}
-    .status-ring::after{content:"";position:absolute;inset:7px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#f5f8ff 60%,#e9eef7)}
-    .status-ring-inner{position:relative;z-index:2;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#2c3e50;text-shadow:0 1px 0 rgba(255,255,255,.7)}
-    .days-text{font-size:11px;text-align:center;margin-top:6px;color:var(--text-light);font-weight:700}
-    .status-ring-good{--ring-color:var(--success)}.status-ring-warning{--ring-color:var(--warning)}.status-ring-danger{--ring-color:var(--danger)}
-    .ring-actions{display:flex;flex-direction:column;gap:8px;min-width:160px}
-    .ring-actions .btn{width:100%;min-height:38px;padding:8px 12px}
+/* Controles */
+.controls{
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between
+}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  padding:8px 12px;border-radius:999px;border:1px solid #2a2f7a;background:#161a4a;color:var(--text);font-weight:800;cursor:pointer
+}
+.chip.active{background:linear-gradient(180deg,#27d7a1,#1bb885);border-color:#27d7a1;color:#0f1234}
+.view-toggle{display:flex;gap:8px}
 
-    /* Footer */
-    footer{text-align:center;margin-top:22px;padding:18px;color:#fff;background:linear-gradient(135deg,var(--primary),var(--primary-dark));border-radius:14px;box-shadow:var(--depth-2)}
+/* Grid/List de pólizas */
+#policyGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.list-mode #policyGrid{display:block}
+.policy{
+  background:linear-gradient(180deg,#1b1f5d,#161a4a);
+  border:1px solid #2a2f7a;border-radius:18px;padding:14px;box-shadow:var(--depth-2);position:relative;overflow:hidden
+}
+.list-mode .policy{display:grid;grid-template-columns:320px 1fr;gap:14px}
+@media (max-width:760px){ .list-mode .policy{grid-template-columns:1fr} }
+.policy:before{
+  content:"";position:absolute;inset:-40% auto auto -20%;width:60%;height:60%;
+  background:radial-gradient(closest-side,#6a5af92a,transparent 70%);transform:rotate(22deg)
+}
+.p-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;border-bottom:1px dashed #2a2f7a;padding-bottom:10px}
+.p-brand{display:flex;align-items:center;gap:10px}
+.p-logo{
+  width:56px;height:56px;border-radius:14px;flex:0 0 56px;
+  background:#12144a;border:1px solid #2a2f7a;box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 10px 22px #00000055;display:grid;place-items:center;overflow:hidden
+}
+.p-logo img{width:100%;height:100%;object-fit:contain}
+.p-title{display:flex;flex-direction:column}
+.p-title .name{font-weight:900}
+.p-type{display:flex;align-items:center;gap:8px}
+.badge{
+  display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;
+  background:linear-gradient(180deg,#212665,#1a1e5a);border:1px solid #2a2f7a;font-weight:800;font-size:12px
+}
+.badge i{color:#aab0ff}
+.p-body{display:grid;grid-template-columns:1fr auto;gap:12px}
+@media (max-width:520px){ .p-body{grid-template-columns:1fr} }
+.kv{display:grid;grid-template-columns:auto 1fr;gap:8px 12px;align-content:start}
+.kv .k{color:var(--muted);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+.kv .v{font-weight:800}
 
-    /* Modales base */
-    .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;justify-content:center;align-items:center;backdrop-filter:blur(6px)}
-    .modal-content{background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.98));border-radius:18px;width:96%;max-width:1400px;padding:28px;box-shadow:var(--depth-3);max-height:90vh;overflow:auto;position:relative;border:1px solid rgba(52,152,219,.15)}
-    .modal-header{text-align:center;margin-bottom:14px;position:relative}
-    .close-modal{position:absolute;top:-10px;right:-10px;width:34px;height:34px;background:var(--danger);color:#fff;border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.contact{
+  margin:8px 0 10px;display:flex;align-items:center;gap:8px;justify-content:flex-start;
+  font-weight:800;color:#d1d3ff;background:rgba(106,90,249,.08);
+  border:1px solid #2a2f7a;padding:6px 10px;border-radius:10px;font-size:12px;max-width:max-content
+}
+.contact i{color:#7b6cfe;font-size:12px}
 
-    /* ====== NUEVO: Estilos de formularios (Login y Nueva Póliza) ====== */
-    .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-    @media (max-width:720px){.form-grid{grid-template-columns:1fr}}
+.ring-col{display:flex;gap:10px;align-items:center;justify-content:flex-end}
+@media (max-width:520px){ .ring-col{justify-content:flex-start} }
+.ring{
+  position:relative;width:86px;height:86px;border-radius:50%;
+  background:conic-gradient(var(--ring-color,#27d7a1) 0 var(--progress,100%), var(--ring-bg) var(--progress,100%) 100%);
+  box-shadow: 0 18px 36px rgba(0,0,0,.45), 0 6px 12px rgba(0,0,0,.3);
+  display:grid;place-items:center
+}
+.ring::after{
+  content:"";position:absolute;inset:8px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#1b1f5d,#161a4a 60%,#12144a);box-shadow: inset 0 3px 8px rgba(255,255,255,.05), inset 0 -4px 10px rgba(0,0,0,.35)
+}
+.ring .val{position:relative;z-index:1;font-weight:900}
+.ring.good{--ring-color:#27d7a1}.ring.warn{--ring-color:#ffb44c}.ring.bad{--ring-color:#ff5f6d}
+.ring-info{font-size:11px;color:var(--muted);text-align:center;margin-top:4px}
 
-    .form-group{display:flex;flex-direction:column;gap:6px}
-    .form-label{font-weight:800;color:#1f2d3d;font-size:14px;display:flex;align-items:center;gap:8px}
-    .hint{font-size:12px;color:#567;font-weight:600}
-    .input-wrap{
-      display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;
-      background:linear-gradient(180deg,#ffffff,#f7faff);
-      border:1px solid rgba(52,152,219,.18);box-shadow:var(--depth-1)
-    }
-    .input-wrap i{color:#2c80b9}
-    .input-wrap input,.input-wrap select,.input-wrap textarea{width:100%;border:none;outline:none;background:transparent;font-size:15px;color:#1f2d3d}
-    .input-wrap textarea{min-height:120px;resize:vertical}
+.p-actions{display:flex;flex-direction:column;gap:8px;min-width:180px}
+.p-actions .btn{width:100%}
 
-    .section-card{
-      background:linear-gradient(180deg,#ffffff,#f6f8ff);
-      border:1px solid rgba(52,152,219,.15);border-radius:16px;padding:16px;box-shadow:var(--depth-1);margin-bottom:14px
-    }
-    .section-title{font-weight:900;color:#155a8f;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+/* Tablas / Renovación */
+.table{width:100%;border-collapse:separate;border-spacing:0}
+.table thead th{background:#161a4a;border-bottom:1px solid #2a2f7a;padding:10px;text-align:left}
+.table tbody td{padding:10px;border-bottom:1px solid #252a6b}
+.table img{width:26px;height:26px;object-fit:contain}
 
-    /* Social login */
-    .social-login{display:grid;grid-template-columns:1fr;gap:10px;margin:16px 0 6px}
-    .btn-social{
-      display:flex;align-items:center;gap:10px;justify-content:center;padding:12px;border-radius:12px;font-weight:800;border:none;cursor:pointer;
-      background:#fff;box-shadow:var(--depth-1);transition:transform .2s,box-shadow .2s
-    }
-    .btn-social:hover{transform:translateY(-2px);box-shadow:var(--depth-2)}
-    .btn-google{border:2px solid #ececec}.btn-google i{color:#DB4437}
-    .btn-facebook{background:linear-gradient(180deg,#1877F2,#1257c0);color:#fff}.btn-facebook i{color:#fff}
-    .btn-apple{background:#000;color:#fff}.btn-apple i{color:#fff}
+/* Modales */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:50;justify-content:center;align-items:center;backdrop-filter:blur(6px)}
+.modal-content{
+  background:linear-gradient(180deg,#1b1f5d,#191d57);border:1px solid #2a2f7a;color:var(--text);
+  border-radius:18px;width:96%;max-width:1200px;max-height:90svh;overflow:auto;box-shadow:var(--depth-2);padding:22px;position:relative
+}
+.modal-header{text-align:center;margin-bottom:12px}
+.close-modal{position:absolute;top:-10px;right:-10px;width:36px;height:36px;border-radius:50%;border:1px solid #2a2f7a;background:#ff5f6d;color:#0f1234;font-weight:900;cursor:pointer;box-shadow:0 10px 24px #ff5f6d55}
+.section{background:#171b55;border:1px solid #2a2f7a;border-radius:12px;padding:14px;margin-bottom:12px}
 
-    /* ====== NUEVO: tamaños/modales específicos de LOGIN y PÓLIZA ====== */
-    /* Desktop cómodo */
-    #loginModal .modal-content{max-width:520px;width:96%;padding:22px}
-    #policyModal .modal-content{max-width:960px;width:96%;padding:22px}
+#loginModal .modal-content{max-width:520px}
+#policyModal .modal-content{max-width:980px}
+#paymentModal .modal-content{max-width:720px}
 
-    /* Tablet/Móvil */
-    @media (max-width:720px){
-      #loginModal .modal-content,
-      #policyModal .modal-content{
-        width:100vw;max-width:100vw;height:auto;max-height:92svh;border-radius:12px;padding:16px;
-        padding-left:calc(16px + env(safe-area-inset-left));
-        padding-right:calc(16px + env(safe-area-inset-right));
-        padding-bottom:calc(18px + env(safe-area-inset-bottom))
-      }
-    }
+@media (max-width:720px){
+  #renewalModal .modal-content{width:100vw;height:100svh;max-width:none;max-height:none;border-radius:0}
+}
 
-    /* Renovación */
-    .renewal-layout{display:grid;grid-template-columns:1fr 1.25fr;gap:20px}
-    @media(max-width:1180px){.renewal-layout{grid-template-columns:1fr}}
-    .renewal-col{background:linear-gradient(180deg,#fff,#f9fbff);border:1px solid rgba(52,152,219,.12);border-radius:14px;box-shadow:var(--depth-1);padding:16px}
+/* Formularios */
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:720px){ .form-grid{grid-template-columns:1fr} }
+.label{font-weight:800;color:#c9cbff;font-size:13px}
+.input{
+  display:flex;align-items:center;gap:10px;padding:12px;border-radius:12px;background:#151956;border:1px solid #2a2f7a
+}
+.input input,.input select,.input textarea{background:transparent;border:none;outline:none;color:var(--text);width:100%}
+.input textarea{min-height:120px;resize:vertical}
+.hint{color:#8e93d6;font-size:12px}
 
-    .insurer-option{display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;padding:12px;border:2px solid #ecf0f1;border-radius:12px;margin-bottom:10px;cursor:pointer;transition:transform .25s,border-color .25s,background-color .25s;background:#fff;box-shadow:var(--depth-1)}
-    .insurer-option:hover{border-color:var(--primary);transform:translateX(6px)}
-    .insurer-option.selected{border-color:var(--primary);background:rgba(52,152,219,.06)}
-    .insurer-logo-small{width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:#fff;border:1px solid rgba(52,152,219,.18);overflow:hidden}
-    .insurer-logo-small img{width:100%;height:100%;object-fit:contain}
-    .insurer-price{font-weight:900;color:var(--primary-dark);text-align:right;min-width:130px}
-    @keyframes blink-green{0%,100%{box-shadow:0 0 0 2px rgba(46,204,113,.9),0 0 12px rgba(46,204,113,.35)}50%{box-shadow:0 0 0 2px rgba(46,204,113,.3),0 0 2px rgba(46,204,113,.1)}}
-    .insurer-option.cheapest{border-color:#2ecc71!important;animation:blink-green 1.2s infinite}
+/* Renovación layout */
+.renew-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:14px}
+@media (max-width:1080px){ .renew-grid{grid-template-columns:1fr} }
+.option{
+  display:grid;grid-template-columns:48px 1fr auto;gap:10px;align-items:center;
+  background:#161a4a;border:1px solid #2a2f7a;border-radius:12px;padding:10px;margin-bottom:10px;cursor:pointer
+}
+.option:hover{border-color:#7b6cfe}
+.option.selected{outline:2px solid #7b6cfe;background:linear-gradient(180deg,#1a1e5a,#171b55)}
+.option .logo{width:44px;height:44px;border-radius:10px;background:#12144a;border:1px solid #2a2f7a;display:grid;place-items:center;overflow:hidden}
+.option .logo img{width:100%;height:100%;object-fit:contain}
+.option .price{font-weight:900;color:#cfd2ff;min-width:120px;text-align:right}
 
-    .compare-title{font-weight:800;color:#1f2d3d;margin-bottom:8px;display:flex;align-items:center;gap:8px}
-    .compare-table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border-radius:12px;box-shadow:var(--depth-1)}
-    .compare-table thead th{background:linear-gradient(180deg,#eef6ff,#e8f1ff);color:#1f2d3d;text-align:left;font-weight:800;padding:12px;border-bottom:1px solid rgba(52,152,219,.15)}
-    .compare-table tbody td{background:#fff;padding:12px;border-bottom:1px solid #f0f3f7}
-    .compare-table img{width:28px;height:28px;object-fit:contain}
-    .pill{display:inline-block;padding:4px 10px;border-radius:999px;font-weight:700;font-size:12px;background:linear-gradient(180deg,#f7fbff,#eef6ff);border:1px solid rgba(52,152,219,.2);color:#2c3e50}
-    .btn-mini{padding:8px 12px;border-radius:10px;font-weight:700;border:1px solid rgba(52,152,219,.2);background:#fff;box-shadow:var(--depth-1);cursor:pointer}
-    .selected-row{box-shadow:inset 0 0 0 2px rgba(52,152,219,.35)}
+/* Pago tabs */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.tab{padding:10px 14px;border-radius:10px;border:1px solid #2a2f7a;background:#151956;font-weight:800;cursor:pointer}
+.tab.active{background:linear-gradient(180deg,#7b6cfe,#6a5af9);color:#0f1234;border-color:#7b6cfe}
 
-    /* Pago/Success */
-    #paymentModal .modal-content{max-width:720px}
-    .pay-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
-    .pay-tab{padding:10px 14px;border-radius:10px;border:1px solid rgba(52,152,219,.2);background:#fff;box-shadow:var(--depth-1);cursor:pointer;font-weight:700;display:flex;align-items:center;gap:8px}
-    .pay-tab.active{background:linear-gradient(180deg,#f1f9ff,#e7f2ff);border-color:rgba(52,152,219,.45)}
-    .inline-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    @media(max-width:560px){.inline-2{grid-template-columns:1fr}}
-
-    #successModal .success-card{background:linear-gradient(180deg,#fff,#f6fffb);padding:30px;border-radius:18px;box-shadow:var(--depth-3);text-align:center;width:min(520px,92vw);border:1px solid rgba(46,204,113,.2)}
-    .checkmark{width:100px;height:100px;border-radius:50%;margin:0 auto 16px;position:relative;background:radial-gradient(circle at 30% 30%,#8ef0be,#2ecc71);box-shadow:inset 0 8px 14px rgba(255,255,255,.6),inset 0 -8px 12px rgba(0,0,0,.08),0 12px 22px rgba(46,204,113,.35)}
-    .checkmark svg{position:absolute;inset:0;margin:auto;width:64px;height:64px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15))}
-    .checkmark .path{stroke:#fff;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;fill:none;stroke-dasharray:100;stroke-dashoffset:100;animation:draw .7s .2s ease forwards}
-    @keyframes draw{to{stroke-dashoffset:0}}
-    @keyframes popScale{0%{transform:scale(.8);opacity:0}100%{transform:scale(1);opacity:1}}
-    .checkmark{animation:popScale .5s ease-out both}
-
-    /* Modo app móvil para renovación */
-    @media (max-width: 720px){
-      #renewalModal .modal-content{
-        width:100vw;height:100svh;max-height:100svh;border-radius:0;padding:16px;
-        padding-left:calc(16px + env(safe-area-inset-left));
-        padding-right:calc(16px + env(safe-area-inset-right));
-        padding-bottom:calc(18px + env(safe-area-inset-bottom))
-      }
-      .renewal-layout{display:block}
-      .renewal-col{box-shadow:none;border-radius:12px;margin-bottom:12px}
-      .insurer-logo-small{width:40px;height:40px}
-      .insurer-option{grid-template-columns:44px 1fr auto}
-      .table-responsive{overflow-x:auto;-webkit-overflow-scrolling:touch}
-      #confirmRenewal{position:sticky;bottom:0;z-index:2}
-    }
-
-    @media(max-width:768px){
-      .stats-bar{flex-direction:column;gap:14px}
-      .stat-item:not(:last-child)::after{display:none}
-      header{flex-direction:column;gap:12px;text-align:center}
-      .user-actions{justify-content:center}
-      .ring-row{align-items:stretch}
-    }
-  </style>
+/* Success Toast Card */
+#successModal .card{
+  background:linear-gradient(180deg,#161a4a,#151956);border:1px solid #2a2f7a;border-radius:16px;padding:26px;box-shadow:var(--depth-2);text-align:center;width:min(520px,92vw)
+}
+.check{width:96px;height:96px;border-radius:50%;margin:0 auto 12px;background:radial-gradient(circle at 30% 30%,#8ef0be,#2ecc71);box-shadow:inset 0 8px 14px rgba(255,255,255,.35),inset 0 -8px 12px rgba(0,0,0,.35),0 12px 22px rgba(46,204,113,.35)}
+.check svg{width:60px;height:60px;margin:18px}
+.check .p{stroke:#0f1234;stroke-width:8;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:100;stroke-dashoffset:100;animation:draw .7s .2s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.footer{padding:16px;text-align:center;color:#9aa0e8;border-top:1px dashed #2a2f7a}
+</style>
 </head>
 <body>
-  <div class="container">
-    <!-- Header -->
-    <header>
-      <div class="app-title">
-        <div class="app-icon"><img src="logos/insurahublogo.png" alt="InsuraHub" onerror="this.remove();this.parentNode.textContent='IH'"></div>
-        <div class="app-title-text"><h1>InsuraHub</h1><p>Gestión Inteligente de Seguros</p></div>
-      </div>
-      <div class="user-actions">
-        <button class="btn" id="addPolicyBtn"><i class="fas fa-plus"></i> Nueva Póliza</button>
-        <button class="btn btn-outline" id="loginBtn"><i class="fas fa-user"></i> Iniciar Sesión</button>
-      </div>
-    </header>
 
-    <!-- Stats -->
-    <div class="stats-bar">
-      <div class="stat-item"><div class="stat-value" id="totalPolicies">6</div><div class="stat-label">Pólizas Activas</div></div>
-      <div class="stat-item"><div class="stat-value" id="expiringPolicies">2</div><div class="stat-label">Por Vencer (&lt;30 días)</div></div>
-      <div class="stat-item"><div class="stat-value" id="totalCoverage">$985.000.000</div><div class="stat-label">Cobertura Total</div></div>
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="cube">IH</div>
+      <h1>InsuraHub Neo</h1>
+    </div>
+    <nav class="nav">
+      <a href="#" class="active" id="navDashboard"><i class="fa-solid fa-grid-2"></i> Dashboard</a>
+      <a href="#" id="navPolicies"><i class="fa-solid fa-shield"></i> Pólizas</a>
+      <a href="#" id="navRenew"><i class="fa-solid fa-rotate"></i> Renovaciones</a>
+      <a href="#" id="navPayments"><i class="fa-solid fa-credit-card"></i> Pagos</a>
+      <a href="#" id="navSupport"><i class="fa-solid fa-life-ring"></i> Soporte</a>
+      <a href="#" id="navSettings"><i class="fa-solid fa-gear"></i> Ajustes</a>
+    </nav>
+    <div class="tools">
+      <button class="toggle-theme" id="addPolicyBtn"><i class="fa-solid fa-plus"></i> Nueva póliza</button>
+      <button class="toggle-theme" id="loginBtn"><i class="fa-solid fa-user"></i> Iniciar sesión</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <button class="hamb" id="hamb"><i class="fa-solid fa-bars"></i></button>
+      <div class="search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input id="searchInput" placeholder="Buscar pólizas por asegurado, número, aseguradora o tipo..."/>
+      </div>
+      <div class="actions">
+        <button class="btn soft" id="toggleView"><i class="fa-solid fa-table-cells-large"></i> Vista</button>
+        <button class="btn primary" id="renewExpiring"><i class="fa-solid fa-bolt"></i> Atajos</button>
+      </div>
     </div>
 
-    <!-- Grid pólizas -->
-    <div class="card-grid" id="policyGrid"></div>
-  </div>
+    <div class="page" id="page">
+      <!-- STATS -->
+      <div class="stats">
+        <div class="stat"><div class="glow"></div><div class="label">Pólizas activas</div><div class="value" id="statActive">—</div></div>
+        <div class="stat"><div class="glow"></div><div class="label">Por vencer (&lt;30 días)</div><div class="value" id="statExpiring">—</div></div>
+        <div class="stat"><div class="glow"></div><div class="label">Cobertura total</div><div class="value" id="statCoverage">$—</div></div>
+        <div class="stat"><div class="glow"></div><div class="label">Aseguradora líder</div><div class="value" id="statLeader">—</div></div>
+      </div>
 
-  <!-- ===== Modales ===== -->
-  <!-- Login -->
-  <div class="modal" id="loginModal" aria-hidden="true">
-    <div class="modal-content" role="dialog" aria-modal="true">
-      <div class="modal-header">
-        <h2>Iniciar Sesión</h2>
-        <p>Accede a tu cuenta para gestionar tus seguros</p>
-        <button class="close-modal" id="closeLoginModal">×</button>
+      <!-- CONTROLS -->
+      <div class="controls">
+        <div class="chips" id="chips">
+          <button class="chip active" data-filter="all">Todas</button>
+          <button class="chip" data-filter="expiring">Por vencer</button>
+          <button class="chip" data-filter="auto">Auto</button>
+          <button class="chip" data-filter="home">Hogar</button>
+          <button class="chip" data-filter="life">Vida</button>
+          <button class="chip" data-filter="health">Médico</button>
+          <button class="chip" data-filter="travel">Viaje</button>
+          <button class="chip" data-filter="business">Negocio</button>
+        </div>
+        <div class="view-toggle">
+          <span class="muted" style="color:#a7abda;font-size:12px;">Modo:</span>
+          <button class="btn ghost" id="gridMode"><i class="fa-solid fa-border-all"></i> Grilla</button>
+          <button class="btn ghost" id="listMode"><i class="fa-solid fa-list"></i> Lista</button>
+        </div>
       </div>
-      <div class="social-login">
-        <button type="button" class="btn-social btn-google" id="loginGoogle"><i class="fab fa-google"></i> Continuar con Google</button>
-        <button type="button" class="btn-social btn-facebook" id="loginFacebook"><i class="fab fa-facebook-f"></i> Continuar con Facebook</button>
-        <button type="button" class="btn-social btn-apple" id="loginApple"><i class="fab fa-apple"></i> Continuar con Apple</button>
+
+      <!-- GRID/LIST -->
+      <div id="policyGrid"></div>
+
+      <div class="footer">© 2025 InsuraHub · Experiencia NeoDash</div>
+    </div>
+  </main>
+</div>
+
+<!-- ========== MODALES ========== -->
+<!-- LOGIN -->
+<div class="modal" id="loginModal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true">
+    <div class="modal-header"><h2>Iniciar sesión</h2><p style="color:#a7abda">Accede a tu cuenta para gestionar tus seguros</p><button class="close-modal" id="closeLogin">×</button></div>
+    <div class="section" style="display:grid;gap:10px">
+      <button class="btn" style="background:#151956"><i class="fab fa-google" style="color:#db4437"></i> Continuar con Google</button>
+      <button class="btn" style="background:linear-gradient(180deg,#1877F2,#1257c0)"><i class="fab fa-facebook-f"></i> Continuar con Facebook</button>
+      <button class="btn" style="background:#000"><i class="fab fa-apple"></i> Continuar con Apple</button>
+    </div>
+    <div class="section">
+      <div class="form-grid">
+        <div>
+          <label class="label">Correo</label>
+          <div class="input"><i class="fa-solid fa-envelope"></i><input type="email" id="loginEmail" placeholder="tucorreo@dominio.com"></div>
+        </div>
+        <div>
+          <label class="label">Contraseña</label>
+          <div class="input"><i class="fa-solid fa-lock"></i><input type="password" id="loginPass" placeholder="••••••••"></div>
+        </div>
       </div>
-      <div style="text-align:center;color:#99a3ad;font-weight:700;margin:8px 0 14px">o con tu correo</div>
-      <form>
-        <div class="form-group"><label class="form-label" for="email"><i class="fas fa-envelope"></i> Correo Electrónico</label><div class="input-wrap"><input type="email" id="email" required placeholder="tucorreo@dominio.com"></div></div>
-        <div class="form-group"><label class="form-label" for="password"><i class="fas fa-lock"></i> Contraseña</label><div class="input-wrap"><input type="password" id="password" required placeholder="••••••••"></div></div>
-        <button type="submit" class="btn" style="width:100%"><i class="fas fa-right-to-bracket"></i> Iniciar Sesión</button>
-      </form>
+      <button class="btn primary" style="margin-top:10px"><i class="fa-solid fa-right-to-bracket"></i> Entrar</button>
     </div>
   </div>
+</div>
 
-  <!-- Nueva Póliza -->
-  <div class="modal" id="policyModal" aria-hidden="true">
-    <div class="modal-content" role="dialog" aria-modal="true">
-      <div class="modal-header">
-        <h2>Registrar Nueva Póliza</h2>
-        <p>Completa la información de la póliza</p>
-        <button class="close-modal" id="closePolicyModal">×</button>
-      </div>
-
-      <form id="policyForm">
-        <div class="section-card">
-          <div class="section-title"><i class="fas fa-id-card"></i> Datos del asegurado</div>
-          <div class="form-grid">
-            <div class="form-group"><label class="form-label" for="insuredId"><i class="fas fa-hashtag"></i> Identificación</label><div class="input-wrap"><input type="text" id="insuredId" required placeholder="Ej: 1234567890"></div><div class="hint">Cédula o NIT del titular</div></div>
-            <div class="form-group"><label class="form-label" for="insuredName"><i class="fas fa-user"></i> Nombre y Apellidos</label><div class="input-wrap"><input type="text" id="insuredName" required placeholder="Nombre completo"></div></div>
+<!-- NUEVA PÓLIZA -->
+<div class="modal" id="policyModal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true">
+    <div class="modal-header"><h2>Registrar nueva póliza</h2><p style="color:#a7abda">Completa la información</p><button class="close-modal" id="closePolicy">×</button></div>
+    <form id="policyForm">
+      <div class="section">
+        <div class="form-grid">
+          <div>
+            <label class="label">Identificación</label>
+            <div class="input"><i class="fa-solid fa-hashtag"></i><input id="insuredId" placeholder="Ej: 1234567890" required></div>
+            <div class="hint">Cédula/NIT del titular</div>
           </div>
-        </div>
-
-        <div class="section-card">
-          <div class="section-title"><i class="fas fa-shield-halved"></i> Datos de la póliza</div>
-          <div class="form-grid">
-            <div class="form-group"><label class="form-label" for="insuranceType"><i class="fas fa-rectangle-list"></i> Tipo de Seguro</label><div class="input-wrap"><select id="insuranceType" required><option value="">Selecciona un tipo</option><option value="auto">Seguro de Auto</option><option value="home">Seguro de Hogar</option><option value="life">Seguro de Vida</option><option value="health">Seguro Médico</option><option value="travel">Seguro de Viaje</option><option value="business">Seguro de Negocio</option></select></div></div>
-            <div class="form-group"><label class="form-label" for="policyNumber"><i class="fas fa-hashtag"></i> Número de Póliza</label><div class="input-wrap"><input type="text" id="policyNumber" required placeholder="Ej: #AUTO-123456"></div></div>
-            <div class="form-group"><label class="form-label" for="coverageAmount"><i class="fas fa-coins"></i> Valor de Cobertura (COP)</label><div class="input-wrap"><input type="number" id="coverageAmount" required placeholder="Ej: 500000000"></div></div>
-            <div class="form-group"><label class="form-label" for="expirationDate"><i class="fas fa-calendar-day"></i> Fecha de Vencimiento</label><div class="input-wrap"><input type="date" id="expirationDate" required></div></div>
-            <div class="form-group"><label class="form-label" for="insurer"><i class="fas fa-building-shield"></i> Aseguradora</label><div class="input-wrap"><select id="insurer" required><option value="">Selecciona una aseguradora</option><option value="allianz">Allianz</option><option value="axa">AXA</option><option value="generali">Generali</option><option value="cigna">Cigna</option><option value="zurich">Zurich</option><option value="liberty">Liberty Mutual</option></select></div></div>
-            <div class="form-group" style="grid-column:1/-1"><label class="form-label" for="policyConditions"><i class="fas fa-file-lines"></i> Condiciones de la Póliza</label><div class="input-wrap"><textarea id="policyConditions" placeholder="Describe exclusiones, deducibles, límites, y condiciones particulares..."></textarea></div></div>
+          <div>
+            <label class="label">Nombre y Apellidos</label>
+            <div class="input"><i class="fa-solid fa-user"></i><input id="insuredName" placeholder="Nombre completo" required></div>
           </div>
-        </div>
-
-        <button type="submit" class="btn" style="width:100%"><i class="fas fa-floppy-disk"></i> Registrar Póliza</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Renovación -->
-  <div class="modal" id="renewalModal" aria-hidden="true">
-    <div class="modal-content" role="dialog" aria-modal="true">
-      <div class="modal-header">
-        <h2>Renovar Póliza</h2>
-        <p>Selecciona una aseguradora y compara en tiempo real</p>
-        <button class="close-modal" id="closeRenewalModal">×</button>
-      </div>
-      <div class="renewal-layout">
-        <div class="renewal-col">
-          <h3>Póliza a renovar</h3>
-          <div class="detail-value" id="renewalPolicyNumber" style="margin-bottom:8px">#AUTO-123456</div>
-
-          <h3>Selecciona una aseguradora</h3>
-          <div class="renewal-options" id="renewalOptions"></div>
-
-          <button type="button" class="btn" style="width:100%;margin-top:12px" id="confirmRenewal">
-            <i class="fas fa-check-circle"></i> Confirmar Renovación
-          </button>
-          <div class="pay-help" id="payHint" style="display:none;margin-top:8px">
-            <i class="fas fa-credit-card"></i> Forma de pago seleccionada: <strong id="payMethodLabel">—</strong>
-          </div>
-        </div>
-
-        <div class="renewal-col">
-          <div class="compare-title"><i class="fas fa-scale-balanced"></i> Comparación rápida</div>
-          <div id="currentPolicyChip" style="margin-bottom:8px"></div>
-          <div class="table-responsive">
-            <table class="compare-table" id="compareTable">
-              <thead>
-                <tr><th>Aseguradora</th><th>Precio</th><th>Cobertura</th><th>Deducible</th><th>Extras</th><th>Detalle</th></tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Condiciones -->
-  <div class="modal" id="conditionsModal" aria-hidden="true">
-    <div class="modal-content" role="dialog" aria-modal="true">
-      <div class="modal-header">
-        <h2 id="conditionsTitle">Condiciones</h2>
-        <p id="conditionsSubtitle" style="color:#567;font-weight:600"></p>
-        <button class="close-modal" id="closeConditionsModal">×</button>
-      </div>
-      <div class="conditions-text" id="conditionsBody" style="white-space:pre-wrap;background:#fff;border:1px solid rgba(52,152,219,.15);border-radius:12px;padding:14px;box-shadow:var(--depth-1)"></div>
-    </div>
-  </div>
-
-  <!-- Pago -->
-  <div class="modal" id="paymentModal" aria-hidden="true">
-    <div class="modal-content" role="dialog" aria-modal="true">
-      <div class="modal-header">
-        <h2>Formas de Pago</h2>
-        <p id="paymentSubtitle" style="color:#567;font-weight:600">Selecciona y completa los datos</p>
-        <button class="close-modal" id="closePaymentModal">×</button>
-      </div>
-
-      <div class="pay-tabs" id="payTabs">
-        <button class="pay-tab active" data-method="tarjeta"><i class="fas fa-credit-card"></i> Tarjeta</button>
-        <button class="pay-tab" data-method="pse"><i class="fas fa-building-columns"></i> PSE</button>
-        <button class="pay-tab" data-method="transferencia"><i class="fas fa-money-bill-transfer"></i> Transferencia</button>
-        <button class="pay-tab" data-method="efectivo"><i class="fas fa-coins"></i> Efectivo</button>
-      </div>
-
-      <div id="payForms">
-        <div class="pay-form" data-method="tarjeta">
-          <div class="form-group"><label class="form-label">Nombre en la tarjeta</label><div class="input-wrap"><i class="fas fa-user"></i><input type="text" id="cardName" placeholder="Como aparece en la tarjeta"></div></div>
-          <div class="form-group"><label class="form-label">Número de tarjeta</label><div class="input-wrap"><i class="fas fa-credit-card"></i><input type="text" id="cardNumber" placeholder="#### #### #### ####" inputmode="numeric" maxlength="19"></div></div>
-          <div class="inline-2">
-            <div class="form-group"><label class="form-label">Vencimiento (MM/AA)</label><div class="input-wrap"><i class="fas fa-calendar"></i><input type="text" id="cardExp" placeholder="MM/AA" maxlength="5"></div></div>
-            <div class="form-group"><label class="form-label">CVV</label><div class="input-wrap"><i class="fas fa-key"></i><input type="password" id="cardCVV" placeholder="***" maxlength="4"></div></div>
-          </div>
-        </div>
-
-        <div class="pay-form" data-method="pse" style="display:none">
-          <div class="form-group"><label class="form-label">Banco</label>
-            <div class="input-wrap"><i class="fas fa-building-columns"></i>
-              <select id="pseBank"><option value="">Selecciona tu banco</option><option>Bancolombia</option><option>Davivienda</option><option>Banco de Bogotá</option><option>BBVA</option><option>Nequi</option></select>
+          <div>
+            <label class="label">Tipo de seguro</label>
+            <div class="input"><i class="fa-solid fa-rectangle-list"></i>
+              <select id="insuranceType" required>
+                <option value="">Selecciona</option>
+                <option value="auto">Auto</option>
+                <option value="home">Hogar</option>
+                <option value="life">Vida</option>
+                <option value="health">Médico</option>
+                <option value="travel">Viaje</option>
+                <option value="business">Negocio</option>
+              </select>
             </div>
           </div>
-          <div class="form-group"><label class="form-label">Correo del titular</label><div class="input-wrap"><i class="fas fa-envelope"></i><input type="email" id="pseEmail" placeholder="tucorreo@dominio.com"></div></div>
-        </div>
-
-        <div class="pay-form" data-method="transferencia" style="display:none">
-          <div class="conditions-text" style="margin-bottom:10px">
-            Transferir a:<br>
-            - Banco: Bancolombia (AHORROS)<br>
-            - No. Cuenta: 123-456789-01<br>
-            - Titular: InsuraHub S.A.S<br>
-            - NIT: 900.123.456-7
+          <div>
+            <label class="label">Número de póliza</label>
+            <div class="input"><i class="fa-solid fa-hashtag"></i><input id="policyNumber" placeholder="#AUTO-123456" required></div>
           </div>
-          <div class="form-group"><label class="form-label">Adjunta comprobante (opcional)</label><div class="input-wrap"><i class="fas fa-paperclip"></i><input type="file" id="trfReceipt" accept="image/*,application/pdf"></div></div>
-        </div>
-
-        <div class="pay-form" data-method="efectivo" style="display:none">
-          <div class="conditions-text">Paga en puntos aliados (Efecty/Baloto). Recibirás un código al confirmar la renovación.</div>
+          <div>
+            <label class="label">Cobertura (COP)</label>
+            <div class="input"><i class="fa-solid fa-coins"></i><input type="number" id="coverageAmount" placeholder="500000000" required></div>
+          </div>
+          <div>
+            <label class="label">Vencimiento</label>
+            <div class="input"><i class="fa-solid fa-calendar-day"></i><input type="date" id="expirationDate" required></div>
+          </div>
+          <div>
+            <label class="label">Aseguradora</label>
+            <div class="input"><i class="fa-solid fa-building-shield"></i>
+              <select id="insurer" required>
+                <option value="">Selecciona</option>
+                <option value="allianz">Allianz</option>
+                <option value="axa">AXA</option>
+                <option value="generali">Generali</option>
+                <option value="cigna">Cigna</option>
+                <option value="zurich">Zurich</option>
+                <option value="liberty">Liberty Mutual</option>
+              </select>
+            </div>
+          </div>
+          <div style="grid-column:1/-1">
+            <label class="label">Condiciones</label>
+            <div class="input"><i class="fa-solid fa-file-lines"></i><textarea id="policyConditions" placeholder="Exclusiones, deducibles, límites..."></textarea></div>
+          </div>
         </div>
       </div>
+      <button class="btn primary" style="width:100%;margin-top:8px"><i class="fa-solid fa-floppy-disk"></i> Registrar</button>
+    </form>
+  </div>
+</div>
 
-      <button class="btn" id="savePayment" style="width:100%;margin-top:10px"><i class="fas fa-floppy-disk"></i> Guardar forma de pago</button>
+<!-- RENOVACIÓN -->
+<div class="modal" id="renewalModal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true">
+    <div class="modal-header"><h2>Renovar póliza</h2><p style="color:#a7abda">Compara y selecciona</p><button class="close-modal" id="closeRenewal">×</button></div>
+    <div class="renew-grid">
+      <div class="section">
+        <div class="label">Póliza</div>
+        <div class="input" style="margin:8px 0 12px"><i class="fa-solid fa-hashtag"></i><input id="renewalPolicyNumber" disabled value="#AUTO-123456"></div>
+        <div class="label" style="margin-bottom:6px">Aseguradora</div>
+        <div id="renewalOptions"></div>
+        <button class="btn primary" id="confirmRenewal" style="width:100%;margin-top:6px"><i class="fa-solid fa-check-circle"></i> Confirmar renovación</button>
+        <div class="hint" id="payHint" style="display:none;margin-top:8px">Forma de pago seleccionada: <strong id="payMethodLabel">—</strong></div>
+      </div>
+      <div class="section">
+        <div class="label" style="margin-bottom:6px">Comparación rápida</div>
+        <div id="currentPolicyChip" class="hint" style="margin-bottom:8px"></div>
+        <div style="overflow:auto">
+          <table class="table" id="compareTable">
+            <thead><tr><th>Aseguradora</th><th>Precio</th><th>Cobertura</th><th>Deducible</th><th>Extras</th><th>Detalle</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
+</div>
 
-  <!-- Success -->
-  <div class="modal" id="successModal" aria-hidden="true" style="z-index:10000">
-    <div class="success-card" role="alert" aria-live="polite">
-      <div class="checkmark"><svg viewBox="0 0 64 64"><path class="path" d="M16 34 L28 46 L50 22"></path></svg></div>
-      <div id="successMessage">¡Operación exitosa!</div>
-      <div id="successSub"></div>
-    </div>
+<!-- CONDICIONES -->
+<div class="modal" id="conditionsModal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true">
+    <div class="modal-header"><h2 id="conditionsTitle">Condiciones</h2><p id="conditionsSubtitle" style="color:#a7abda"></p><button class="close-modal" id="closeConditions">×</button></div>
+    <div class="section" id="conditionsBody" style="white-space:pre-wrap"></div>
   </div>
+</div>
 
-  <footer><p style="text-align:center;margin-top:12px;color:#fff">© 2025 InsuraHub - Todos tus seguros en un solo lugar</p></footer>
+<!-- PAGO -->
+<div class="modal" id="paymentModal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true">
+    <div class="modal-header"><h2>Formas de pago</h2><p id="paymentSubtitle" style="color:#a7abda">Selecciona y completa</p><button class="close-modal" id="closePayment">×</button></div>
+    <div class="tabs" id="payTabs">
+      <button class="tab active" data-method="tarjeta"><i class="fa-solid fa-credit-card"></i> Tarjeta</button>
+      <button class="tab" data-method="pse"><i class="fa-solid fa-building-columns"></i> PSE</button>
+      <button class="tab" data-method="transferencia"><i class="fa-solid fa-money-bill-transfer"></i> Transferencia</button>
+      <button class="tab" data-method="efectivo"><i class="fa-solid fa-coins"></i> Efectivo</button>
+    </div>
+    <div id="payForms" style="display:grid;gap:10px">
+      <div class="section pay-form" data-method="tarjeta">
+        <div class="form-grid">
+          <div><label class="label">Nombre en la tarjeta</label><div class="input"><i class="fa-solid fa-user"></i><input id="cardName" placeholder="Como aparece en la tarjeta"></div></div>
+          <div><label class="label">Número</label><div class="input"><i class="fa-solid fa-credit-card"></i><input id="cardNumber" placeholder="#### #### #### ####" maxlength="19"></div></div>
+          <div><label class="label">Vencimiento (MM/AA)</label><div class="input"><i class="fa-solid fa-calendar"></i><input id="cardExp" placeholder="MM/AA" maxlength="5"></div></div>
+          <div><label class="label">CVV</label><div class="input"><i class="fa-solid fa-key"></i><input id="cardCVV" placeholder="***" maxlength="4"></div></div>
+        </div>
+      </div>
+      <div class="section pay-form" data-method="pse" style="display:none">
+        <div class="form-grid">
+          <div><label class="label">Banco</label><div class="input"><i class="fa-solid fa-building-columns"></i>
+            <select id="pseBank"><option value="">Selecciona tu banco</option><option>Bancolombia</option><option>Davivienda</option><option>Banco de Bogotá</option><option>BBVA</option><option>Nequi</option></select></div></div>
+          <div><label class="label">Correo titular</label><div class="input"><i class="fa-solid fa-envelope"></i><input id="pseEmail" placeholder="tucorreo@dominio.com"></div></div>
+        </div>
+      </div>
+      <div class="section pay-form" data-method="transferencia" style="display:none">
+        <div class="label">Instrucciones</div>
+        <div class="hint" style="margin:6px 0 10px">
+          Transferir a: Bancolombia (Ahorros) · Cuenta 123-456789-01 · Titular: InsuraHub S.A.S · NIT 900.123.456-7
+        </div>
+        <div><label class="label">Comprobante (opcional)</label><div class="input"><i class="fa-solid fa-paperclip"></i><input type="file" id="trfReceipt" accept="image/*,application/pdf"></div></div>
+      </div>
+      <div class="section pay-form" data-method="efectivo" style="display:none">
+        <div class="hint">Paga en puntos aliados (Efecty/Baloto). Recibirás un código al confirmar.</div>
+      </div>
+    </div>
+    <button class="btn primary" id="savePayment" style="width:100%;margin-top:8px"><i class="fa-solid fa-floppy-disk"></i> Guardar forma de pago</button>
+  </div>
+</div>
 
-  <script>
-    /* ===== Datos ===== */
-    const insurerLogos={allianz:"logos/allianz.png",axa:"logos/axa.png",generali:"logos/generali.png",cigna:"logos/cigna.png",zurich:"logos/zurich.png",liberty:"logos/liberty.png"};
-    const insurerNames={allianz:"Allianz",axa:"AXA",generali:"Generali",cigna:"Cigna",zurich:"Zurich",liberty:"Liberty Mutual"};
-    const insurerPhones={allianz:"+57 01 8000 510 510",axa:"+57 01 8000 123 456",generali:"+57 01 8000 345 678",cigna:"+57 01 8000 765 432",zurich:"+57 01 8000 111 222",liberty:"+57 01 8000 999 888"};
-    const renewalPrices={allianz:850000,axa:920000,generali:780000,cigna:950000,zurich:890000,liberty:810000};
-    const coverageAmounts={allianz:200000000,axa:220000000,generali:180000000,cigna:240000000,zurich:210000000,liberty:190000000};
-    const offerConditions={
-      allianz:{deductible:"10% o $2.000.000",extras:"Asistencia 24/7 + carro sustituto",details:"- Cobertura daños y pérdida total.\n- Deducible: 10% o $2.000.000.\n- Asistencia vial 24/7, grúa, cerrajería.\n- Carro sustituto 5 días por siniestro.\n- Exclusiones: embriaguez, uso competitivo."},
-      axa:{deductible:"8% o $1.800.000",extras:"Vidrios sin deducible",details:"- Cobertura ampliada + RC.\n- Deducible: 8% o $1.800.000.\n- Reposición de vidrios sin deducible.\n- Asistencia jurídica.\n- Exclusiones: dolo, carreras."},
-      generali:{deductible:"12% o $2.200.000",extras:"Revisión anual preventiva",details:"- Cobertura estándar integral.\n- Deducible: 12% o $2.200.000.\n- Revisión mecánica preventiva anual.\n- Cobertura a accesorios declarados.\n- Exclusiones: accesorios no declarados."},
-      cigna:{deductible:"10% o $2.500.000",extras:"Cobertura médica ampliada",details:"- Enfoque salud/viaje.\n- Deducible: 10% o $2.500.000.\n- Gastos médicos ampliados.\n- Telemedicina.\n- Exclusiones: preexistencias según plan."},
-      zurich:{deductible:"9% o $2.000.000",extras:"RC ampliada + asistencia jurídica",details:"- Cobertura integral + RC ampliada.\n- Deducible: 9% o $2.000.000.\n- Asistencia jurídica.\n- Coberturas internacionales acotadas.\n- Exclusiones: uso comercial sin declaración."},
-      liberty:{deductible:"10% o $1.900.000",extras:"Pérdida de llaves + grúa",details:"- Cobertura estándar.\n- Deducible: 10% o $1.900.000.\n- Pérdida de llaves.\n- Grúa 2 eventos/año.\n- Exclusiones: desgaste normal."}
-    };
-    const typeIcons={auto:"car",home:"home",life:"heart",health:"heartbeat",travel:"plane",business:"briefcase"};
+<!-- SUCCESS -->
+<div class="modal" id="successModal" aria-hidden="true">
+  <div class="card" role="alert" aria-live="polite">
+    <div class="check"><svg viewBox="0 0 64 64"><path class="p" d="M16 34 L28 46 L50 22"></path></svg></div>
+    <div id="successMessage" style="font-weight:900;font-size:18px">¡Operación exitosa!</div>
+    <div id="successSub" style="color:#c9cbff;margin-top:6px"></div>
+  </div>
+</div>
 
-    /* ===== Carga inteligente de logos ===== */
-    const LOGO_EXTS=['png','svg','jpg','jpeg','webp','PNG','SVG','JPG','JPEG','WEBP'];
-    function logoCandidates(key){
-      const base=(key||'').toLowerCase(),cap=base.charAt(0).toUpperCase()+base.slice(1),upper=base.toUpperCase();
-      const variants=[base,cap,upper,`${base}-logo`,`logo-${base}`]; const paths=[];
-      variants.forEach(n=>LOGO_EXTS.forEach(ext=>paths.push(`logos/${n}.${ext}`)));
-      return paths;
-    }
-    function loadLogoSmart(img){
-      const key=(img.dataset.insurer||'').toLowerCase(); const friendly=img.dataset.friendly||key||'Logo';
-      const first=(typeof insurerLogos!=='undefined'&&insurerLogos[key])?insurerLogos[key]:null;
-      const list=[...new Set([first,...logoCandidates(key)].filter(Boolean))];
-      let i=-1; const next=()=>{i++; if(i<list.length){img.onerror=next; img.src=list[i];} else {img.onerror=null; img.style.display='none'; const ph=document.createElement('div'); ph.className='logo-placeholder'; ph.textContent=friendly; img.parentNode.appendChild(ph);} };
-      next();
-    }
+<!-- ========== SCRIPTS ========== -->
+<script>
+/* ===== Datos base ===== */
+const insurerLogos={allianz:"logos/allianz.png",axa:"logos/axa.png",generali:"logos/generali.png",cigna:"logos/cigna.png",zurich:"logos/zurich.png",liberty:"logos/liberty.png"};
+const insurerNames={allianz:"Allianz",axa:"AXA",generali:"Generali",cigna:"Cigna",zurich:"Zurich",liberty:"Liberty Mutual"};
+const insurerPhones={allianz:"+57 01 8000 510 510",axa:"+57 01 8000 123 456",generali:"+57 01 8000 345 678",cigna:"+57 01 8000 765 432",zurich:"+57 01 8000 111 222",liberty:"+57 01 8000 999 888"};
+const renewalPrices={allianz:850000,axa:920000,generali:780000,cigna:950000,zurich:890000,liberty:810000};
+const coverageAmounts={allianz:200000000,axa:220000000,generali:180000000,cigna:240000000,zurich:210000000,liberty:190000000};
+const offerConditions={
+  allianz:{deductible:"10% o $2.000.000",extras:"Asistencia 24/7 + carro sustituto",details:"- Cobertura daños y pérdida total.\n- Deducible: 10% o $2.000.000.\n- Asistencia vial 24/7.\n- Carro sustituto 5 días por siniestro.\n- Exclusiones: embriaguez, uso competitivo."},
+  axa:{deductible:"8% o $1.800.000",extras:"Vidrios sin deducible",details:"- Cobertura ampliada + RC.\n- Deducible: 8% o $1.800.000.\n- Reposición de vidrios sin deducible.\n- Asistencia jurídica.\n- Exclusiones: dolo, carreras."},
+  generali:{deductible:"12% o $2.200.000",extras:"Revisión anual preventiva",details:"- Cobertura estándar integral.\n- Deducible: 12% o $2.200.000.\n- Revisión preventiva anual.\n- Exclusiones: accesorios no declarados."},
+  cigna:{deductible:"10% o $2.500.000",extras:"Cobertura médica ampliada",details:"- Salud/viaje.\n- Deducible: 10% o $2.500.000.\n- Gastos médicos ampliados.\n- Telemedicina."},
+  zurich:{deductible:"9% o $2.000.000",extras:"RC ampliada + asistencia jurídica",details:"- Integral + RC ampliada.\n- Deducible: 9% o $2.000.000.\n- Asistencia jurídica."},
+  liberty:{deductible:"10% o $1.900.000",extras:"Pérdida de llaves + grúa",details:"- Estándar.\n- Deducible: 10% o $1.900.000.\n- Grúa 2 eventos/año."}
+};
+const typeIcons={auto:"car",home:"house",life:"heart",health:"heartbeat",travel:"plane",business:"briefcase"};
 
-    /* ===== Utilidades ===== */
-    const fmtCOP=n=>new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',minimumFractionDigits:0,maximumFractionDigits:0}).format(n);
-    const addDays=(d,n)=>{const r=new Date(d);r.setDate(r.getDate()+n);return r};
-    const addYears=(d,n)=>{const r=new Date(d);r.setFullYear(r.getFullYear()+n);return r};
-    const iso=d=>d.toISOString().split('T')[0];
-    const human=s=>new Date(s).toLocaleDateString('es-ES',{year:'numeric',month:'long',day:'numeric'});
-    const tel=i=>insurerPhones[i]||"N/A";
-    const daysLeft=s=>{const t=new Date();t.setHours(0,0,0,0);const diff=new Date(s)-t;return Math.max(0,Math.ceil(diff/86400000))};
-    const statusClass=d=>d>180?"good":d>30?"warning":"danger";
-    const ringClass=d=>d>180?"status-ring-good":d>30?"status-ring-warning":"status-ring-danger";
-    const ringProg=d=>Math.min(100,(d/365)*100);
+/* ===== Utilidad: carga de logos inteligente ===== */
+const LOGO_EXTS=['png','svg','jpg','jpeg','webp','PNG','SVG','JPG','JPEG','WEBP'];
+function logoCandidates(key){
+  const base=(key||'').toLowerCase(),Cap=base.charAt(0).toUpperCase()+base.slice(1),UP=base.toUpperCase();
+  const names=[base,Cap,UP,`${base}-logo`,`logo-${base}`];
+  const out=[]; names.forEach(n=>LOGO_EXTS.forEach(ext=>out.push(`logos/${n}.${ext}`)));
+  return out;
+}
+function loadLogoSmart(img){
+  const key=(img.dataset.insurer||'').toLowerCase();
+  const friendly=img.dataset.friendly||key||'Logo';
+  const first=insurerLogos[key]||null;
+  const list=[...new Set([first,...logoCandidates(key)].filter(Boolean))];
+  let i=-1; const next=()=>{ i++; if(i<list.length){ img.onerror=next; img.src=list[i]; } else { img.onerror=null; img.style.display='none'; const ph=document.createElement('div'); ph.textContent=friendly; ph.style.cssText='color:#8b90e8;font-weight:800;font-size:12px;text-align:center;'; img.parentNode.appendChild(ph);} };
+  next();
+}
 
-    /* ===== Datos demo ===== */
-    const today=new Date();
-    const expirationDates=[iso(addDays(today,28)),iso(addDays(today,120)),iso(addDays(today,230)),iso(addDays(today,350)),iso(addDays(today,15)),iso(addDays(today,80))];
-    const policies=[
-      {id:1,type:"auto",typeName:"Seguro de Auto",insurer:"allianz",insurerName:"Allianz",policyNumber:"#AUTO-789456",expirationDate:expirationDates[0],insuredId:"1234567890",insuredName:"Juan Pérez",coverage:200000000,conditions:"- Deducible: 10% del siniestro o $2.000.000, lo que sea mayor.\n- Cobertura pérdida total/daños parciales.\n- Asistencia en carretera 24/7.\n- Exclusiones: conducción en estado de embriaguez, uso competitivo."},
-      {id:2,type:"home",typeName:"Seguro de Hogar",insurer:"axa",insurerName:"AXA",policyNumber:"#HOME-123789",expirationDate:expirationDates[1],insuredId:"0987654321",insuredName:"María García",coverage:350000000,conditions:"- Cobertura incendio, terremoto y robo calificado.\n- Deducible: 1% del valor asegurado por evento.\n- Límites para contenidos: $50.000.000.\n- Exclusiones: humedad por falta de mantenimiento."},
-      {id:3,type:"life",typeName:"Seguro de Vida",insurer:"generali",insurerName:"Generali",policyNumber:"#LIFE-456123",expirationDate:expirationDates[2],insuredId:"4561237890",insuredName:"Carlos López",coverage:150000000,conditions:"- Fallecimiento por cualquier causa (carencia 90 días para enfermedad).\n- Anticipo por enfermedad terminal 30%.\n- Exclusiones: suicidio dentro de los primeros 2 años."},
-      {id:4,type:"health",typeName:"Seguro Médico",insurer:"cigna",insurerName:"Cigna",policyNumber:"#MED-987321",expirationDate:expirationDates[3],insuredId:"7890123456",insuredName:"Ana Rodríguez",coverage:120000000,conditions:"- Red de prestadores nacional.\n- Copago por consulta general: $40.000.\n- Preexistencias cubiertas después de 12 meses.\n- Exclusiones: procedimientos estéticos."},
-      {id:5,type:"travel",typeName:"Seguro de Viaje",insurer:"zurich",insurerName:"Zurich",policyNumber:"#TRAV-654987",expirationDate:expirationDates[4],insuredId:"3216549870",insuredName:"Laura Martínez",coverage:50000000,conditions:"- Asistencia médica internacional hasta $50.000.000.\n- Repatriación sanitaria y pérdida de equipaje.\n- Franquicia por evento: $100.000."},
-      {id:6,type:"business",typeName:"Seguro de Negocio",insurer:"liberty",insurerName:"Liberty Mutual",policyNumber:"#BUSI-321654",expirationDate:expirationDates[5],insuredId:"6549873210",insuredName:"Pedro Sánchez",coverage:115000000,conditions:"- Responsabilidad civil comercial hasta $500.000.000.\n- Interrupción de negocio (30 días carencia).\n- Deducible: $1.500.000 por evento."}
-    ];
+/* ===== Helpers ===== */
+const qs=s=>document.querySelector(s), qsa=s=>document.querySelectorAll(s);
+const fmtCOP=n=>new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',minimumFractionDigits:0}).format(n);
+const addDays=(d,n)=>{const r=new Date(d); r.setDate(r.getDate()+n); return r};
+const addYears=(d,n)=>{const r=new Date(d); r.setFullYear(r.getFullYear()+n); return r};
+const iso=d=>d.toISOString().split('T')[0];
+const human=s=>new Date(s).toLocaleDateString('es-ES',{year:'numeric',month:'long',day:'numeric'});
+const daysLeft=s=>{const t=new Date(); t.setHours(0,0,0,0); const diff=new Date(s)-t; return Math.max(0,Math.ceil(diff/86400000));};
+const ringClass=d=>d>180?'good':(d>30?'warn':'bad');
+const ringProg=d=>Math.min(100,(d/365)*100);
 
-    /* ===== DOM ===== */
-    const qs=s=>document.querySelector(s),qsa=s=>document.querySelectorAll(s);
-    const loginBtn=qs('#loginBtn');
-    const loginModal=qs('#loginModal');
-    const addPolicyBtn=qs('#addPolicyBtn');
-    const policyModal=qs('#policyModal');
-    const renewalModal=qs('#renewalModal');
-    const conditionsModal=qs('#conditionsModal');
-    const paymentModal=qs('#paymentModal');
-    const successModal=qs('#successModal');
+/* ===== Datos demo ===== */
+const today=new Date();
+const expirationDates=[iso(addDays(today,28)),iso(addDays(today,120)),iso(addDays(today,230)),iso(addDays(today,350)),iso(addDays(today,15)),iso(addDays(today,80))];
+const policies=[
+  {id:1,type:"auto",typeName:"Seguro de Auto",insurer:"allianz",insurerName:"Allianz",policyNumber:"#AUTO-789456",expirationDate:expirationDates[0],insuredId:"1234567890",insuredName:"Juan Pérez",coverage:200000000,conditions:"- Deducible 10% o $2.000.000\n- Asistencia 24/7\n- Exclusiones varias"},
+  {id:2,type:"home",typeName:"Seguro de Hogar",insurer:"axa",insurerName:"AXA",policyNumber:"#HOME-123789",expirationDate:expirationDates[1],insuredId:"0987654321",insuredName:"María García",coverage:350000000,conditions:"- Incendio/terremoto/robo\n- Deducible 1%\n- Límites contenidos $50M"},
+  {id:3,type:"life",typeName:"Seguro de Vida",insurer:"generali",insurerName:"Generali",policyNumber:"#LIFE-456123",expirationDate:expirationDates[2],insuredId:"4561237890",insuredName:"Carlos López",coverage:150000000,conditions:"- Fallecimiento (carencia 90d)\n- Anticipo 30%\n- Exclusiones"},
+  {id:4,type:"health",typeName:"Seguro Médico",insurer:"cigna",insurerName:"Cigna",policyNumber:"#MED-987321",expirationDate:expirationDates[3],insuredId:"7890123456",insuredName:"Ana Rodríguez",coverage:120000000,conditions:"- Red nacional\n- Copago $40.000\n- Preexistencias 12m"},
+  {id:5,type:"travel",typeName:"Seguro de Viaje",insurer:"zurich",insurerName:"Zurich",policyNumber:"#TRAV-654987",expirationDate:expirationDates[4],insuredId:"3216549870",insuredName:"Laura Martínez",coverage:50000000,conditions:"- Asistencia internacional $50M\n- Repatriación\n- Franquicia $100.000"},
+  {id:6,type:"business",typeName:"Seguro de Negocio",insurer:"liberty",insurerName:"Liberty Mutual",policyNumber:"#BUSI-321654",expirationDate:expirationDates[5],insuredId:"6549873210",insuredName:"Pedro Sánchez",coverage:115000000,conditions:"- RC comercial $500M\n- Interrupción 30d\n- Deducible $1.5M"}
+];
 
-    const policyForm=qs('#policyForm');
-    const renewalOptions=qs('#renewalOptions');
-    const compareTableBody=qs('#compareTable tbody');
-    const currentPolicyChip=qs('#currentPolicyChip');
-    const confirmRenewalBtn=qs('#confirmRenewal');
-    const policyGrid=qs('#policyGrid');
-    const totalPoliciesEl=qs('#totalPolicies');
-    const expiringPoliciesEl=qs('#expiringPolicies');
-    const totalCoverageEl=qs('#totalCoverage');
-    const payTabs=qs('#payTabs');
-    const payHint=qs('#payHint');
-    const payMethodLabel=qs('#payMethodLabel');
+/* ===== Estado UI ===== */
+let filter='all';
+let viewMode='grid'; // 'grid' | 'list'
+let searchTerm='';
+let currentRenewPolicyId=null;
+let selectedPayment={method:null};
 
-    let currentRenewPolicyId=null;
-    let selectedPayment={method:null};
+/* ===== Sidebar / Topbar ===== */
+qs('#hamb').addEventListener('click',()=>qs('#sidebar').classList.toggle('open'));
 
-    /* ===== Modals open/close ===== */
-    const bindClose=(btnSel,modal)=>qs(btnSel).addEventListener('click',()=>{ modal.style.display='none'; });
-    bindClose('#closeLoginModal',loginModal);
-    bindClose('#closePolicyModal',policyModal);
-    bindClose('#closeRenewalModal',renewalModal);
-    bindClose('#closeConditionsModal',conditionsModal);
-    bindClose('#closePaymentModal',paymentModal);
+/* ===== Filtros ===== */
+qs('#chips').addEventListener('click',e=>{
+  const chip=e.target.closest('.chip'); if(!chip) return;
+  qsa('.chip').forEach(c=>c.classList.remove('active'));
+  chip.classList.add('active');
+  filter=chip.dataset.filter||'all';
+  render();
+});
+qs('#searchInput').addEventListener('input',e=>{searchTerm=e.target.value.toLowerCase(); render();});
+qs('#gridMode').addEventListener('click',()=>{viewMode='grid'; document.body.classList.remove('list-mode'); render();});
+qs('#listMode').addEventListener('click',()=>{viewMode='list'; document.body.classList.add('list-mode'); render();});
+qs('#toggleView').addEventListener('click',()=>{viewMode=(viewMode==='grid'?'list':'grid'); document.body.classList.toggle('list-mode'); render();});
 
-    loginBtn.addEventListener('click',()=>{ loginModal.style.display='flex'; });
-    addPolicyBtn.addEventListener('click',()=>{ policyModal.style.display='flex'; });
+/* ===== Métricas ===== */
+function computeStats(list){
+  const active=list.length;
+  const exp=list.filter(p=>daysLeft(p.expirationDate)<=30).length;
+  const total=list.reduce((a,b)=>a+b.coverage,0);
+  // líder por cantidad
+  const counts={}; list.forEach(p=>{counts[p.insurerName]=(counts[p.insurerName]||0)+1;});
+  let leader='—',max=0; Object.entries(counts).forEach(([k,v])=>{ if(v>max){max=v;leader=k;} });
+  qs('#statActive').textContent=active;
+  qs('#statExpiring').textContent=exp;
+  qs('#statCoverage').textContent=fmtCOP(total);
+  qs('#statLeader').textContent=leader;
+}
 
-    [loginModal,policyModal,renewalModal,conditionsModal,paymentModal,successModal]
-      .forEach(m=>m.addEventListener('click',e=>{ if(e.target===m) m.style.display='none'; }));
-
-    qs('#loginGoogle')?.addEventListener('click',()=>alert('Continuar con Google (conectar OAuth aquí)'));
-    qs('#loginFacebook')?.addEventListener('click',()=>alert('Continuar con Facebook (conectar OAuth aquí)'));
-    qs('#loginApple')?.addEventListener('click',()=>alert('Continuar con Apple (conectar OAuth aquí)'));
-
-    const openConditions=(t,st,b)=>{qs('#conditionsTitle').textContent=t||'Condiciones';qs('#conditionsSubtitle').textContent=st||'';qs('#conditionsBody').textContent=b||'Sin información.';conditionsModal.style.display='flex';};
-    const toast=(t,s)=>{qs('#successMessage').textContent=t||'¡Operación exitosa!';qs('#successSub').textContent=s||'';successModal.style.display='flex';setTimeout(()=>successModal.style.display='none',1600);};
-
-    /* ===== Render tarjetas ===== */
-    function renderPolicies(){
-      policyGrid.innerHTML='';let exp=0,total=0;
-      policies.forEach(p=>{
-        const d=daysLeft(p.expirationDate); if(d<=30) exp++; total+=p.coverage;
-        const card=document.createElement('div'); card.className=`card status-${statusClass(d)}`;
-        card.innerHTML=`
-          <div class="card-header">
-            <div class="insurer-logo-header">
-              <img alt="${p.insurerName}" data-insurer="${p.insurer}" data-friendly="${p.insurerName}">
-            </div>
-            <div class="header-right">
-              <div class="insurance-type">${p.typeName}</div>
-              <div class="insurance-icon"><i class="fas fa-${typeIcons[p.type]}"></i></div>
+/* ===== Render ===== */
+function passFilter(p){
+  if(filter==='all') return true;
+  if(filter==='expiring') return daysLeft(p.expirationDate)<=30;
+  return p.type===filter;
+}
+function passSearch(p){
+  if(!searchTerm) return true;
+  const s=(p.insuredName+' '+p.policyNumber+' '+p.insurerName+' '+p.typeName).toLowerCase();
+  return s.includes(searchTerm);
+}
+function render(){
+  const list=policies.filter(passFilter).filter(passSearch);
+  computeStats(list);
+  const grid=qs('#policyGrid'); grid.innerHTML='';
+  list.forEach(p=>{
+    const d=daysLeft(p.expirationDate);
+    const card=document.createElement('div'); card.className='policy';
+    card.innerHTML=`
+      <div class="p-head">
+        <div class="p-brand">
+          <div class="p-logo"><img data-insurer="${p.insurer}" data-friendly="${p.insurerName}" alt="${p.insurerName}"></div>
+          <div class="p-title">
+            <div class="name">${p.insurerName}</div>
+            <div class="p-type">
+              <span class="badge"><i class="fa-solid fa-${typeIcons[p.type]}"></i> ${p.typeName}</span>
+              <span class="badge" style="background:linear-gradient(180deg,#1a2a66,#15245a);border-color:#3340a1">#${p.policyNumber.replace('#','')}</span>
             </div>
           </div>
+        </div>
+        <div class="contact"><i class="fa-solid fa-phone"></i> Contacto: <span style="margin-left:6px">${insurerPhones[p.insurer]||'N/A'}</span></div>
+      </div>
 
-          <div class="card-details">
-            <div class="detail-item"><span class="detail-label">Asegurado:</span><span class="detail-value">${p.insuredName}</span></div>
-            <div class="detail-item"><span class="detail-label">Vencimiento:</span><span class="detail-value">${new Date(p.expirationDate).toLocaleDateString('es-ES')}</span></div>
-            <div class="detail-item"><span class="detail-label">Cobertura:</span><span class="detail-value">${fmtCOP(p.coverage)}</span></div>
+      <div class="p-body">
+        <div>
+          <div class="kv">
+            <div class="k">Asegurado</div><div class="v">${p.insuredName}</div>
+            <div class="k">Vencimiento</div><div class="v">${new Date(p.expirationDate).toLocaleDateString('es-ES')}</div>
+            <div class="k">Cobertura</div><div class="v">${fmtCOP(p.coverage)}</div>
+          </div>
+          <div style="margin-top:10px"><button class="btn" data-action="cond"><i class="fa-solid fa-file-lines"></i> Condiciones</button></div>
+        </div>
+        <div class="ring-col">
+          <div>
+            <div class="ring ${ringClass(d)}" style="--progress:${ringProg(d)}%"><div class="val">${d}</div></div>
+            <div class="ring-info">días restantes</div>
+          </div>
+          <div class="p-actions">
+            <button class="btn ${d>180?'soft':(d>30?'':'primary')}" data-action="renew"><i class="fa-solid fa-rotate"></i> Renovar</button>
+          </div>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+    const img=card.querySelector('.p-logo img'); if(img) loadLogoSmart(img);
+    // acciones
+    card.querySelector('[data-action="cond"]').addEventListener('click',()=>openConditions('Condiciones de la póliza',`${p.policyNumber} · ${p.insurerName}`,p.conditions));
+    card.querySelector('[data-action="renew"]').addEventListener('click',()=>openRenewal(p));
+  });
+}
 
-            <div class="contact-line"><i class="fas fa-phone"></i><span>Contacto:</span><span style="font-weight:900">${tel(p.insurer)}</span></div>
+/* ===== Modales ===== */
+const loginModal=qs('#loginModal'), policyModal=qs('#policyModal'), renewalModal=qs('#renewalModal'), conditionsModal=qs('#conditionsModal'), paymentModal=qs('#paymentModal'), successModal=qs('#successModal');
+qs('#loginBtn').addEventListener('click',()=>loginModal.style.display='flex');
+qs('#addPolicyBtn').addEventListener('click',()=>policyModal.style.display='flex');
+qs('#closeLogin').addEventListener('click',()=>loginModal.style.display='none');
+qs('#closePolicy').addEventListener('click',()=>policyModal.style.display='none');
+qs('#closeRenewal').addEventListener('click',()=>renewalModal.style.display='none');
+qs('#closeConditions').addEventListener('click',()=>conditionsModal.style.display='none');
+qs('#closePayment').addEventListener('click',()=>paymentModal.style.display='none');
+[loginModal,policyModal,renewalModal,conditionsModal,paymentModal,successModal].forEach(m=>m.addEventListener('click',e=>{if(e.target===m) m.style.display='none';}));
 
-            <div class="ring-row">
-              <div class="status-container">
-                <div class="status-ring ${ringClass(d)}" style="--progress:${ringProg(d)}%">
-                  <div class="status-ring-inner">${d}</div>
-                </div>
-                <div class="days-text">días restantes</div>
-              </div>
-              <div class="ring-actions">
-                <button class="btn btn-soft conditions-btn"><i class="fas fa-file-lines"></i> Condiciones actuales</button>
-                <button class="btn ${d>180?'btn-success':(d>30?'btn-warning':'btn-danger')} renew-btn" data-policy-id="${p.id}">
-                  <i class="fas fa-sync-alt"></i> Renovar
-                </button>
-              </div>
-            </div>
-          </div>`;
-        policyGrid.appendChild(card);
+function openConditions(t,st,body){
+  qs('#conditionsTitle').textContent=t||'Condiciones';
+  qs('#conditionsSubtitle').textContent=st||'';
+  qs('#conditionsBody').textContent=body||'Sin información.';
+  conditionsModal.style.display='flex';
+}
+function toast(title,sub){
+  qs('#successMessage').textContent=title||'¡Operación exitosa!';
+  qs('#successSub').textContent=sub||'';
+  successModal.style.display='flex';
+  setTimeout(()=>successModal.style.display='none',1600);
+}
 
-        const hdrLogo=card.querySelector('.insurer-logo-header img'); if(hdrLogo){ loadLogoSmart(hdrLogo); }
-        card.querySelector('.conditions-btn').addEventListener('click',()=>openConditions('Condiciones de la Póliza',`${p.policyNumber} · ${p.insurerName}`,p.conditions));
-        card.querySelector('.renew-btn').addEventListener('click',()=>openRenewal(p));
-      });
-      totalPoliciesEl.textContent=policies.length; expiringPoliciesEl.textContent=exp; totalCoverageEl.textContent=fmtCOP(total);
-    }
+/* ===== Renovación ===== */
+const renewalOptions=qs('#renewalOptions');
+const compareBody=qs('#compareTable tbody');
+function renderRenewalOptions(keys){
+  renewalOptions.innerHTML='';
+  keys.forEach(k=>{
+    const el=document.createElement('div');
+    el.className='option'; el.dataset.insurer=k; el.dataset.price=renewalPrices[k]; el.tabIndex=0; el.setAttribute('role','button');
+    el.innerHTML=`
+      <div class="logo"><img data-insurer="${k}" data-friendly="${insurerNames[k]}" alt="${insurerNames[k]}"></div>
+      <div><div style="font-weight:800">${insurerNames[k]}</div><div class="hint">Cobertura: ${fmtCOP(coverageAmounts[k])}</div></div>
+      <div class="price">${fmtCOP(renewalPrices[k])}</div>
+    `;
+    renewalOptions.appendChild(el);
+    const img=el.querySelector('img'); if(img) loadLogoSmart(img);
+  });
+}
+function buildCompare(keys,policy){
+  compareBody.innerHTML='';
+  keys.forEach(k=>{
+    const tr=document.createElement('tr'); tr.innerHTML=`
+      <td><div style="display:flex;align-items:center;gap:8px"><img data-insurer="${k}" data-friendly="${insurerNames[k]}"> <strong>${insurerNames[k]}</strong></div></td>
+      <td>${fmtCOP(renewalPrices[k])}</td>
+      <td>${fmtCOP(coverageAmounts[k])}</td>
+      <td>${(offerConditions[k]||{}).deductible||'-'}</td>
+      <td>${(offerConditions[k]||{}).extras||'-'}</td>
+      <td><button class="btn soft" data-k="${k}"><i class="fa-solid fa-eye"></i> Ver</button></td>
+    `;
+    compareBody.appendChild(tr);
+    const img=tr.querySelector('img'); if(img) loadLogoSmart(img);
+  });
+  qs('#compareTable').onclick=e=>{
+    const btn=e.target.closest('button[data-k]'); if(!btn) return;
+    const k=btn.dataset.k;
+    openConditions(`Condiciones de la oferta · ${insurerNames[k]}`,`Propuesta para ${policy.policyNumber}`,(offerConditions[k]||{}).details||'Sin detalles.');
+  };
+}
+function openRenewal(p){
+  currentRenewPolicyId=p.id;
+  qs('#renewalPolicyNumber').value=p.policyNumber;
+  selectedPayment={method:null}; qs('#payHint').style.display='none'; qs('#payMethodLabel').textContent='—';
+  const keys=Object.keys(insurerNames);
+  renderRenewalOptions(keys);
+  qs('#currentPolicyChip').textContent=`Actual: ${p.insurerName} · Cobertura ${fmtCOP(p.coverage)} · Vence ${new Date(p.expirationDate).toLocaleDateString('es-ES')}`;
+  buildCompare(keys,p);
+  renewalModal.style.display='flex';
+}
+renewalOptions.addEventListener('click',e=>{
+  const el=e.target.closest('.option'); if(!el) return;
+  qsa('.option').forEach(o=>o.classList.remove('selected')); el.classList.add('selected');
+  const k=el.dataset.insurer;
+  qs('#paymentSubtitle').textContent=`Método para ${insurerNames[k]}`;
+  paymentModal.style.display='flex';
+});
+renewalOptions.addEventListener('keydown',e=>{
+  const el=e.target.closest('.option'); if(!el) return;
+  if(e.key==='Enter'||e.key===' '){ e.preventDefault(); el.click(); }
+});
 
-    /* ===== Renovación ===== */
-    function highlightCheapest(){const opts=[...qsa('.insurer-option')];let m=Infinity,el=null;opts.forEach(o=>{const p=+o.dataset.price||0;if(p<m){m=p;el=o;}});opts.forEach(o=>o.classList.remove('cheapest'));if(el)el.classList.add('cheapest');}
-    function highlightRow(k){compareTableBody.querySelectorAll('tr').forEach(r=>r.classList.remove('selected-row'));const r=compareTableBody.querySelector(`tr[data-insurer="${k}"]`);if(r)r.classList.add('selected-row');}
+/* ===== Pago ===== */
+qs('#payTabs').addEventListener('click',e=>{
+  const t=e.target.closest('.tab'); if(!t) return;
+  qsa('.tab').forEach(x=>x.classList.remove('active')); t.classList.add('active');
+  const m=t.dataset.method; qsa('.pay-form').forEach(f=>f.style.display=(f.dataset.method===m?'block':'none'));
+});
+qs('#savePayment').addEventListener('click',()=>{
+  const active=qs('.tab.active'); const m=active?active.dataset.method:null;
+  if(!m){alert('Selecciona un método de pago.');return;}
+  if(m==='tarjeta'){
+    const n=(qs('#cardNumber').value||'').replace(/\s+/g,''), nm=(qs('#cardName').value||'').trim(), ex=(qs('#cardExp').value||'').trim(), cv=(qs('#cardCVV').value||'').trim();
+    if(!nm || n.length<12 || !/^\d{2}\/\d{2}$/.test(ex) || cv.length<3){ alert('Completa los datos de la tarjeta correctamente.'); return; }
+  }
+  if(m==='pse' && (!qs('#pseBank').value || !qs('#pseEmail').value)){ alert('Selecciona banco e ingresa correo.'); return; }
+  selectedPayment.method=m; qs('#payHint').style.display='block'; qs('#payMethodLabel').textContent=m.toUpperCase(); paymentModal.style.display='none';
+  toast('Forma de pago guardada',`Método: ${m.toUpperCase()}`);
+});
 
-    function renderRenewalOptions(keys){
-      renewalOptions.innerHTML='';
-      keys.forEach(k=>{
-        const div=document.createElement('div');
-        div.className='insurer-option'; div.tabIndex=0; div.setAttribute('role','button'); div.dataset.insurer=k; div.dataset.price=renewalPrices[k];
-        div.innerHTML=`
-          <div class="insurer-logo-small"><img alt="${insurerNames[k]}" data-insurer="${k}" data-friendly="${insurerNames[k]}"></div>
-          <div class="insurer-details"><div>${insurerNames[k]}</div><div class="coverage-amount">Cobertura: ${fmtCOP(coverageAmounts[k])}</div></div>
-          <div class="insurer-price">${fmtCOP(renewalPrices[k])}</div>`;
-        renewalOptions.appendChild(div);
-        const img=div.querySelector('img'); if(img){ loadLogoSmart(img); }
-      });
-      highlightCheapest();
-    }
+/* ===== Nueva póliza ===== */
+qs('#policyForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const insuredId=qs('#insuredId').value;
+  const insuredName=qs('#insuredName').value;
+  const insuranceType=qs('#insuranceType').value;
+  const coverageAmount=parseInt(qs('#coverageAmount').value);
+  const expirationDate=qs('#expirationDate').value;
+  const policyNumber=qs('#policyNumber').value;
+  const insurer=qs('#insurer').value;
+  const policyConditions=(qs('#policyConditions').value||'').trim();
+  const newP={id:policies.length+1,type:insuranceType,typeName:qs('#insuranceType').options[qs('#insuranceType').selectedIndex].text,insurer,insurerName:insurerNames[insurer]||qs('#insurer').options[qs('#insurer').selectedIndex].text,policyNumber,expirationDate,insuredId,insuredName,coverage:coverageAmount,conditions:policyConditions||'Condiciones no especificadas.'};
+  policies.push(newP); policyModal.style.display='none'; e.target.reset(); render(); toast('¡Póliza creada!',`Registrada ${newP.policyNumber}`);
+});
 
-    function buildCompareTable(keys,policy){
-      compareTableBody.innerHTML='';
-      keys.forEach(k=>{
-        const tr=document.createElement('tr'); tr.dataset.insurer=k;
-        const cond=offerConditions[k]||{};
-        tr.innerHTML=`
-          <td><div style="display:flex;align-items:center;gap:8px">
-                <img alt="${insurerNames[k]}" data-insurer="${k}" data-friendly="${insurerNames[k]}">
-                <strong>${insurerNames[k]}</strong>
-              </div></td>
-          <td>${fmtCOP(renewalPrices[k])}</td>
-          <td>${fmtCOP(coverageAmounts[k])}</td>
-          <td>${cond.deductible||'-'}</td>
-          <td>${cond.extras||'-'}</td>
-          <td><div class="table-actions"><button class="btn-mini details" data-key="${k}"><i class="fas fa-eye"></i> Ver detalles</button></div></td>`;
-        compareTableBody.appendChild(tr);
-        const img=tr.querySelector('img'); if(img){ loadLogoSmart(img); }
-      });
-      qs('#compareTable').onclick=e=>{
-        const btn=e.target.closest('button.details'); if(!btn) return;
-        const k=btn.dataset.key;
-        openConditions(`Condiciones de la oferta · ${insurerNames[k]}`,`Propuesta para ${policy.policyNumber}`,(offerConditions[k]||{}).details||'Sin detalles.');
-      };
-    }
+/* ===== Confirmar renovación ===== */
+qs('#confirmRenewal').addEventListener('click',()=>{
+  const sel=qs('.option.selected'); if(!sel){alert('Selecciona una aseguradora.');return;}
+  if(!selectedPayment.method){alert('Selecciona una forma de pago.');paymentModal.style.display='flex';return;}
+  const k=sel.dataset.insurer;
+  const idx=policies.findIndex(p=>p.id===currentRenewPolicyId);
+  if(idx!==-1){
+    const newExp=iso(addYears(new Date(),1));
+    policies[idx].expirationDate=newExp;
+    policies[idx].insurer=k; policies[idx].insurerName=insurerNames[k]||policies[idx].insurerName;
+    renewalModal.style.display='none'; render();
+    toast('¡Renovación exitosa!',`Póliza ${policies[idx].policyNumber} con ${insurerNames[k]} · Nueva fecha: ${human(newExp)} · Pago: ${selectedPayment.method.toUpperCase()}`);
+  }
+  currentRenewPolicyId=null; selectedPayment={method:null}; qs('#payHint').style.display='none'; qs('#payMethodLabel').textContent='—';
+});
 
-    function selectInsurerOption(el){
-      if(!el) return;
-      qsa('.insurer-option').forEach(o=>{o.classList.remove('selected');o.setAttribute('aria-selected','false');});
-      el.classList.add('selected'); el.setAttribute('aria-selected','true');
-      const k=el.dataset.insurer; highlightRow(k);
-      qs('#paymentSubtitle').textContent=`Método para ${insurerNames[k]}`; paymentModal.style.display='flex';
-    }
-    renewalOptions.addEventListener('click',e=>{const el=e.target.closest('.insurer-option');if(!el)return;selectInsurerOption(el);});
-    renewalOptions.addEventListener('keydown',e=>{const el=e.target.closest('.insurer-option');if(!el)return;if(e.key==='Enter'||e.key===' '){e.preventDefault();selectInsurerOption(el);}});
+/* ===== Atajos (demo) ===== */
+qs('#renewExpiring').addEventListener('click',()=>{
+  const exp=policies.filter(p=>daysLeft(p.expirationDate)<=30).length;
+  toast('Atajos disponibles', exp?`Tienes ${exp} póliza(s) por vencer`: 'No hay pólizas por vencer');
+});
 
-    function openRenewal(p){
-      currentRenewPolicyId=p.id; qs('#renewalPolicyNumber').textContent=p.policyNumber;
-      selectedPayment={method:null}; payHint.style.display='none'; payMethodLabel.textContent='—';
-      const keys=Object.keys(insurerNames);
-      renderRenewalOptions(keys);
-      currentPolicyChip.innerHTML=`<span class="pill">Actual: ${p.insurerName} · Cobertura ${fmtCOP(p.coverage)} · Vence ${new Date(p.expirationDate).toLocaleDateString('es-ES')} <span style="font-size:11px;font-weight:800;color:#2cb56f;margin-left:6px">vigente</span></span>`;
-      buildCompareTable(keys,p);
-      renewalModal.style.display='flex';
-    }
+/* ===== Login stub ===== */
+qs('#loginBtn').addEventListener('click',()=>{/* abrir modal ya manejado */});
 
-    /* Pago */
-    payTabs.addEventListener('click',e=>{
-      const tab=e.target.closest('.pay-tab'); if(!tab) return;
-      qsa('.pay-tab').forEach(t=>t.classList.remove('active')); tab.classList.add('active');
-      const m=tab.dataset.method; qsa('.pay-form').forEach(f=>f.style.display=f.dataset.method===m?'block':'none');
+/* ===== Render inicial ===== */
+render();
+</script>
+
+<!-- Manifest + SW inline -->
+<script>
+(function(){
+  const manifest={name:"InsuraHub Neo",short_name:"NeoHub",start_url:".",scope:".",display:"standalone",background_color:"#0e1021",theme_color:"#6a5af9",icons:[{src:"icons/icon-192.png",sizes:"192x192",type:"image/png"},{src:"icons/icon-512.png",sizes:"512x512",type:"image/png"}]};
+  const blob=new Blob([JSON.stringify(manifest)],{type:"application/manifest+json"});
+  const url=URL.createObjectURL(blob); const link=document.createElement('link'); link.rel='manifest'; link.href=url; document.head.appendChild(link);
+})();
+(function(){
+  if(!('serviceWorker' in navigator)) return;
+  const isLocal=['localhost','127.0.0.1','[::1]'].includes(location.hostname);
+  const isSecure=location.protocol==='https:'||isLocal;
+  if(!isSecure){console.warn('SW deshabilitado: usa https o localhost.');return;}
+  const sw=`
+    const C='insurahub-neo-v1'; const CORE=[ self.location.href ];
+    self.addEventListener('install',e=>{ e.waitUntil(caches.open(C).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
+    self.addEventListener('activate',e=>{ e.waitUntil(caches.keys().then(keys=>Promise.all(keys.map(k=>k===C?null:caches.delete(k))))); self.clients.claim(); });
+    self.addEventListener('fetch',e=>{
+      const r=e.request;
+      e.respondWith(
+        caches.match(r).then(x=> x || fetch(r).then(res=>{
+          if(r.method==='GET' && res.status===200){
+            try{ const u=new URL(r.url); if(u.origin===location.origin){ const cp=res.clone(); caches.open(C).then(c=>c.put(r,cp)); } }catch(e){}
+          }
+          return res;
+        }).catch(()=>caches.match(self.location.href)))
+      );
     });
-    qs('#savePayment').addEventListener('click',()=>{
-      const m=qs('.pay-tab.active')?.dataset.method; if(!m){alert('Selecciona un método de pago.');return;}
-      if(m==='tarjeta'){
-        const n=qs('#cardNumber').value.replace(/\s+/g,''),nm=qs('#cardName').value.trim(),ex=qs('#cardExp').value.trim(),cv=qs('#cardCVV').value.trim();
-        if(!nm||n.length<12||!/^\d{2}\/\d{2}$/.test(ex)||cv.length<3){alert('Completa los datos de la tarjeta correctamente.');return;}
-      }
-      if(m==='pse'&&(!qs('#pseBank').value||!qs('#pseEmail').value)){alert('Selecciona banco e ingresa correo.');return;}
-      selectedPayment.method=m; payHint.style.display='block'; payMethodLabel.textContent=m.toUpperCase(); paymentModal.style.display='none'; toast('Forma de pago guardada',`Método: ${m.toUpperCase()}`);
-    });
+  `;
+  const blob=new Blob([sw],{type:'text/javascript'}); const url=URL.createObjectURL(blob); navigator.serviceWorker.register(url);
+})();
+</script>
 
-    /* Nueva póliza */
-    policyForm.addEventListener('submit',e=>{
-      e.preventDefault();
-      const insuredId=qs('#insuredId').value,insuredName=qs('#insuredName').value,insuranceType=qs('#insuranceType').value,coverageAmount=parseInt(qs('#coverageAmount').value),expirationDate=qs('#expirationDate').value,policyNumber=qs('#policyNumber').value,insurer=qs('#insurer').value,policyConditions=qs('#policyConditions').value.trim();
-      const newP={id:policies.length+1,type:insuranceType,typeName:qs('#insuranceType').options[qs('#insuranceType').selectedIndex].text,insurer,insurerName:insurerNames[insurer]||qs('#insurer').options[qs('#insurer').selectedIndex].text,policyNumber,expirationDate,insuredId,insuredName,coverage:coverageAmount,conditions:policyConditions||'Condiciones no especificadas.'};
-      policies.push(newP); renderPolicies(); policyModal.style.display='none'; policyForm.reset(); toast('¡Póliza creada!',`Nueva póliza ${newP.policyNumber} registrada correctamente.`);
-    });
-
-    /* Confirmar renovación (+1 año) */
-    confirmRenewalBtn.addEventListener('click',()=>{
-      const sel=qs('.insurer-option.selected'); if(!sel){alert('Selecciona una aseguradora.');return;}
-      if(!selectedPayment.method){alert('Selecciona una forma de pago.');paymentModal.style.display='flex';return;}
-      const k=sel.dataset.insurer; const i=policies.findIndex(p=>p.id===currentRenewPolicyId);
-      if(i!==-1){
-        const newExp=iso(addYears(new Date(),1));
-        policies[i].expirationDate=newExp; policies[i].insurer=k; policies[i].insurerName=insurerNames[k]||policies[i].insurerName;
-        renewalModal.style.display='none'; renderPolicies();
-        toast('¡Renovación exitosa!',`Póliza ${policies[i].policyNumber} renovada con ${insurerNames[k]}. Nueva fecha: ${human(newExp)} · Pago: ${selectedPayment.method.toUpperCase()}.`);
-      }
-      currentRenewPolicyId=null; selectedPayment={method:null}; payHint.style.display='none'; payMethodLabel.textContent='—';
-    });
-
-    /* Init */
-    renderPolicies();
-  </script>
-
-  <!-- Manifest + Service Worker -->
-  <script>
-    (function(){
-      const manifest={name:"InsuraHub",short_name:"InsuraHub",start_url:".",scope:".",display:"standalone",background_color:"#ffffff",theme_color:"#3498db",icons:[{src:"icons/icon-192.png",sizes:"192x192",type:"image/png"},{src:"icons/icon-512.png",sizes:"512x512",type:"image/png"}]};
-      const blob=new Blob([JSON.stringify(manifest)],{type:"application/manifest+json"});
-      const url=URL.createObjectURL(blob); const link=document.createElement('link'); link.rel='manifest'; link.href=url; document.head.appendChild(link);
-    })();
-    (function(){
-      if(!('serviceWorker' in navigator))return;
-      const isLocal=['localhost','127.0.0.1','[::1]'].includes(location.hostname);
-      const isSecure=location.protocol==='https:'||isLocal;
-      if(!isSecure){console.warn('SW deshabilitado: usa https o localhost.');return;}
-      const sw=`const C='insurahub-app-v1';const CORE=[self.location.href];
-      self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
-      self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.map(k=>k===C?null:caches.delete(k)))));self.clients.claim()});
-      self.addEventListener('fetch',e=>{const r=e.request;e.respondWith(caches.match(r).then(x=>x||fetch(r).then(res=>{if(r.method==='GET'&&res.status===200){try{const u=new URL(r.url);if(u.origin===location.origin){const cp=res.clone();caches.open(C).then(c=>c.put(r,cp))}}catch{}}return res}).catch(()=>caches.match(self.location.href))))})`;
-      const blob=new Blob([sw],{type:'text/javascript'}); const url=URL.createObjectURL(blob); navigator.serviceWorker.register(url);
-    })();
-  </script>
 </body>
 </html>
