@@ -147,12 +147,12 @@
     .detail-label{color:var(--text-light);font-size:14px}
     .detail-value{font-weight:700;color:var(--text-dark)}
 
-    /* Logos pólizas contratadas - 1.4x + control */
+    /* Logos pólizas */
     .logo-container{height:64px;display:flex;align-items:center;margin-bottom:16px;justify-content:center}
     .company-logo{max-height:64px;max-width:238px;object-fit:contain;filter: drop-shadow(0 2px 4px rgba(0,0,0,.15))}
     .logo-placeholder{width:238px;height:64px;background:#ecf0f1;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#95a5a6;font-weight:800;font-size:16px;box-shadow: inset 0 1px 0 rgba(255,255,255,.7)}
 
-    /* Teléfono de contacto (arriba de anillos) */
+    /* Teléfono de contacto */
     .contact-line{
       display:flex; align-items:center; justify-content:center;
       gap:8px; font-weight:800; color:#105b96; background:linear-gradient(180deg,#f7fbff,#eef6ff);
@@ -288,7 +288,7 @@
 
     /* Parpadeo para opción más económica */
     @keyframes blink-green {
-      0%, 100% { box-shadow: 0 0 0 2px rgba(46,204,113,.9), 0 0 12px rgba(46,204,113,.35); }
+      0%, 100 { box-shadow: 0 0 0 2px rgba(46,204,113,.9), 0 0 12px rgba(46,204,113,.35); }
       50% { box-shadow: 0 0 0 2px rgba(46,204,113,.3), 0 0 2px rgba(46,204,113,.1); }
     }
     .insurer-option.cheapest{border-color:#2ecc71 !important; animation: blink-green 1.2s infinite;}
@@ -664,7 +664,14 @@
 
   <script>
     /* ===== Datos base ===== */
-    const insurerLogos = { allianz:"logos/allianz.png", axa:"logos/axa.png", generali:"logos/generali.png", cigna:"logos/cigna.png", zurich:"logos/zurich.png", liberty:"logos/liberty.png" };
+    const insurerLogos = {
+      allianz:"logos/allianz.png",
+      axa:"logos/axa.png",
+      generali:"logos/generali.png",
+      cigna:"logos/cigna.png",
+      zurich:"logos/zurich.png",
+      liberty:"logos/liberty.png"
+    };
     const insurerNames = { allianz:"Allianz", axa:"AXA", generali:"Generali", cigna:"Cigna", zurich:"Zurich", liberty:"Liberty Mutual" };
     const insurerPhones = { allianz:"+57 01 8000 510 510", axa:"+57 01 8000 123 456", generali:"+57 01 8000 345 678", cigna:"+57 01 8000 765 432", zurich:"+57 01 8000 111 222", liberty:"+57 01 8000 999 888" };
 
@@ -1125,6 +1132,3 @@
   </script>
 </body>
 </html>
-
-</html>
-
