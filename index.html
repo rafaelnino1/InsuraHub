@@ -24,71 +24,51 @@
       --depth-1:0 6px 14px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.06);
       --depth-2:0 12px 28px rgba(0,0,0,.12),0 4px 10px rgba(0,0,0,.08);
       --depth-3:0 22px 50px rgba(0,0,0,.18),0 8px 16px rgba(0,0,0,.12);
-      --ring-bg:#edf2f7;
-      --sidebar:#0f3d66; --sidebar-2:#155a8f;
-      --sidebar-w: 270px;
+      --ring-bg:#edf2f7
     }
     *{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,Segoe UI,Tahoma,Verdana,sans-serif}
     body{
-      min-height:100vh;color:var(--text-dark);line-height:1.6;
+      min-height:100vh;color:var(--text-dark);line-height:1.6;padding:20px;
       background:
         radial-gradient(1000px 500px at 10% 0%,rgba(93,173,226,.25),transparent 60%),
         radial-gradient(900px 500px at 100% 30%,rgba(46,204,113,.18),transparent 60%),
-        linear-gradient(135deg,#e6f0ff 0%,#d6ecff 40%,#cfeef0 100%)
+        linear-gradient(135deg,#e6f0ff 0%,#d6ecff 40%,#cfeef0 100%);
+      display:flex; gap:16px;
     }
 
-    /* ====== LAYOUT con SIDEBAR ====== */
-    .app{
-      display:flex; min-height:100svh;
-    }
+    /* ===== Sidebar ===== */
     .sidebar{
-      position:sticky; top:0; height:100svh; width:var(--sidebar-w);
-      background: linear-gradient(180deg, var(--sidebar), var(--sidebar-2));
-      box-shadow: var(--depth-3);
-      color:#eaf4ff; padding:16px 14px; z-index: 999;
+      width:280px; flex:0 0 280px; background:linear-gradient(180deg,#ffffff,#f4f9ff);
+      border:1px solid rgba(52,152,219,.14); border-radius:16px; box-shadow:var(--depth-2);
+      padding:14px; position:sticky; top:16px; height:calc(100dvh - 32px); overflow:auto;
     }
-    .sb-header{display:flex; align-items:center; gap:10px; margin-bottom:14px}
-    .sb-logo{
-      width:42px;height:42px;border-radius:10px;background:rgba(255,255,255,.12);
-      display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid rgba(255,255,255,.25)
+    .side-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+    .side-title{font-weight:900;color:#155a8f;display:flex;align-items:center;gap:8px}
+    .side-btn{
+      width:100%; display:flex; align-items:center; gap:10px; padding:12px; border-radius:12px; border:1px solid rgba(52,152,219,.18);
+      background:#fff; box-shadow:var(--depth-1); cursor:pointer; font-weight:800; margin-bottom:10px; transition:transform .2s, box-shadow .2s;
     }
-    .sb-logo img{width:100%;height:100%;object-fit:contain}
-    .sb-title{font-weight:900; letter-spacing:.2px}
-    .sb-group{margin-top:8px}
-    .sb-item{
-      display:flex;align-items:center;gap:10px; padding:12px; border-radius:12px; cursor:pointer;
-      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
-      border:1px solid rgba(255,255,255,.15); color:#eaf4ff; font-weight:700; margin-bottom:10px;
-      transition: transform .2s, box-shadow .2s;
+    .side-btn:hover{transform:translateY(-2px); box-shadow:var(--depth-2)}
+    .side-badge{
+      margin-left:auto; padding:4px 10px; border-radius:999px; font-size:12px; font-weight:900;
+      border:1px solid rgba(0,0,0,.06);
     }
-    .sb-item:hover{transform:translateY(-2px); box-shadow: var(--depth-2)}
-    .sb-item i{width:20px; text-align:center}
-    .sb-status{
-      margin-left:auto; padding:4px 8px; border-radius:999px; font-size:11px; font-weight:800;
-      border:1px solid rgba(255,255,255,.25); background:rgba(255,255,255,.12)
+    .ok{background:linear-gradient(180deg,#eafff4,#ddfff2); color:#0d6b3a; border-color:rgba(46,204,113,.35)}
+    .bad{background:linear-gradient(180deg,#fff2f2,#ffeaea); color:#8b1e1e; border-color:rgba(231,76,60,.35)}
+    .hamburger{
+      display:none; position:fixed; left:12px; top:12px; z-index:10001;
+      width:44px; height:44px; border-radius:12px; border:none; background:#fff; box-shadow:var(--depth-2); color:#2c80b9; font-size:20px;
     }
-    .sb-status.ok{background:linear-gradient(180deg,#35d07f,#2cb56f); border-color:rgba(0,0,0,.08)}
-    .sb-status.bad{background:linear-gradient(180deg,#ef6b61,#e0443a); border-color:rgba(0,0,0,.08)}
-
-    /* Toggle mobile */
-    .sb-toggle{
-      display:none; position:fixed; left:12px; top:12px; z-index:1000;
-      background:#fff;color:var(--primary); border:none; border-radius:10px; padding:10px 12px; box-shadow: var(--depth-2);
-    }
-    @media (max-width:1024px){
-      .sidebar{
-        position:fixed; left:-100%; top:0; transition: left .25s ease;
-      }
-      .sidebar.open{left:0}
-      .sb-toggle{display:inline-flex; align-items:center; gap:8px}
-      .content{margin-left:0 !important; padding-top:56px}
+    .sidebar.hidden{transform:translateX(-110%);}
+    @media(max-width:1100px){
+      body{padding-top:72px}
+      .hamburger{display:block}
+      .sidebar{position:fixed; left:12px; top:64px; height:calc(100dvh - 76px); z-index:10000; transition:transform .25s ease}
     }
 
-    .content{
-      flex:1; padding:20px; margin-left: var(--sidebar-w);
-    }
+    .container{max-width:1300px; margin:0 auto; flex:1 1 auto}
 
-    /* ====== Header / resto ====== */
+    /* Header */
     header{
       background:linear-gradient(135deg,var(--primary),var(--primary-dark));
       padding:22px 30px;border-radius:18px;margin-bottom:22px;box-shadow:var(--depth-3);
@@ -138,15 +118,16 @@
     .insurance-type{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:linear-gradient(180deg,rgba(52,152,219,.14),rgba(52,152,219,.06));border:1px solid rgba(52,152,219,.18);font-weight:800;font-size:14px;color:var(--primary-dark)}
     .insurance-icon{width:40px;height:40px;background:linear-gradient(180deg,var(--primary-light),var(--primary));border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 6px 12px rgba(52,152,219,.3);border:1px solid rgba(255,255,255,.4)}
     .insurance-icon i{font-size:16px}
+
     .card-details{flex-grow:1}
     .detail-item{display:flex;justify-content:space-between;margin:8px 0}
     .detail-label{color:var(--text-light);font-size:13px}
     .detail-value{font-weight:700;color:var(--text-dark);font-size:14px}
+
     .contact-line{display:flex;align-items:center;justify-content:center;gap:6px;font-weight:700;color:#105b96;background:linear-gradient(180deg,#f7fbff,#eef6ff);border:1px solid rgba(52,152,219,.18);padding:6px 8px;border-radius:10px;margin:6px 0;box-shadow:var(--depth-1);line-height:1.2;font-size:12px}
     .contact-line i{font-size:12px;color:#2c80b9}
     .contact-line span:last-child{font-size:12px;font-weight:800}
 
-    /* Anillo + acciones */
     .ring-row{display:flex;align-items:center;gap:12px;margin-top:6px}
     .status-container{display:flex;flex-direction:column;align-items:center}
     .status-ring{position:relative;width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;background:conic-gradient(var(--ring-color,var(--success)) 0 var(--progress,100%),var(--ring-bg) var(--progress,100%) 100%);box-shadow:0 12px 22px rgba(0,0,0,.18),0 6px 10px rgba(0,0,0,.1)}
@@ -158,13 +139,15 @@
     .ring-actions{display:flex;flex-direction:column;gap:8px;min-width:160px}
     .ring-actions .btn{width:100%;min-height:38px;padding:8px 12px}
 
-    /* Footer / modales / formularios preexistentes */
     footer{text-align:center;margin-top:22px;padding:18px;color:#fff;background:linear-gradient(135deg,var(--primary),var(--primary-dark));border-radius:14px;box-shadow:var(--depth-2)}
+
+    /* Modales base */
     .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;justify-content:center;align-items:center;backdrop-filter:blur(6px)}
     .modal-content{background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.98));border-radius:18px;width:96%;max-width:1400px;padding:28px;box-shadow:var(--depth-3);max-height:90vh;overflow:auto;position:relative;border:1px solid rgba(52,152,219,.15)}
     .modal-header{text-align:center;margin-bottom:14px;position:relative}
     .close-modal{position:absolute;top:-10px;right:-10px;width:34px;height:34px;background:var(--danger);color:#fff;border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
 
+    /* Formularios (login/póliza/SARLAFT) */
     .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
     @media (max-width:720px){.form-grid{grid-template-columns:1fr}}
     .form-group{display:flex;flex-direction:column;gap:6px}
@@ -177,11 +160,7 @@
     .section-card{background:linear-gradient(180deg,#ffffff,#f6f8ff);border:1px solid rgba(52,152,219,.15);border-radius:16px;padding:16px;box-shadow:var(--depth-1);margin-bottom:14px}
     .section-title{font-weight:900;color:#155a8f;margin-bottom:8px;display:flex;align-items:center;gap:8px}
 
-    /* Tamaños modales login / póliza */
-    #loginModal .modal-content{max-width:520px;width:96%;padding:22px}
-    #policyModal .modal-content{max-width:960px;width:96%;padding:22px}
-
-    /* Renovación */
+    /* Renovación / comparación / pago / success (igual que versión previa) */
     .renewal-layout{display:grid;grid-template-columns:1fr 1.25fr;gap:20px}
     @media(max-width:1180px){.renewal-layout{grid-template-columns:1fr}}
     .renewal-col{background:linear-gradient(180deg,#fff,#f9fbff);border:1px solid rgba(52,152,219,.12);border-radius:14px;box-shadow:var(--depth-1);padding:16px}
@@ -201,15 +180,12 @@
     .pill{display:inline-block;padding:4px 10px;border-radius:999px;font-weight:700;font-size:12px;background:linear-gradient(180deg,#f7fbff,#eef6ff);border:1px solid rgba(52,152,219,.2);color:#2c3e50}
     .btn-mini{padding:8px 12px;border-radius:10px;font-weight:700;border:1px solid rgba(52,152,219,.2);background:#fff;box-shadow:var(--depth-1);cursor:pointer}
     .selected-row{box-shadow:inset 0 0 0 2px rgba(52,152,219,.35)}
-
-    /* Pago/Success */
     #paymentModal .modal-content{max-width:720px}
     .pay-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
     .pay-tab{padding:10px 14px;border-radius:10px;border:1px solid rgba(52,152,219,.2);background:#fff;box-shadow:var(--depth-1);cursor:pointer;font-weight:700;display:flex;align-items:center;gap:8px}
     .pay-tab.active{background:linear-gradient(180deg,#f1f9ff,#e7f2ff);border-color:rgba(52,152,219,.45)}
     .inline-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
     @media(max-width:560px){.inline-2{grid-template-columns:1fr}}
-
     #successModal .success-card{background:linear-gradient(180deg,#fff,#f6fffb);padding:30px;border-radius:18px;box-shadow:var(--depth-3);text-align:center;width:min(520px,92vw);border:1px solid rgba(46,204,113,.2)}
     .checkmark{width:100px;height:100px;border-radius:50%;margin:0 auto 16px;position:relative;background:radial-gradient(circle at 30% 30%,#8ef0be,#2ecc71);box-shadow:inset 0 8px 14px rgba(255,255,255,.6),inset 0 -8px 12px rgba(0,0,0,.08),0 12px 22px rgba(46,204,113,.35)}
     .checkmark svg{position:absolute;inset:0;margin:auto;width:64px;height:64px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15))}
@@ -219,288 +195,62 @@
     .checkmark{animation:popScale .5s ease-out both}
 
     /* Móvil */
-    @media (max-width: 720px){
-      header{padding-left:56px} /* para el botón de menú */
+    @media(max-width:768px){
       .stats-bar{flex-direction:column;gap:14px}
       .stat-item:not(:last-child)::after{display:none}
       header{flex-direction:column;gap:12px;text-align:center}
       .user-actions{justify-content:center}
       .ring-row{align-items:stretch}
-      #renewalModal .modal-content{
-        width:100vw;height:100svh;max-height:100svh;border-radius:0;padding:16px;
-        padding-left:calc(16px + env(safe-area-inset-left));
-        padding-right:calc(16px + env(safe-area-inset-right));
-        padding-bottom:calc(18px + env(safe-area-inset-bottom))
-      }
-      .renewal-layout{display:block}
-      .renewal-col{box-shadow:none;border-radius:12px;margin-bottom:12px}
-      .insurer-logo-small{width:40px;height:40px}
-      .insurer-option{grid-template-columns:44px 1fr auto}
-      .table-responsive{overflow-x:auto;-webkit-overflow-scrolling:touch}
-      #confirmRenewal{position:sticky;bottom:0;z-index:2}
     }
   </style>
 </head>
 <body>
-  <button class="sb-toggle" id="openSidebar"><i class="fas fa-bars"></i> Menú</button>
+  <!-- Toggle sidebar (móvil) -->
+  <button class="hamburger" id="toggleSidebar" aria-label="Menú"><i class="fas fa-bars"></i></button>
 
-  <div class="app">
-    <!-- ===== SIDEBAR ===== -->
-    <aside class="sidebar" id="sidebar">
-      <div class="sb-header">
-        <div class="sb-logo"><img src="logos/insurahublogo.png" alt="InsuraHub" onerror="this.remove();this.parentNode.textContent='IH'"></div>
-        <div>
-          <div class="sb-title">InsuraHub</div>
-          <small style="opacity:.85">Panel</small>
-        </div>
-      </div>
-
-      <div class="sb-group">
-        <div class="sb-item" id="btnSarlaft">
-          <i class="fas fa-clipboard-check"></i> Tu formulario SARLAFT al día
-          <span class="sb-status bad" id="sarlaftStatus">Pendiente</span>
-        </div>
-        <div class="sb-item" id="btnLoader">
-          <i class="fas fa-cloud-upload-alt"></i> Tus pólizas (cargar)
-        </div>
-      </div>
-    </aside>
-
-    <!-- ===== CONTENIDO ===== -->
-    <main class="content">
-      <!-- Header -->
-      <header>
-        <div class="app-title">
-          <div class="app-icon"><img src="logos/insurahublogo.png" alt="InsuraHub" onerror="this.remove();this.parentNode.textContent='IH'"></div>
-          <div class="app-title-text"><h1>InsuraHub</h1><p>Gestión Inteligente de Seguros</p></div>
-        </div>
-        <div class="user-actions">
-          <button class="btn" id="addPolicyBtn"><i class="fas fa-plus"></i> Nueva Póliza</button>
-          <button class="btn btn-outline" id="loginBtn"><i class="fas fa-user"></i> Iniciar Sesión</button>
-        </div>
-      </header>
-
-      <!-- Stats -->
-      <div class="stats-bar">
-        <div class="stat-item"><div class="stat-value" id="totalPolicies">6</div><div class="stat-label">Pólizas Activas</div></div>
-        <div class="stat-item"><div class="stat-value" id="expiringPolicies">2</div><div class="stat-label">Por Vencer (&lt;30 días)</div></div>
-        <div class="stat-item"><div class="stat-value" id="totalCoverage">$985.000.000</div><div class="stat-label">Cobertura Total</div></div>
-      </div>
-
-      <!-- Grid pólizas -->
-      <div class="card-grid" id="policyGrid"></div>
-    </main>
-  </div>
-
-  <!-- ===== Modales EXISTENTES (Login, Nueva Póliza, Renovación, Condiciones, Pago, Success) ===== -->
-  <!-- (…todo tu bloque de modales y scripts originales permanece igual…)
-       Nota: los modales originales están intactos; por brevedad no los repito aquí,
-       pero se incluyen más abajo en ESTE MISMO archivo. -->
-
-  <!-- ===== NUEVO: Modal SARLAFT ===== -->
-  <div class="modal" id="sarlaftModal" aria-hidden="true">
-    <div class="modal-content" role="dialog" aria-modal="true" style="max-width:980px">
-      <div class="modal-header">
-        <h2>Formulario SARLAFT</h2>
-        <p style="color:#567;font-weight:600">Completa los datos para cumplir con prevención de LA/FT/FPADM</p>
-        <button class="close-modal" id="closeSarlaft">×</button>
-      </div>
-
-      <form id="sarlaftForm">
-        <!-- Identificación -->
-        <div class="section-card">
-          <div class="section-title"><i class="fas fa-id-card"></i> Identificación</div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label"><i class="fas fa-user-check"></i> Tipo de persona</label>
-              <div class="input-wrap">
-                <select name="tipoPersona" required>
-                  <option value="">Selecciona…</option>
-                  <option>Natural</option>
-                  <option>Jurídica</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label"><i class="fas fa-signature"></i> Nombre/Razón social</label>
-              <div class="input-wrap"><input name="nombre" required placeholder="Nombre completo o razón social"></div>
-            </div>
-            <div class="form-group">
-              <label class="form-label"><i class="fas fa-id-badge"></i> Tipo de documento</label>
-              <div class="input-wrap">
-                <select name="tipoDoc" required>
-                  <option value="">Selecciona…</option>
-                  <option>CC</option><option>CE</option><option>NIT</option><option>Pasaporte</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label"><i class="fas fa-hashtag"></i> Número de documento</label>
-              <div class="input-wrap"><input name="numDoc" required inputmode="numeric" placeholder="Sin puntos ni comas"></div>
-            </div>
-            <div class="form-group">
-              <label class="form-label"><i class="fas fa-calendar-day"></i> Fecha nac./constitución</label>
-              <div class="input-wrap"><input type="date" name="fechaNac" required></div>
-            </div>
-            <div class="form-group">
-              <label class="form-label"><i class="fas fa-flag"></i> Nacionalidad</label>
-              <div class="input-wrap">
-                <select name="nacionalidad" required>
-                  <option value="">Selecciona…</option>
-                  <option>Colombiana</option><option>Venezolana</option><option>Peruana</option><option>Otra</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group" style="grid-column:1/-1">
-              <label class="form-label"><i class="fas fa-location-dot"></i> Dirección</label>
-              <div class="input-wrap"><input name="direccion" required placeholder="Calle, número, ciudad, país"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Actividad económica -->
-        <div class="section-card">
-          <div class="section-title"><i class="fas fa-briefcase"></i> Actividad económica</div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label"><i class="fas fa-user-tie"></i> Ocupación/actividad</label>
-              <div class="input-wrap">
-                <select name="actividad" required>
-                  <option value="">Selecciona…</option>
-                  <option>Empleado</option><option>Independiente</option><option>Empresario</option>
-                  <option>Pensionado</option><option>Estudiante</option><option>Desempleado</option><option>Otro</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label"><i class="fas fa-industry"></i> Sector</label>
-              <div class="input-wrap">
-                <select name="sector" required>
-                  <option value="">Selecciona…</option>
-                  <option>Comercio</option><option>Servicios</option><option>Industrial</option>
-                  <option>Financiero</option><option>Agrícola</option><option>Minería</option>
-                  <option>Construcción</option><option>Transporte</option><option>Salud</option><option>Tecnología</option><option>Otro</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group"><label class="form-label"><i class="fas fa-people-roof"></i> Empresa (si aplica)</label><div class="input-wrap"><input name="empresa" placeholder="Nombre empresa / NIT"></div></div>
-            <div class="form-group"><label class="form-label"><i class="fas fa-user-tie"></i> Cargo (si aplica)</label><div class="input-wrap"><input name="cargo" placeholder="Cargo/rol"></div></div>
-            <div class="form-group">
-              <label class="form-label"><i class="fas fa-sack-dollar"></i> Ingresos mensuales</label>
-              <div class="input-wrap">
-                <select name="ingresos" required>
-                  <option value="">Selecciona…</option>
-                  <option>&lt; $2.000.000</option><option>$2–5 MM</option><option>$5–10 MM</option>
-                  <option>$10–20 MM</option><option>$20–50 MM</option><option>&gt; $50 MM</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label"><i class="fas fa-vault"></i> Activos</label>
-              <div class="input-wrap">
-                <select name="activos" required>
-                  <option value="">Selecciona…</option>
-                  <option>&lt; $50 MM</option><option>$50–200 MM</option><option>$200–500 MM</option><option>&gt; $500 MM</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label"><i class="fas fa-scale-balanced"></i> Pasivos</label>
-              <div class="input-wrap">
-                <select name="pasivos" required>
-                  <option value="">Selecciona…</option>
-                  <option>0</option><option>&lt; $50 MM</option><option>$50–200 MM</option><option>&gt; $200 MM</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Origen de fondos -->
-        <div class="section-card">
-          <div class="section-title"><i class="fas fa-coins"></i> Origen de fondos</div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label"><i class="fas fa-hand-holding-dollar"></i> Principal origen</label>
-              <div class="input-wrap">
-                <select name="origen" required>
-                  <option value="">Selecciona…</option>
-                  <option>Salario</option><option>Honorarios</option><option>Ventas</option><option>Rendimientos</option>
-                  <option>Herencia</option><option>Aportes</option><option>Donaciones</option><option>Ahorros</option><option>Venta de activos</option><option>Otro</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group"><label class="form-label"><i class="fas fa-earth-americas"></i> País de origen de fondos</label><div class="input-wrap"><input name="paisFondos" required placeholder="Ej: Colombia"></div></div>
-            <div class="form-group" style="grid-column:1/-1"><label class="form-label"><i class="fas fa-file-pen"></i> Describa el origen (si seleccionó 'Otro')</label><div class="input-wrap"><textarea name="detalleOrigen" placeholder="Detalle del origen de fondos cuando aplique"></textarea></div></div>
-          </div>
-        </div>
-
-        <!-- PEP / FATCA / Riesgos -->
-        <div class="section-card">
-          <div class="section-title"><i class="fas fa-shield-halved"></i> Declaraciones</div>
-          <div class="form-grid">
-            <div class="form-group"><label class="form-label"><i class="fas fa-gavel"></i> ¿Maneja recursos públicos?</label><div class="input-wrap"><select name="recPublicos" required><option value="">Selecciona…</option><option>No</option><option>Sí</option></select></div></div>
-            <div class="form-group"><label class="form-label"><i class="fas fa-user-tie"></i> ¿Es PEP?</label><div class="input-wrap"><select name="pep" required><option value="">Selecciona…</option><option>No</option><option>Sí</option></select></div></div>
-            <div class="form-group" style="grid-column:1/-1"><label class="form-label"><i class="fas fa-circle-info"></i> Detalles PEP (si aplica)</label><div class="input-wrap"><input name="pepDetalle" placeholder="Cargo/entidad/relación"></div></div>
-            <div class="form-group"><label class="form-label"><i class="fas fa-globe"></i> ¿Residente fiscal en otro país?</label><div class="input-wrap"><select name="fatca" required><option value="">Selecciona…</option><option>No</option><option>Sí</option></select></div></div>
-            <div class="form-group"><label class="form-label"><i class="fas fa-flag-usa"></i> País/TIN (si aplica)</label><div class="input-wrap"><input name="fatcaPaisTin" placeholder="País y TIN/Tax ID"></div></div>
-            <div class="form-group"><label class="form-label"><i class="fas fa-hand-holding-usd"></i> ¿Opera frecuentemente en efectivo?</label><div class="input-wrap"><select name="efectivo" required><option value="">Selecciona…</option><option>No</option><option>Sí</option></select></div></div>
-            <div class="form-group"><label class="form-label"><i class="fas fa-paper-plane"></i> ¿Giros internacionales?</label><div class="input-wrap"><select name="giros" required><option value="">Selecciona…</option><option>No</option><option>Sí</option></select></div></div>
-            <div class="form-group"><label class="form-label"><i class="fas fa-bitcoin-sign"></i> ¿Usa criptoactivos?</label><div class="input-wrap"><select name="cripto" required><option value="">Selecciona…</option><option>No</option><option>Sí</option></select></div></div>
-          </div>
-        </div>
-
-        <div class="section-card">
-          <label class="form-label"><input type="checkbox" id="aceptoSarlaft" required> Declaro que la información es veraz y autorizo su verificación.</label>
-        </div>
-
-        <button class="btn" type="submit" style="width:100%"><i class="fas fa-floppy-disk"></i> Guardar SARLAFT</button>
-      </form>
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar hidden" id="sidebar">
+    <div class="side-header">
+      <div class="side-title"><i class="fas fa-layer-group"></i> Panel</div>
+      <button class="btn" id="closeSidebar" style="padding:6px 10px"><i class="fas fa-xmark"></i></button>
     </div>
-  </div>
 
-  <!-- ===== NUEVO: Modal CARGA DE PÓLIZAS ===== -->
-  <div class="modal" id="loaderModal" aria-hidden="true">
-    <div class="modal-content" role="dialog" aria-modal="true" style="max-width:860px">
-      <div class="modal-header">
-        <h2>Cargar pólizas</h2>
-        <p style="color:#567;font-weight:600">Sube un archivo o pega datos en JSON/CSV. Se añadirán a tu panel.</p>
-        <button class="close-modal" id="closeLoader">×</button>
+    <button class="side-btn" id="openSARLAFT">
+      <i class="fas fa-clipboard-check"></i> Tu formulario SARLAFT al día
+      <span class="side-badge bad" id="sarlaftBadge">Pendiente</span>
+    </button>
+
+    <button class="side-btn" id="openBulkPolicies">
+      <i class="fas fa-folder-open"></i> Tus pólizas (carga masiva)
+      <span class="side-badge" style="background:#eef6ff;color:#155a8f">Importar</span>
+    </button>
+  </aside>
+
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="app-title">
+        <div class="app-icon"><img src="logos/insurahublogo.png" alt="InsuraHub" onerror="this.remove();this.parentNode.textContent='IH'"></div>
+        <div class="app-title-text"><h1>InsuraHub</h1><p>Gestión Inteligente de Seguros</p></div>
       </div>
-
-      <div class="section-card">
-        <div class="section-title"><i class="fas fa-file-arrow-up"></i> Archivo</div>
-        <div class="form-grid">
-          <div class="form-group" style="grid-column:1/-1">
-            <div class="input-wrap"><i class="fas fa-upload"></i><input type="file" id="fileInput" accept=".json,.csv,.txt"></div>
-            <div class="hint">Formatos soportados: .json (lista de objetos) o .csv con encabezados.</div>
-          </div>
-        </div>
+      <div class="user-actions">
+        <button class="btn" id="addPolicyBtn"><i class="fas fa-plus"></i> Nueva Póliza</button>
+        <button class="btn btn-outline" id="loginBtn"><i class="fas fa-user"></i> Iniciar Sesión</button>
       </div>
+    </header>
 
-      <div class="section-card">
-        <div class="section-title"><i class="fas fa-clipboard-list"></i> Pegar datos (JSON o CSV)</div>
-        <div class="form-group">
-          <div class="input-wrap"><textarea id="pasteArea" placeholder='JSON ejemplo:
-[
-  {"type":"auto","typeName":"Seguro de Auto","insurer":"allianz","policyNumber":"#AUTO-123","expirationDate":"2026-01-01","insuredId":"111","insuredName":"Juan","coverage":200000000,"conditions":"Texto"},
-  {"type":"home","typeName":"Seguro de Hogar","insurer":"axa","policyNumber":"#HOME-456","expirationDate":"2026-02-01","insuredId":"222","insuredName":"María","coverage":300000000,"conditions":"Texto"}
-]
-
-CSV ejemplo:
-type,typeName,insurer,policyNumber,expirationDate,insuredId,insuredName,coverage,conditions
-auto,Seguro de Auto,allianz,#AUTO-123,2026-01-01,111,Juan,200000000,Texto
-home,Seguro de Hogar,axa,#HOME-456,2026-02-01,222,María,300000000,Texto
-'></textarea></div>
-        </div>
-        <button class="btn" id="processInput" style="width:100%"><i class="fas fa-check"></i> Procesar</button>
-      </div>
+    <!-- Stats -->
+    <div class="stats-bar">
+      <div class="stat-item"><div class="stat-value" id="totalPolicies">6</div><div class="stat-label">Pólizas Activas</div></div>
+      <div class="stat-item"><div class="stat-value" id="expiringPolicies">2</div><div class="stat-label">Por Vencer (&lt;30 días)</div></div>
+      <div class="stat-item"><div class="stat-value" id="totalCoverage">$985.000.000</div><div class="stat-label">Cobertura Total</div></div>
     </div>
+
+    <!-- Grid pólizas -->
+    <div class="card-grid" id="policyGrid"></div>
   </div>
 
-  <!-- ===== Modales originales (Login, Nueva Póliza, Renovación, Condiciones, Pago, Success) ===== -->
-  <!-- (Pego aquí íntegros tus modales y scripts anteriores, SIN CAMBIOS en funcionalidad) -->
-
+  <!-- ===== Modales ===== -->
   <!-- Login -->
   <div class="modal" id="loginModal" aria-hidden="true">
     <div class="modal-content" role="dialog" aria-modal="true">
@@ -537,4 +287,668 @@ home,Seguro de Hogar,axa,#HOME-456,2026-02-01,222,María,300000000,Texto
           <div class="section-title"><i class="fas fa-id-card"></i> Datos del asegurado</div>
           <div class="form-grid">
             <div class="form-group"><label class="form-label" for="insuredId"><i class="fas fa-hashtag"></i> Identificación</label><div class="input-wrap"><input type="text" id="insuredId" required placeholder="Ej: 1234567890"></div><div class="hint">Cédula o NIT del titular</div></div>
-            <div class="form-group"><label class="form-label" for="insuredName"><i class="fas fa-user"></i> Nombre y Apellidos</label><div class="input-wrap"><input type
+            <div class="form-group"><label class="form-label" for="insuredName"><i class="fas fa-user"></i> Nombre y Apellidos</label><div class="input-wrap"><input type="text" id="insuredName" required placeholder="Nombre completo"></div></div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-title"><i class="fas fa-shield-halved"></i> Datos de la póliza</div>
+          <div class="form-grid">
+            <div class="form-group"><label class="form-label" for="insuranceType"><i class="fas fa-rectangle-list"></i> Tipo de Seguro</label><div class="input-wrap"><select id="insuranceType" required><option value="">Selecciona un tipo</option><option value="auto">Seguro de Auto</option><option value="home">Seguro de Hogar</option><option value="life">Seguro de Vida</option><option value="health">Seguro Médico</option><option value="travel">Seguro de Viaje</option><option value="business">Seguro de Negocio</option></select></div></div>
+            <div class="form-group"><label class="form-label" for="policyNumber"><i class="fas fa-hashtag"></i> Número de Póliza</label><div class="input-wrap"><input type="text" id="policyNumber" required placeholder="Ej: #AUTO-123456"></div></div>
+            <div class="form-group"><label class="form-label" for="coverageAmount"><i class="fas fa-coins"></i> Valor de Cobertura (COP)</label><div class="input-wrap"><input type="number" id="coverageAmount" required placeholder="Ej: 500000000"></div></div>
+            <div class="form-group"><label class="form-label" for="expirationDate"><i class="fas fa-calendar-day"></i> Fecha de Vencimiento</label><div class="input-wrap"><input type="date" id="expirationDate" required></div></div>
+            <div class="form-group"><label class="form-label" for="insurer"><i class="fas fa-building-shield"></i> Aseguradora</label><div class="input-wrap"><select id="insurer" required><option value="">Selecciona una aseguradora</option><option value="allianz">Allianz</option><option value="axa">AXA</option><option value="generali">Generali</option><option value="cigna">Cigna</option><option value="zurich">Zurich</option><option value="liberty">Liberty Mutual</option></select></div></div>
+            <div class="form-group" style="grid-column:1/-1"><label class="form-label" for="policyConditions"><i class="fas fa-file-lines"></i> Condiciones de la Póliza</label><div class="input-wrap"><textarea id="policyConditions" placeholder="Describe exclusiones, deducibles, límites, y condiciones particulares..."></textarea></div></div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn" style="width:100%"><i class="fas fa-floppy-disk"></i> Registrar Póliza</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Renovación (tal cual versión previa) -->
+  <div class="modal" id="renewalModal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h2>Renovar Póliza</h2>
+        <p>Selecciona una aseguradora y compara en tiempo real</p>
+        <button class="close-modal" id="closeRenewalModal">×</button>
+      </div>
+      <div class="renewal-layout">
+        <div class="renewal-col">
+          <h3>Póliza a renovar</h3>
+          <div class="detail-value" id="renewalPolicyNumber" style="margin-bottom:8px">#AUTO-123456</div>
+
+          <h3>Selecciona una aseguradora</h3>
+          <div class="renewal-options" id="renewalOptions"></div>
+
+          <button type="button" class="btn" style="width:100%;margin-top:12px" id="confirmRenewal">
+            <i class="fas fa-check-circle"></i> Confirmar Renovación
+          </button>
+          <div class="pay-help" id="payHint" style="display:none;margin-top:8px">
+            <i class="fas fa-credit-card"></i> Forma de pago seleccionada: <strong id="payMethodLabel">—</strong>
+          </div>
+        </div>
+
+        <div class="renewal-col">
+          <div class="compare-title"><i class="fas fa-scale-balanced"></i> Comparación rápida</div>
+          <div id="currentPolicyChip" style="margin-bottom:8px"></div>
+          <div class="table-responsive">
+            <table class="compare-table" id="compareTable">
+              <thead>
+                <tr><th>Aseguradora</th><th>Precio</th><th>Cobertura</th><th>Deducible</th><th>Extras</th><th>Detalle</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Condiciones -->
+  <div class="modal" id="conditionsModal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h2 id="conditionsTitle">Condiciones</h2>
+        <p id="conditionsSubtitle" style="color:#567;font-weight:600"></p>
+        <button class="close-modal" id="closeConditionsModal">×</button>
+      </div>
+      <div class="conditions-text" id="conditionsBody" style="white-space:pre-wrap;background:#fff;border:1px solid rgba(52,152,219,.15);border-radius:12px;padding:14px;box-shadow:var(--depth-1)"></div>
+    </div>
+  </div>
+
+  <!-- Pago -->
+  <div class="modal" id="paymentModal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h2>Formas de Pago</h2>
+        <p id="paymentSubtitle" style="color:#567;font-weight:600">Selecciona y completa los datos</p>
+        <button class="close-modal" id="closePaymentModal">×</button>
+      </div>
+
+      <div class="pay-tabs" id="payTabs">
+        <button class="pay-tab active" data-method="tarjeta"><i class="fas fa-credit-card"></i> Tarjeta</button>
+        <button class="pay-tab" data-method="pse"><i class="fas fa-building-columns"></i> PSE</button>
+        <button class="pay-tab" data-method="transferencia"><i class="fas fa-money-bill-transfer"></i> Transferencia</button>
+        <button class="pay-tab" data-method="efectivo"><i class="fas fa-coins"></i> Efectivo</button>
+      </div>
+
+      <div id="payForms">
+        <div class="pay-form" data-method="tarjeta">
+          <div class="form-group"><label class="form-label">Nombre en la tarjeta</label><div class="input-wrap"><i class="fas fa-user"></i><input type="text" id="cardName" placeholder="Como aparece en la tarjeta"></div></div>
+          <div class="form-group"><label class="form-label">Número de tarjeta</label><div class="input-wrap"><i class="fas fa-credit-card"></i><input type="text" id="cardNumber" placeholder="#### #### #### ####" inputmode="numeric" maxlength="19"></div></div>
+          <div class="inline-2">
+            <div class="form-group"><label class="form-label">Vencimiento (MM/AA)</label><div class="input-wrap"><i class="fas fa-calendar"></i><input type="text" id="cardExp" placeholder="MM/AA" maxlength="5"></div></div>
+            <div class="form-group"><label class="form-label">CVV</label><div class="input-wrap"><i class="fas fa-key"></i><input type="password" id="cardCVV" placeholder="***" maxlength="4"></div></div>
+          </div>
+        </div>
+
+        <div class="pay-form" data-method="pse" style="display:none">
+          <div class="form-group"><label class="form-label">Banco</label>
+            <div class="input-wrap"><i class="fas fa-building-columns"></i>
+              <select id="pseBank"><option value="">Selecciona tu banco</option><option>Bancolombia</option><option>Davivienda</option><option>Banco de Bogotá</option><option>BBVA</option><option>Nequi</option></select>
+            </div>
+          </div>
+          <div class="form-group"><label class="form-label">Correo del titular</label><div class="input-wrap"><i class="fas fa-envelope"></i><input type="email" id="pseEmail" placeholder="tucorreo@dominio.com"></div></div>
+        </div>
+
+        <div class="pay-form" data-method="transferencia" style="display:none">
+          <div class="conditions-text" style="margin-bottom:10px">
+            Transferir a:<br>
+            - Banco: Bancolombia (AHORROS)<br>
+            - No. Cuenta: 123-456789-01<br>
+            - Titular: InsuraHub S.A.S<br>
+            - NIT: 900.123.456-7
+          </div>
+          <div class="form-group"><label class="form-label">Adjunta comprobante (opcional)</label><div class="input-wrap"><i class="fas fa-paperclip"></i><input type="file" id="trfReceipt" accept="image/*,application/pdf"></div></div>
+        </div>
+
+        <div class="pay-form" data-method="efectivo" style="display:none">
+          <div class="conditions-text">Paga en puntos aliados (Efecty/Baloto). Recibirás un código al confirmar la renovación.</div>
+        </div>
+      </div>
+
+      <button class="btn" id="savePayment" style="width:100%;margin-top:10px"><i class="fas fa-floppy-disk"></i> Guardar forma de pago</button>
+    </div>
+  </div>
+
+  <!-- Success -->
+  <div class="modal" id="successModal" aria-hidden="true" style="z-index:10000">
+    <div class="success-card" role="alert" aria-live="polite">
+      <div class="checkmark"><svg viewBox="0 0 64 64"><path class="path" d="M16 34 L28 46 L50 22"></path></svg></div>
+      <div id="successMessage">¡Operación exitosa!</div>
+      <div id="successSub"></div>
+    </div>
+  </div>
+
+  <!-- ===== NUEVOS MODALES SIDEBAR ===== -->
+  <!-- SARLAFT -->
+  <div class="modal" id="sarlaftModal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h2>Formulario SARLAFT</h2>
+        <p style="color:#567;font-weight:600">Completa todos los campos para quedar “al día”.</p>
+        <button class="close-modal" id="closeSarlaftModal">×</button>
+      </div>
+
+      <form id="sarlaftForm">
+        <!-- Identificación -->
+        <div class="section-card">
+          <div class="section-title"><i class="fas fa-user-shield"></i> Identificación</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-id-card"></i> Tipo de persona</label>
+              <div class="input-wrap">
+                <select name="tipoPersona" required>
+                  <option value="">Selecciona</option>
+                  <option>Natural</option>
+                  <option>Jurídica</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-globe"></i> País de residencia</label>
+              <div class="input-wrap">
+                <select name="pais" required>
+                  <option value="">Selecciona</option>
+                  <option>Colombia</option><option>Estados Unidos</option><option>México</option>
+                  <option>Chile</option><option>Perú</option><option>España</option><option>Otro</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-city"></i> Ciudad</label>
+              <div class="input-wrap"><input name="ciudad" placeholder="Ej: Bogotá" required></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-briefcase"></i> Ocupación / Actividad</label>
+              <div class="input-wrap">
+                <select name="ocupacion" required>
+                  <option value="">Selecciona</option>
+                  <option>Empleado</option><option>Independiente</option><option>Empresario</option>
+                  <option>Estudiante</option><option>Pensionado</option><option>Otro</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Origen de fondos -->
+        <div class="section-card">
+          <div class="section-title"><i class="fas fa-sack-dollar"></i> Origen y destino de fondos</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-piggy-bank"></i> Origen principal de ingresos</label>
+              <div class="input-wrap">
+                <select name="origenIngresos" required>
+                  <option value="">Selecciona</option>
+                  <option>Salario</option><option>Honorarios</option><option>Rentas</option>
+                  <option>Negocio propio</option><option>Inversiones</option><option>Otros</option>
+                </select>
+              </div>
+              <div class="hint">Selecciona el origen predominante</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-route"></i> Destino habitual de fondos</label>
+              <div class="input-wrap">
+                <select name="destinoFondos" required>
+                  <option value="">Selecciona</option>
+                  <option>Gastos personales</option><option>Pago de deudas</option>
+                  <option>Ahorro/Inversión</option><option>Negocio</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-coins"></i> Ingresos mensuales (rango)</label>
+              <div class="input-wrap">
+                <select name="ingresos" required>
+                  <option value="">Selecciona</option>
+                  <option>&lt; $2.000.000</option><option>$2M – $5M</option><option>$5M – $10M</option>
+                  <option>$10M – $20M</option><option>&gt; $20M</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-receipt"></i> Egresos mensuales (rango)</label>
+              <div class="input-wrap">
+                <select name="egresos" required>
+                  <option value="">Selecciona</option>
+                  <option>&lt; $1.000.000</option><option>$1M – $3M</option><option>$3M – $6M</option>
+                  <option>$6M – $12M</option><option>&gt; $12M</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cumplimiento -->
+        <div class="section-card">
+          <div class="section-title"><i class="fas fa-user-lock"></i> Declaraciones y cumplimiento</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-scale-balanced"></i> ¿Es usted PEP (o familiar/relacionado)?</label>
+              <div class="input-wrap"><select name="pep" required><option value="">Selecciona</option><option>No</option><option>Sí</option></select></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-flag-usa"></i> ¿Sujeto a FATCA/CRS (residencia fiscal exterior)?</label>
+              <div class="input-wrap"><select name="fatca" required><option value="">Selecciona</option><option>No</option><option>Sí</option></select></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-bitcoin-sign"></i> ¿Opera con criptoactivos?</label>
+              <div class="input-wrap"><select name="cripto" required><option value="">Selecciona</option><option>No</option><option>Sí</option></select></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-book"></i> ¿Declara renta en Colombia?</label>
+              <div class="input-wrap"><select name="renta" required><option value="">Selecciona</option><option>Sí</option><option>No</option></select></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-list-check"></i> Listas restrictivas/Sanciones</label>
+              <div class="input-wrap"><select name="listas" required><option value="">Selecciona</option><option>Ninguna</option><option>Observado</option><option>En revisión</option></select></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-people-arrows"></i> ¿Tiene beneficiarios/terceros?</label>
+              <div class="input-wrap"><select name="beneficiarios" required><option value="">Selecciona</option><option>No</option><option>Sí</option></select></div>
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label class="form-label"><i class="fas fa-clipboard"></i> Observaciones (opcional)</label>
+              <div class="input-wrap"><textarea name="observaciones" placeholder="Comentarios adicionales..."></textarea></div>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn" style="width:100%"><i class="fas fa-circle-check"></i> Guardar SARLAFT</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Carga Masiva de Pólizas -->
+  <div class="modal" id="bulkPoliciesModal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h2>Cargar pólizas (CSV)</h2>
+        <p style="color:#567;font-weight:600">Importa varias pólizas y se agregarán al panel.</p>
+        <button class="close-modal" id="closeBulkPolicies">×</button>
+      </div>
+
+      <div class="section-card">
+        <div class="section-title"><i class="fas fa-file-csv"></i> Plantilla</div>
+        <p style="margin-bottom:10px">Columnas requeridas: <strong>policyNumber,type,insurer,insuredId,insuredName,coverage,expirationDate</strong> — opcional: <strong>conditions</strong></p>
+        <button class="btn" id="downloadTemplate"><i class="fas fa-download"></i> Descargar plantilla CSV</button>
+      </div>
+
+      <div class="section-card">
+        <div class="section-title"><i class="fas fa-upload"></i> Subir archivo</div>
+        <div id="dropZone" style="padding:18px;border:2px dashed rgba(52,152,219,.35);border-radius:12px;text-align:center;background:#f8fbff">
+          Arrastra y suelta tu archivo aquí (o haz clic)
+          <input type="file" id="csvFile" accept=".csv" style="display:none">
+        </div>
+        <div id="bulkResult" style="margin-top:10px;color:#155a8f;font-weight:700"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer><p style="text-align:center;margin-top:12px;color:#fff">© 2025 InsuraHub - Todos tus seguros en un solo lugar</p></footer>
+
+  <script>
+    /* ===== Datos ===== */
+    const insurerLogos={allianz:"logos/allianz.png",axa:"logos/axa.png",generali:"logos/generali.png",cigna:"logos/cigna.png",zurich:"logos/zurich.png",liberty:"logos/liberty.png"};
+    const insurerNames={allianz:"Allianz",axa:"AXA",generali:"Generali",cigna:"Cigna",zurich:"Zurich",liberty:"Liberty Mutual"};
+    const insurerPhones={allianz:"+57 01 8000 510 510",axa:"+57 01 8000 123 456",generali:"+57 01 8000 345 678",cigna:"+57 01 8000 765 432",zurich:"+57 01 8000 111 222",liberty:"+57 01 8000 999 888"};
+    const renewalPrices={allianz:850000,axa:920000,generali:780000,cigna:950000,zurich:890000,liberty:810000};
+    const coverageAmounts={allianz:200000000,axa:220000000,generali:180000000,cigna:240000000,zurich:210000000,liberty:190000000};
+    const offerConditions={
+      allianz:{deductible:"10% o $2.000.000",extras:"Asistencia 24/7 + carro sustituto",details:"- Cobertura daños y pérdida total.\n- Deducible: 10% o $2.000.000.\n- Asistencia vial 24/7, grúa, cerrajería.\n- Carro sustituto 5 días por siniestro.\n- Exclusiones: embriaguez, uso competitivo."},
+      axa:{deductible:"8% o $1.800.000",extras:"Vidrios sin deducible",details:"- Cobertura ampliada + RC.\n- Deducible: 8% o $1.800.000.\n- Reposición de vidrios sin deducible.\n- Asistencia jurídica.\n- Exclusiones: dolo, carreras."},
+      generali:{deductible:"12% o $2.200.000",extras:"Revisión anual preventiva",details:"- Cobertura estándar integral.\n- Deducible: 12% o $2.200.000.\n- Revisión mecánica preventiva anual.\n- Cobertura a accesorios declarados.\n- Exclusiones: accesorios no declarados."},
+      cigna:{deductible:"10% o $2.500.000",extras:"Cobertura médica ampliada",details:"- Enfoque salud/viaje.\n- Deducible: 10% o $2.500.000.\n- Gastos médicos ampliados.\n- Telemedicina.\n- Exclusiones: preexistencias según plan."},
+      zurich:{deductible:"9% o $2.000.000",extras:"RC ampliada + asistencia jurídica",details:"- Cobertura integral + RC ampliada.\n- Deducible: 9% o $2.000.000.\n- Asistencia jurídica.\n- Coberturas internacionales acotadas.\n- Exclusiones: uso comercial sin declaración."},
+      liberty:{deductible:"10% o $1.900.000",extras:"Pérdida de llaves + grúa",details:"- Cobertura estándar.\n- Deducible: 10% o $1.900.000.\n- Pérdida de llaves.\n- Grúa 2 eventos/año.\n- Exclusiones: desgaste normal."}
+    };
+    const typeIcons={auto:"car",home:"home",life:"heart",health:"heartbeat",travel:"plane",business:"briefcase"};
+
+    /* ===== Carga inteligente de logos ===== */
+    const LOGO_EXTS=['png','svg','jpg','jpeg','webp','PNG','SVG','JPG','JPEG','WEBP'];
+    function logoCandidates(key){
+      const base=(key||'').toLowerCase(),cap=base.charAt(0).toUpperCase()+base.slice(1),upper=base.toUpperCase();
+      const variants=[base,cap,upper,`${base}-logo`,`logo-${base}`]; const paths=[];
+      variants.forEach(n=>LOGO_EXTS.forEach(ext=>paths.push(`logos/${n}.${ext}`)));
+      return paths;
+    }
+    function loadLogoSmart(img){
+      const key=(img.dataset.insurer||'').toLowerCase(); const friendly=img.dataset.friendly||key||'Logo';
+      const first=(typeof insurerLogos!=='undefined'&&insurerLogos[key])?insurerLogos[key]:null;
+      const list=[...new Set([first,...logoCandidates(key)].filter(Boolean))];
+      let i=-1; const next=()=>{i++; if(i<list.length){img.onerror=next; img.src=list[i];} else {img.onerror=null; img.style.display='none'; const ph=document.createElement('div'); ph.className='logo-placeholder'; ph.textContent=friendly; img.parentNode.appendChild(ph);} };
+      next();
+    }
+
+    /* ===== Utilidades ===== */
+    const fmtCOP=n=>new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',minimumFractionDigits:0,maximumFractionDigits:0}).format(n);
+    const addDays=(d,n)=>{const r=new Date(d);r.setDate(r.getDate()+n);return r};
+    const addYears=(d,n)=>{const r=new Date(d);r.setFullYear(r.getFullYear()+n);return r};
+    const iso=d=>d.toISOString().split('T')[0];
+    const human=s=>new Date(s).toLocaleDateString('es-ES',{year:'numeric',month:'long',day:'numeric'});
+    const tel=i=>insurerPhones[i]||"N/A";
+    const daysLeft=s=>{const t=new Date();t.setHours(0,0,0,0);const diff=new Date(s)-t;return Math.max(0,Math.ceil(diff/86400000))};
+    const statusClass=d=>d>180?"good":d>30?"warning":"danger";
+    const ringClass=d=>d>180?"status-ring-good":d>30?"status-ring-warning":"status-ring-danger";
+    const ringProg=d=>Math.min(100,(d/365)*100);
+
+    /* ===== Datos demo ===== */
+    const today=new Date();
+    const expirationDates=[iso(addDays(today,28)),iso(addDays(today,120)),iso(addDays(today,230)),iso(addDays(today,350)),iso(addDays(today,15)),iso(addDays(today,80))];
+    const policies=[
+      {id:1,type:"auto",typeName:"Seguro de Auto",insurer:"allianz",insurerName:"Allianz",policyNumber:"#AUTO-789456",expirationDate:expirationDates[0],insuredId:"1234567890",insuredName:"Juan Pérez",coverage:200000000,conditions:"- Deducible: 10% del siniestro o $2.000.000, lo que sea mayor.\n- Cobertura pérdida total/daños parciales.\n- Asistencia en carretera 24/7.\n- Exclusiones: conducción en estado de embriaguez, uso competitivo."},
+      {id:2,type:"home",typeName:"Seguro de Hogar",insurer:"axa",insurerName:"AXA",policyNumber:"#HOME-123789",expirationDate:expirationDates[1],insuredId:"0987654321",insuredName:"María García",coverage:350000000,conditions:"- Cobertura incendio, terremoto y robo calificado.\n- Deducible: 1% del valor asegurado por evento.\n- Límites para contenidos: $50.000.000.\n- Exclusiones: humedad por falta de mantenimiento."},
+      {id:3,type:"life",typeName:"Seguro de Vida",insurer:"generali",insurerName:"Generali",policyNumber:"#LIFE-456123",expirationDate:expirationDates[2],insuredId:"4561237890",insuredName:"Carlos López",coverage:150000000,conditions:"- Fallecimiento por cualquier causa (carencia 90 días para enfermedad).\n- Anticipo por enfermedad terminal 30%.\n- Exclusiones: suicidio dentro de los primeros 2 años."},
+      {id:4,type:"health",typeName:"Seguro Médico",insurer:"cigna",insurerName:"Cigna",policyNumber:"#MED-987321",expirationDate:expirationDates[3],insuredId:"7890123456",insuredName:"Ana Rodríguez",coverage:120000000,conditions:"- Red de prestadores nacional.\n- Copago por consulta general: $40.000.\n- Preexistencias cubiertas después de 12 meses.\n- Exclusiones: procedimientos estéticos."},
+      {id:5,type:"travel",typeName:"Seguro de Viaje",insurer:"zurich",insurerName:"Zurich",policyNumber:"#TRAV-654987",expirationDate:expirationDates[4],insuredId:"3216549870",insuredName:"Laura Martínez",coverage:50000000,conditions:"- Asistencia médica internacional hasta $50.000.000.\n- Repatriación sanitaria y pérdida de equipaje.\n- Franquicia por evento: $100.000."},
+      {id:6,type:"business",typeName:"Seguro de Negocio",insurer:"liberty",insurerName:"Liberty Mutual",policyNumber:"#BUSI-321654",expirationDate:expirationDates[5],insuredId:"6549873210",insuredName:"Pedro Sánchez",coverage:115000000,conditions:"- Responsabilidad civil comercial hasta $500.000.000.\n- Interrupción de negocio (30 días carencia).\n- Deducible: $1.500.000 por evento."}
+    ];
+
+    /* ===== DOM ===== */
+    const qs=s=>document.querySelector(s),qsa=s=>document.querySelectorAll(s);
+    const sidebar=qs('#sidebar'); const toggleSidebar=qs('#toggleSidebar'); const closeSidebar=qs('#closeSidebar');
+    const sarlaftBadge=qs('#sarlaftBadge');
+    const openSARLAFTBtn=qs('#openSARLAFT');
+    const sarlaftModal=qs('#sarlaftModal'); const closeSarlaftModal=qs('#closeSarlaftModal');
+    const sarlaftForm=qs('#sarlaftForm');
+
+    const openBulkBtn=qs('#openBulkPolicies'); const bulkModal=qs('#bulkPoliciesModal'); const closeBulk=qs('#closeBulkPolicies');
+    const downloadTemplate=qs('#downloadTemplate'); const csvFile=qs('#csvFile'); const dropZone=qs('#dropZone'); const bulkResult=qs('#bulkResult');
+
+    const loginBtn=qs('#loginBtn'); const loginModal=qs('#loginModal'); const addPolicyBtn=qs('#addPolicyBtn'); const policyModal=qs('#policyModal');
+    const renewalModal=qs('#renewalModal'); const conditionsModal=qs('#conditionsModal'); const paymentModal=qs('#paymentModal'); const successModal=qs('#successModal');
+
+    const policyForm=qs('#policyForm'); const renewalOptions=qs('#renewalOptions'); const compareTableBody=qs('#compareTable tbody');
+    const currentPolicyChip=qs('#currentPolicyChip'); const confirmRenewalBtn=qs('#confirmRenewal');
+    const policyGrid=qs('#policyGrid'); const totalPoliciesEl=qs('#totalPolicies'); const expiringPoliciesEl=qs('#expiringPolicies'); const totalCoverageEl=qs('#totalCoverage');
+    const payTabs=qs('#payTabs'); const payHint=qs('#payHint'); const payMethodLabel=qs('#payMethodLabel');
+
+    let currentRenewPolicyId=null; let selectedPayment={method:null};
+
+    /* ===== Sidebar toggle ===== */
+    toggleSidebar.addEventListener('click',()=> sidebar.classList.toggle('hidden'));
+    closeSidebar.addEventListener('click',()=> sidebar.classList.add('hidden'));
+
+    /* ===== Modals open/close ===== */
+    const bindClose=(btnSel,modal)=>qs(btnSel).addEventListener('click',()=>{ modal.style.display='none'; });
+    bindClose('#closeLoginModal',loginModal);
+    bindClose('#closePolicyModal',policyModal);
+    bindClose('#closeRenewalModal',renewalModal);
+    bindClose('#closeConditionsModal',conditionsModal);
+    bindClose('#closePaymentModal',paymentModal);
+
+    loginBtn.addEventListener('click',()=>{ loginModal.style.display='flex'; });
+    addPolicyBtn.addEventListener('click',()=>{ policyModal.style.display='flex'; });
+
+    [loginModal,policyModal,renewalModal,conditionsModal,paymentModal,successModal,sarlaftModal,bulkModal]
+      .forEach(m=>m.addEventListener('click',e=>{ if(e.target===m) m.style.display='none'; }));
+
+    // Social login (stubs)
+    qs('#loginGoogle')?.addEventListener('click',()=>alert('Continuar con Google (conectar OAuth aquí)'));
+    qs('#loginFacebook')?.addEventListener('click',()=>alert('Continuar con Facebook (conectar OAuth aquí)'));
+    qs('#loginApple')?.addEventListener('click',()=>alert('Continuar con Apple (conectar OAuth aquí)'));
+
+    const openConditions=(t,st,b)=>{qs('#conditionsTitle').textContent=t||'Condiciones';qs('#conditionsSubtitle').textContent=st||'';qs('#conditionsBody').textContent=b||'Sin información.';conditionsModal.style.display='flex';};
+    const toast=(t,s)=>{qs('#successMessage').textContent=t||'¡Operación exitosa!';qs('#successSub').textContent=s||'';successModal.style.display='flex';setTimeout(()=>successModal.style.display='none',1600);};
+
+    /* ===== Render tarjetas ===== */
+    function renderPolicies(){
+      policyGrid.innerHTML='';let exp=0,total=0;
+      policies.forEach(p=>{
+        const d=daysLeft(p.expirationDate); if(d<=30) exp++; total+=p.coverage;
+        const card=document.createElement('div'); card.className=`card status-${statusClass(d)}`;
+        card.innerHTML=`
+          <div class="card-header">
+            <div class="insurer-logo-header">
+              <img alt="${p.insurerName}" data-insurer="${p.insurer}" data-friendly="${p.insurerName}">
+            </div>
+            <div class="header-right">
+              <div class="insurance-type">${p.typeName}</div>
+              <div class="insurance-icon"><i class="fas fa-${typeIcons[p.type]}"></i></div>
+            </div>
+          </div>
+
+          <div class="card-details">
+            <div class="detail-item"><span class="detail-label">Asegurado:</span><span class="detail-value">${p.insuredName}</span></div>
+            <div class="detail-item"><span class="detail-label">Vencimiento:</span><span class="detail-value">${new Date(p.expirationDate).toLocaleDateString('es-ES')}</span></div>
+            <div class="detail-item"><span class="detail-label">Cobertura:</span><span class="detail-value">${fmtCOP(p.coverage)}</span></div>
+
+            <div class="contact-line"><i class="fas fa-phone"></i><span>Contacto:</span><span style="font-weight:900">${tel(p.insurer)}</span></div>
+
+            <div class="ring-row">
+              <div class="status-container">
+                <div class="status-ring ${ringClass(d)}" style="--progress:${ringProg(d)}%">
+                  <div class="status-ring-inner">${d}</div>
+                </div>
+                <div class="days-text">días restantes</div>
+              </div>
+              <div class="ring-actions">
+                <button class="btn btn-soft conditions-btn"><i class="fas fa-file-lines"></i> Condiciones actuales</button>
+                <button class="btn ${d>180?'btn-success':(d>30?'btn-warning':'btn-danger')} renew-btn" data-policy-id="${p.id}">
+                  <i class="fas fa-sync-alt"></i> Renovar
+                </button>
+              </div>
+            </div>
+          </div>`;
+        policyGrid.appendChild(card);
+
+        const hdrLogo=card.querySelector('.insurer-logo-header img'); if(hdrLogo){ loadLogoSmart(hdrLogo); }
+        card.querySelector('.conditions-btn').addEventListener('click',()=>openConditions('Condiciones de la Póliza',`${p.policyNumber} · ${p.insurerName}`,p.conditions));
+        card.querySelector('.renew-btn').addEventListener('click',()=>openRenewal(p));
+      });
+      totalPoliciesEl.textContent=policies.length; expiringPoliciesEl.textContent=exp; totalCoverageEl.textContent=fmtCOP(total);
+    }
+
+    /* ===== Renovación ===== */
+    function highlightCheapest(){const opts=[...qsa('.insurer-option')];let m=Infinity,el=null;opts.forEach(o=>{const p=+o.dataset.price||0;if(p<m){m=p;el=o;}});opts.forEach(o=>o.classList.remove('cheapest'));if(el)el.classList.add('cheapest');}
+    function highlightRow(k){compareTableBody.querySelectorAll('tr').forEach(r=>r.classList.remove('selected-row'));const r=compareTableBody.querySelector(`tr[data-insurer="${k}"]`);if(r)r.classList.add('selected-row');}
+
+    function renderRenewalOptions(keys){
+      renewalOptions.innerHTML='';
+      keys.forEach(k=>{
+        const div=document.createElement('div');
+        div.className='insurer-option'; div.tabIndex=0; div.setAttribute('role','button'); div.dataset.insurer=k; div.dataset.price=renewalPrices[k];
+        div.innerHTML=`
+          <div class="insurer-logo-small"><img alt="${insurerNames[k]}" data-insurer="${k}" data-friendly="${insurerNames[k]}"></div>
+          <div class="insurer-details"><div>${insurerNames[k]}</div><div class="coverage-amount">Cobertura: ${fmtCOP(coverageAmounts[k])}</div></div>
+          <div class="insurer-price">${fmtCOP(renewalPrices[k])}</div>`;
+        renewalOptions.appendChild(div);
+        const img=div.querySelector('img'); if(img){ loadLogoSmart(img); }
+      });
+      highlightCheapest();
+    }
+
+    function buildCompareTable(keys,policy){
+      compareTableBody.innerHTML='';
+      keys.forEach(k=>{
+        const tr=document.createElement('tr'); tr.dataset.insurer=k;
+        const cond=offerConditions[k]||{};
+        tr.innerHTML=`
+          <td><div style="display:flex;align-items:center;gap:8px">
+                <img alt="${insurerNames[k]}" data-insurer="${k}" data-friendly="${insurerNames[k]}">
+                <strong>${insurerNames[k]}</strong>
+              </div></td>
+          <td>${fmtCOP(renewalPrices[k])}</td>
+          <td>${fmtCOP(coverageAmounts[k])}</td>
+          <td>${cond.deductible||'-'}</td>
+          <td>${cond.extras||'-'}</td>
+          <td><div class="table-actions"><button class="btn-mini details" data-key="${k}"><i class="fas fa-eye"></i> Ver detalles</button></div></td>`;
+        compareTableBody.appendChild(tr);
+        const img=tr.querySelector('img'); if(img){ loadLogoSmart(img); }
+      });
+      qs('#compareTable').onclick=e=>{
+        const btn=e.target.closest('button.details'); if(!btn) return;
+        const k=btn.dataset.key;
+        openConditions(`Condiciones de la oferta · ${insurerNames[k]}`,`Propuesta para ${policy.policyNumber}`,(offerConditions[k]||{}).details||'Sin detalles.');
+      };
+    }
+
+    function selectInsurerOption(el){
+      if(!el) return;
+      qsa('.insurer-option').forEach(o=>{o.classList.remove('selected');o.setAttribute('aria-selected','false');});
+      el.classList.add('selected'); el.setAttribute('aria-selected','true');
+      const k=el.dataset.insurer; highlightRow(k);
+      qs('#paymentSubtitle').textContent=`Método para ${insurerNames[k]}`; paymentModal.style.display='flex';
+    }
+    renewalOptions.addEventListener('click',e=>{const el=e.target.closest('.insurer-option');if(!el)return;selectInsurerOption(el);});
+    renewalOptions.addEventListener('keydown',e=>{const el=e.target.closest('.insurer-option');if(!el)return;if(e.key==='Enter'||e.key===' '){e.preventDefault();selectInsurerOption(el);}});
+
+    function openRenewal(p){
+      currentRenewPolicyId=p.id; qs('#renewalPolicyNumber').textContent=p.policyNumber;
+      selectedPayment={method:null}; payHint.style.display='none'; payMethodLabel.textContent='—';
+      const keys=Object.keys(insurerNames);
+      renderRenewalOptions(keys);
+      currentPolicyChip.innerHTML=`<span class="pill">Actual: ${p.insurerName} · Cobertura ${fmtCOP(p.coverage)} · Vence ${new Date(p.expirationDate).toLocaleDateString('es-ES')} <span style="font-size:11px;font-weight:800;color:#2cb56f;margin-left:6px">vigente</span></span>`;
+      buildCompareTable(keys,p);
+      renewalModal.style.display='flex';
+    }
+
+    /* Pago */
+    payTabs.addEventListener('click',e=>{
+      const tab=e.target.closest('.pay-tab'); if(!tab) return;
+      qsa('.pay-tab').forEach(t=>t.classList.remove('active')); tab.classList.add('active');
+      const m=tab.dataset.method; qsa('.pay-form').forEach(f=>f.style.display=f.dataset.method===m?'block':'none');
+    });
+    qs('#savePayment').addEventListener('click',()=>{
+      const m=qs('.pay-tab.active')?.dataset.method; if(!m){alert('Selecciona un método de pago.');return;}
+      if(m==='tarjeta'){
+        const n=qs('#cardNumber').value.replace(/\s+/g,''),nm=qs('#cardName').value.trim(),ex=qs('#cardExp').value.trim(),cv=qs('#cardCVV').value.trim();
+        if(!nm||n.length<12||!/^\d{2}\/\d{2}$/.test(ex)||cv.length<3){alert('Completa los datos de la tarjeta correctamente.');return;}
+      }
+      if(m==='pse'&&(!qs('#pseBank').value||!qs('#pseEmail').value)){alert('Selecciona banco e ingresa correo.');return;}
+      selectedPayment.method=m; payHint.style.display='block'; payMethodLabel.textContent=m.toUpperCase(); paymentModal.style.display='none'; toast('Forma de pago guardada',`Método: ${m.toUpperCase()}`);
+    });
+
+    /* Nueva póliza */
+    policyForm.addEventListener('submit',e=>{
+      e.preventDefault();
+      const insuredId=qs('#insuredId').value,insuredName=qs('#insuredName').value,insuranceType=qs('#insuranceType').value,coverageAmount=parseInt(qs('#coverageAmount').value),expirationDate=qs('#expirationDate').value,policyNumber=qs('#policyNumber').value,insurer=qs('#insurer').value,policyConditions=qs('#policyConditions').value.trim();
+      const newP={id:policies.length+1,type:insuranceType,typeName:qs('#insuranceType').options[qs('#insuranceType').selectedIndex].text,insurer,insurerName:insurerNames[insurer]||qs('#insurer').options[qs('#insurer').selectedIndex].text,policyNumber,expirationDate,insuredId,insuredName,coverage:coverageAmount,conditions:policyConditions||'Condiciones no especificadas.'};
+      policies.push(newP); renderPolicies(); policyModal.style.display='none'; policyForm.reset(); toast('¡Póliza creada!',`Nueva póliza ${newP.policyNumber} registrada correctamente.`);
+    });
+
+    /* Confirmar renovación (+1 año) */
+    confirmRenewalBtn.addEventListener('click',()=>{
+      const sel=qs('.insurer-option.selected'); if(!sel){alert('Selecciona una aseguradora.');return;}
+      if(!selectedPayment.method){alert('Selecciona una forma de pago.');paymentModal.style.display='flex';return;}
+      const k=sel.dataset.insurer; const i=policies.findIndex(p=>p.id===currentRenewPolicyId);
+      if(i!==-1){
+        const newExp=iso(addYears(new Date(),1));
+        policies[i].expirationDate=newExp; policies[i].insurer=k; policies[i].insurerName=insurerNames[k]||policies[i].insurerName;
+        renewalModal.style.display='none'; renderPolicies();
+        toast('¡Renovación exitosa!',`Póliza ${policies[i].policyNumber} renovada con ${insurerNames[k]}. Nueva fecha: ${human(newExp)} · Pago: ${selectedPayment.method.toUpperCase()}.`);
+      }
+      currentRenewPolicyId=null; selectedPayment={method:null}; payHint.style.display='none'; payMethodLabel.textContent='—';
+    });
+
+    /* ====== Sidebar: SARLAFT ====== */
+    function sarlaftIsComplete(){
+      // Revisa todos los selects/inputs requeridos del formulario
+      const req = sarlaftForm.querySelectorAll('select[required], input[required]');
+      for(const el of req){ if(!el.value || el.value.trim()==='') return false; }
+      return true;
+    }
+    function paintSarlaftBadge(){
+      const ok=sarlaftIsComplete();
+      sarlaftBadge.textContent = ok ? 'Al día' : 'Pendiente';
+      sarlaftBadge.classList.toggle('ok', ok);
+      sarlaftBadge.classList.toggle('bad', !ok);
+    }
+    openSARLAFTBtn.addEventListener('click',()=>{ sarlaftModal.style.display='flex'; paintSarlaftBadge(); });
+    closeSarlaftModal.addEventListener('click',()=> sarlaftModal.style.display='none');
+    sarlaftForm.addEventListener('change', paintSarlaftBadge);
+    sarlaftForm.addEventListener('submit', (e)=>{ e.preventDefault(); paintSarlaftBadge(); if(sarlaftIsComplete()){ toast('SARLAFT guardado', 'Tu formulario quedó AL DÍA.'); } else { alert('Faltan campos obligatorios.'); } });
+
+    /* ====== Sidebar: Carga masiva ====== */
+    openBulkBtn.addEventListener('click',()=>{ bulkModal.style.display='flex'; bulkResult.textContent=''; });
+    closeBulk.addEventListener('click',()=> bulkModal.style.display='none');
+
+    // Descarga plantilla CSV
+    downloadTemplate.addEventListener('click',()=>{
+      const csv = "policyNumber,type,insurer,insuredId,insuredName,coverage,expirationDate,conditions\n#AUTO-0001,auto,allianz,123,Juan Perez,200000000,2026-01-15,Condiciones ejemplo...";
+      const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'plantilla_policies.csv'; a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // Zona de arrastre
+    function openFileDialog(){ csvFile.click(); }
+    dropZone.addEventListener('click', openFileDialog);
+    ['dragenter','dragover'].forEach(evt=> dropZone.addEventListener(evt, e=>{ e.preventDefault(); e.stopPropagation(); dropZone.style.borderColor='#2c80b9'; }));
+    ['dragleave','drop'].forEach(evt=> dropZone.addEventListener(evt, e=>{ e.preventDefault(); e.stopPropagation(); dropZone.style.borderColor='rgba(52,152,219,.35)'; }));
+    dropZone.addEventListener('drop', e=>{ const file = e.dataTransfer.files[0]; if(file) parseCSV(file); });
+    csvFile.addEventListener('change', e=>{ const file=e.target.files[0]; if(file) parseCSV(file); });
+
+    function parseCSV(file){
+      const reader=new FileReader();
+      reader.onload = () => {
+        const text = reader.result;
+        const rows = text.split(/\r?\n/).filter(r=>r.trim().length>0);
+        const header = rows.shift().split(',').map(s=>s.trim());
+        const needed = ['policyNumber','type','insurer','insuredId','insuredName','coverage','expirationDate'];
+        const hasAll = needed.every(k => header.includes(k));
+        if(!hasAll){ alert('La cabecera del CSV no es válida. Requeridos: '+needed.join(', ')); return; }
+
+        let added=0, errors=0;
+        rows.forEach(line=>{
+          const cols = line.split(',');
+          const rec = Object.fromEntries(header.map((h,i)=>[h, (cols[i]??'').trim()]));
+          try{
+            const newP = {
+              id: policies.length+1,
+              type: rec.type,
+              typeName: (rec.type==='auto'?'Seguro de Auto':
+                         rec.type==='home'?'Seguro de Hogar':
+                         rec.type==='life'?'Seguro de Vida':
+                         rec.type==='health'?'Seguro Médico':
+                         rec.type==='travel'?'Seguro de Viaje':
+                         rec.type==='business'?'Seguro de Negocio':'Seguro'),
+              insurer: rec.insurer,
+              insurerName: insurerNames[rec.insurer] || rec.insurer,
+              policyNumber: rec.policyNumber,
+              expirationDate: rec.expirationDate,
+              insuredId: rec.insuredId,
+              insuredName: rec.insuredName,
+              coverage: parseInt(rec.coverage)||0,
+              conditions: rec.conditions || 'Condiciones no especificadas.'
+            };
+            if(!newP.policyNumber || !newP.type || !newP.insurer || !newP.insuredId || !newP.insuredName || !newP.expirationDate){ throw new Error('Faltan campos'); }
+            policies.push(newP); added++;
+          }catch(err){ errors++; }
+        });
+        renderPolicies();
+        bulkResult.textContent = `Importadas: ${added} · Errores: ${errors}`;
+        if(added>0) toast('Importación completa', `Se agregaron ${added} pólizas.`);
+      };
+      reader.readAsText(file);
+    }
+
+    /* ===== Init ===== */
+    renderPolicies();
+
+    /* ===== Manifest + Service Worker (sin error en file://) ===== */
+    (function(){
+      const manifest={name:"InsuraHub",short_name:"InsuraHub",start_url:".",scope:".",display:"standalone",background_color:"#ffffff",theme_color:"#3498db",icons:[{src:"icons/icon-192.png",sizes:"192x192",type:"image/png"},{src:"icons/icon-512.png",sizes:"512x512",type:"image/png"}]};
+      const blob=new Blob([JSON.stringify(manifest)],{type:"application/manifest+json"});
+      const url=URL.createObjectURL(blob); const link=document.createElement('link'); link.rel='manifest'; link.href=url; document.head.appendChild(link);
+    })();
+    (function(){
+      if(!('serviceWorker' in navigator))return;
+      const isLocal=['localhost','127.0.0.1','[::1]'].includes(location.hostname);
+      const isSecure=location.protocol==='https:'||isLocal;
+      if(!isSecure){console.warn('SW deshabilitado: usa https o localhost.');return;}
+      const sw=`const C='insurahub-app-v1';const CORE=[self.location.href];
+      self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
+      self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.map(k=>k===C?null:caches.delete(k)))));self.clients.claim()});
+      self.addEventListener('fetch',e=>{const r=e.request;e.respondWith(caches.match(r).then(x=>x||fetch(r).then(res=>{if(r.method==='GET'&&res.status===200){try{const u=new URL(r.url);if(u.origin===location.origin){const cp=res.clone();caches.open(C).then(c=>c.put(r,cp))}}catch{}}return res}).catch(()=>caches.match(self.location.href))))})`;
+      const blob=new Blob([sw],{type:'text/javascript'}); const url=URL.createObjectURL(blob); navigator.serviceWorker.register(url);
+    })();
+  </script>
+</body>
+</html>
