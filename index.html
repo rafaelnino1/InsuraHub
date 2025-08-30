@@ -36,41 +36,53 @@
       display:flex; gap:16px;
     }
 
-    /* ===== Sidebar ===== */
+    /* ===== Sidebar (verde más intenso, 3D) ===== */
     .sidebar{
       width:280px; flex:0 0 280px;
-      background:linear-gradient(160deg,#ffffff 0%, #f3fff7 45%, #e9fff1 100%);
-      border:1px solid rgba(52,152,219,.14); border-radius:16px; box-shadow:var(--depth-2);
+      background:linear-gradient(180deg,#e8fff2 0%, #c9f7df 45%, #a6edc7 100%);
+      border:1px solid rgba(32,140,90,.20);
+      border-radius:16px; box-shadow:var(--depth-2);
       padding:14px; position:sticky; top:16px; height:calc(100dvh - 32px); overflow:auto;
     }
-    .side-header{display:flex;align-items:center;justify-content:flex-start;margin-bottom:10px}
-    .side-title{font-weight:900;color:#0a7f54;display:flex;align-items:center;gap:8px}
-    .side-title .badge-eco{
-      background:linear-gradient(180deg,#e9fff1,#ffffff);
-      border:1px solid rgba(10,127,84,.2); color:#0a7f54; font-weight:900;
-      padding:2px 8px; border-radius:999px; font-size:11px;
+    .side-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .side-title{font-weight:900;color:#0e7d4c;display:flex;align-items:center;gap:8px}
+    .side-logo{
+      display:flex; align-items:center; gap:10px;
+      background:rgba(255,255,255,.55);
+      border:1px solid rgba(255,255,255,.6);
+      border-radius:12px; padding:8px 10px; box-shadow:var(--depth-1)
     }
+    .side-logo .logo-box{
+      width:36px;height:36px;border-radius:10px;overflow:hidden;
+      display:flex;align-items:center;justify-content:center;
+      background:#ffffffcc;border:1px solid rgba(0,0,0,.05)
+    }
+    .side-logo img{width:100%;height:100%;object-fit:contain}
+    .side-logo .brand{font-weight:900;color:#106d42}
+
+    /* Botones del sidebar con degradado azul */
     .side-btn{
       width:100%; display:flex; align-items:center; gap:10px; padding:12px; border-radius:12px;
-      border:1px solid rgba(10,127,84,.18);
-      background:linear-gradient(180deg,#ffffff,#f4fff9);
-      box-shadow:0 6px 14px rgba(10,127,84,.08), inset 0 1px 0 rgba(255,255,255,.6);
-      cursor:pointer; font-weight:800; margin-bottom:10px; transition:transform .2s, box-shadow .2s;
-      color:#0a7f54;
+      border:1px solid rgba(52,152,219,.25);
+      background:linear-gradient(180deg,#6fb6e9 0%, #3a97dc 50%, #2c80b9 100%);
+      color:#fff;
+      box-shadow:0 8px 18px rgba(41,128,185,.25), inset 0 1px 0 rgba(255,255,255,.25);
+      cursor:pointer; font-weight:800; margin-bottom:10px; transition:transform .2s, box-shadow .2s, filter .2s;
     }
-    .side-btn:hover{transform:translateY(-2px); box-shadow:var(--depth-2)}
+    .side-btn:hover{transform:translateY(-2px); box-shadow:var(--depth-2); filter:saturate(1.05)}
     .side-badge{
       margin-left:auto; padding:4px 10px; border-radius:999px; font-size:12px; font-weight:900;
-      border:1px solid rgba(0,0,0,.06);
+      border:1px solid rgba(255,255,255,.4); background:rgba(255,255,255,.2);
+      color:#fff
     }
-    .ok{background:linear-gradient(180deg,#eafff4,#ddfff2); color:#0d6b3a; border-color:rgba(46,204,113,.35)}
-    .bad{background:linear-gradient(180deg,#fff2f2,#ffeaea); color:#8b1e1e; border-color:rgba(231,76,60,.35)}
+    .ok{background:linear-gradient(180deg,#c8ffd6,#a9f7bf); color:#0d6b3a; border-color:rgba(46,204,113,.35)}
+    .bad{background:linear-gradient(180deg,#ffd6d6,#ffc5c5); color:#8b1e1e; border-color:rgba(231,76,60,.35)}
     .hamburger{
       display:none; position:fixed; left:12px; top:12px; z-index:10001;
       width:44px; height:44px; border-radius:12px; border:none; background:#fff; box-shadow:var(--depth-2); color:#2c80b9; font-size:20px;
     }
 
-    /* Solo ocultamos el sidebar en pantallas pequeñas */
+    /* Sidebar móvil */
     @media(max-width:1100px){
       body{padding-top:72px}
       .hamburger{display:block}
@@ -78,7 +90,7 @@
       .sidebar.hidden{transform:translateX(-110%);}
     }
 
-    .container{max-width:1300px; margin:0 auto; flex:1 1 auto}
+    .container{max-width:1300px; margin:0 auto; flex:1 1 auto; display:flex; flex-direction:column}
 
     /* Header */
     header{
@@ -151,7 +163,13 @@
     .ring-actions{display:flex;flex-direction:column;gap:8px;min-width:160px}
     .ring-actions .btn{width:100%;min-height:38px;padding:8px 12px}
 
-    footer{text-align:center;margin-top:22px;padding:18px;color:#fff;background:linear-gradient(135deg,var(--primary),var(--primary-dark));border-radius:14px;box-shadow:var(--depth-2)}
+    /* Footer (reubicado y más delgado) */
+    footer{
+      text-align:center;margin-top:16px;padding:10px 14px;color:#fff;
+      background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+      border-radius:12px;box-shadow:0 8px 18px rgba(52,152,219,.25)
+    }
+    footer p{font-size:12px;font-weight:600}
 
     /* Modales base */
     .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;justify-content:center;align-items:center;backdrop-filter:blur(6px)}
@@ -159,7 +177,7 @@
     .modal-header{text-align:center;margin-bottom:14px;position:relative}
     .close-modal{position:absolute;top:-10px;right:-10px;width:34px;height:34px;background:var(--danger);color:#fff;border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
 
-    /* Formularios */
+    /* Formularios / resto igual que base */
     .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
     @media (max-width:720px){.form-grid{grid-template-columns:1fr}}
     .form-group{display:flex;flex-direction:column;gap:6px}
@@ -214,13 +232,6 @@
       .user-actions{justify-content:center}
       .ring-row{align-items:stretch}
     }
-
-    /* Lista de documentos */
-    .doc-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
-    .doc-card{border:1px solid rgba(52,152,219,.18);background:#fff;border-radius:12px;padding:12px;box-shadow:var(--depth-1)}
-    .doc-card h4{font-size:14px;margin-bottom:6px}
-    .muted{color:#6b7b8a;font-weight:600;font-size:12px}
-    .link{color:#155a8f;font-weight:800;text-decoration:none}
   </style>
 </head>
 <body>
@@ -230,32 +241,35 @@
   <!-- ===== Sidebar ===== -->
   <aside class="sidebar" id="sidebar">
     <div class="side-header">
-      <div class="side-title"><i class="fas fa-layer-group"></i> Ecosistema InsuraHub <span class="badge-eco">Siempre activo</span></div>
+      <div class="side-logo">
+        <div class="logo-box">
+          <img src="logos/insurahublogo.png" alt="InsuraHub" onerror="this.remove();this.parentNode.textContent='IH'">
+        </div>
+        <div class="brand">InsuraHub</div>
+      </div>
+      <!-- (Se elimina la X; sidebar permanente) -->
     </div>
+
+    <div class="side-title"><i class="fas fa-layer-group"></i> Ecosistema InsuraHub</div>
 
     <button class="side-btn" id="openSARLAFT">
       <i class="fas fa-clipboard-check"></i> Tu formulario SARLAFT al día
       <span class="side-badge bad" id="sarlaftBadge">Pendiente</span>
     </button>
 
-    <!-- NUEVO: Cargar automáticamente (CSV + PDFs/Imágenes) -->
-    <button class="side-btn" id="openAutoImport">
-      <i class="fas fa-robot"></i> Cargar pólizas automáticamente
-      <span class="side-badge" style="background:#eef6ff;color:#155a8f">Importar</span>
+    <button class="side-btn" id="openBulkPolicies">
+      <i class="fas fa-bolt"></i> Cargar pólizas automáticamente
+      <span class="side-badge">Importar</span>
     </button>
 
-    <!-- NUEVO: Manual -->
     <button class="side-btn" id="openManualPolicy">
-      <i class="fas fa-file-circle-plus"></i> Añadir póliza manualmente
+      <i class="fas fa-pen-to-square"></i> Añadir póliza manualmente
     </button>
 
-    <!-- NUEVO: Tus pólizas (documentos subidos) -->
-    <button class="side-btn" id="openMyPolicies">
+    <button class="side-btn" id="openPoliciesVault">
       <i class="fas fa-folder-open"></i> Tus pólizas
-      <span class="side-badge" id="docsCountBadge" style="background:#fff;border-color:rgba(10,127,84,.18);color:#0a7f54">0 docs</span>
     </button>
 
-    <!-- NUEVO: Actualización de datos -->
     <button class="side-btn" id="openDataUpdate">
       <i class="fas fa-rotate"></i> Actualización de datos
     </button>
@@ -269,7 +283,7 @@
         <div class="app-title-text"><h1>InsuraHub</h1><p>Gestión Inteligente de Seguros</p></div>
       </div>
       <div class="user-actions">
-        <!-- Mantenemos solo iniciar sesión aquí -->
+        <button class="btn" id="addPolicyBtn"><i class="fas fa-plus"></i> Nueva Póliza</button>
         <button class="btn btn-outline" id="loginBtn"><i class="fas fa-user"></i> Iniciar Sesión</button>
       </div>
     </header>
@@ -283,9 +297,14 @@
 
     <!-- Grid pólizas -->
     <div class="card-grid" id="policyGrid"></div>
+
+    <!-- Footer (reubicado aquí para quedar abajo y centrado) -->
+    <footer>
+      <p>© 2025 InsuraHub - Todos tus seguros en un solo lugar</p>
+    </footer>
   </div>
 
-  <!-- ===== Modales ===== -->
+  <!-- ===== Modales existentes y nuevos (sin cambios de funcionalidad) ===== -->
   <!-- Login -->
   <div class="modal" id="loginModal" aria-hidden="true">
     <div class="modal-content" role="dialog" aria-modal="true">
@@ -301,9 +320,9 @@
       </div>
       <div style="text-align:center;color:#99a3ad;font-weight:700;margin:8px 0 14px">o con tu correo</div>
       <form>
-        <div class="form-group"><label class="form-label" for="email"><i class="fas fa-envelope"></i> Correo Electrónico</label><div class="input-wrap"><input type="email" id="email" placeholder="tucorreo@dominio.com"></div></div>
-        <div class="form-group"><label class="form-label" for="password"><i class="fas fa-lock"></i> Contraseña</label><div class="input-wrap"><input type="password" id="password" placeholder="••••••••"></div></div>
-        <button type="button" class="btn" id="fakeLogin" style="width:100%"><i class="fas fa-right-to-bracket"></i> Iniciar Sesión</button>
+        <div class="form-group"><label class="form-label" for="email"><i class="fas fa-envelope"></i> Correo Electrónico</label><div class="input-wrap"><input type="email" id="email" required placeholder="tucorreo@dominio.com"></div></div>
+        <div class="form-group"><label class="form-label" for="password"><i class="fas fa-lock"></i> Contraseña</label><div class="input-wrap"><input type="password" id="password" required placeholder="••••••••"></div></div>
+        <button type="submit" class="btn" style="width:100%"><i class="fas fa-right-to-bracket"></i> Iniciar Sesión</button>
       </form>
     </div>
   </div>
@@ -459,7 +478,6 @@
     </div>
   </div>
 
-  <!-- ===== NUEVOS MODALES SIDEBAR ===== -->
   <!-- SARLAFT -->
   <div class="modal" id="sarlaftModal" aria-hidden="true">
     <div class="modal-content" role="dialog" aria-modal="true">
@@ -599,75 +617,33 @@
     </div>
   </div>
 
-  <!-- Cargar automáticamente (CSV + documentos) -->
+  <!-- Carga Masiva de Pólizas -->
   <div class="modal" id="bulkPoliciesModal" aria-hidden="true">
     <div class="modal-content" role="dialog" aria-modal="true">
       <div class="modal-header">
-        <h2>Cargar pólizas automáticamente</h2>
-        <p style="color:#567;font-weight:600">Importa CSV para crear pólizas y sube PDFs/imagenes de tus pólizas.</p>
+        <h2>Cargar pólizas (CSV)</h2>
+        <p style="color:#567;font-weight:600">Importa varias pólizas y se agregarán al panel.</p>
         <button class="close-modal" id="closeBulkPolicies">×</button>
       </div>
 
       <div class="section-card">
-        <div class="section-title"><i class="fas fa-file-csv"></i> Plantilla CSV</div>
+        <div class="section-title"><i class="fas fa-file-csv"></i> Plantilla</div>
         <p style="margin-bottom:10px">Columnas requeridas: <strong>policyNumber,type,insurer,insuredId,insuredName,coverage,expirationDate</strong> — opcional: <strong>conditions</strong></p>
         <button class="btn" id="downloadTemplate"><i class="fas fa-download"></i> Descargar plantilla CSV</button>
       </div>
 
       <div class="section-card">
-        <div class="section-title"><i class="fas fa-upload"></i> Subir archivo(s)</div>
+        <div class="section-title"><i class="fas fa-upload"></i> Subir archivo</div>
         <div id="dropZone" style="padding:18px;border:2px dashed rgba(52,152,219,.35);border-radius:12px;text-align:center;background:#f8fbff">
-          Arrastra y suelta aquí CSV/PDF/imagenes (o haz clic)
-          <input type="file" id="csvFile" accept=".csv,.pdf,.jpg,.jpeg,.png,.heic" multiple style="display:none">
+          Arrastra y suelta tu archivo aquí (o haz clic)
+          <input type="file" id="csvFile" accept=".csv" style="display:none">
         </div>
         <div id="bulkResult" style="margin-top:10px;color:#155a8f;font-weight:700"></div>
       </div>
     </div>
   </div>
 
-  <!-- Tus pólizas (documentos subidos) -->
-  <div class="modal" id="myPoliciesModal" aria-hidden="true">
-    <div class="modal-content" role="dialog" aria-modal="true">
-      <div class="modal-header">
-        <h2>Tus pólizas (documentos)</h2>
-        <p style="color:#567;font-weight:600">Documentos subidos y su relación con pólizas.</p>
-        <button class="close-modal" id="closeMyPolicies">×</button>
-      </div>
-
-      <div class="section-card">
-        <div class="section-title"><i class="fas fa-paperclip"></i> Documentos</div>
-        <div id="docsContainer" class="doc-list"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Actualización de datos -->
-  <div class="modal" id="dataUpdateModal" aria-hidden="true">
-    <div class="modal-content" role="dialog" aria-modal="true">
-      <div class="modal-header">
-        <h2>Actualización de datos</h2>
-        <p style="color:#567;font-weight:600">Información consolidada del inicio de sesión y de tus pólizas.</p>
-        <button class="close-modal" id="closeDataUpdate">×</button>
-      </div>
-
-      <div class="section-card">
-        <div class="section-title"><i class="fas fa-user-circle"></i> Datos de la cuenta</div>
-        <div id="accountData" class="muted">Sin datos de sesión.</div>
-      </div>
-
-      <div class="section-card">
-        <div class="section-title"><i class="fas fa-shield"></i> Resumen de pólizas</div>
-        <div id="policiesSummary" class="muted">Sin pólizas cargadas aún.</div>
-      </div>
-
-      <div class="section-card">
-        <div class="section-title"><i class="fas fa-paperclip"></i> Documentos subidos</div>
-        <div id="docsSummary" class="muted">Sin documentos.</div>
-      </div>
-    </div>
-  </div>
-
-  <footer><p style="text-align:center;margin-top:12px;color:#fff">© 2025 InsuraHub - Todos tus seguros en un solo lugar</p></footer>
+  <!-- Success (ya arriba) -->
 
   <script>
     /* ===== Datos ===== */
@@ -728,17 +704,13 @@
       {id:3,type:"life",typeName:"Seguro de Vida",insurer:"generali",insurerName:"Generali",policyNumber:"#LIFE-456123",expirationDate:expirationDates[2],insuredId:"4561237890",insuredName:"Carlos López",coverage:150000000,conditions:"- Fallecimiento por cualquier causa (carencia 90 días para enfermedad).\n- Anticipo por enfermedad terminal 30%.\n- Exclusiones: suicidio dentro de los primeros 2 años."},
       {id:4,type:"health",typeName:"Seguro Médico",insurer:"cigna",insurerName:"Cigna",policyNumber:"#MED-987321",expirationDate:expirationDates[3],insuredId:"7890123456",insuredName:"Ana Rodríguez",coverage:120000000,conditions:"- Red de prestadores nacional.\n- Copago por consulta general: $40.000.\n- Preexistencias cubiertas después de 12 meses.\n- Exclusiones: procedimientos estéticos."},
       {id:5,type:"travel",typeName:"Seguro de Viaje",insurer:"zurich",insurerName:"Zurich",policyNumber:"#TRAV-654987",expirationDate:expirationDates[4],insuredId:"3216549870",insuredName:"Laura Martínez",coverage:50000000,conditions:"- Asistencia médica internacional hasta $50.000.000.\n- Repatriación sanitaria y pérdida de equipaje.\n- Franquicia por evento: $100.000."},
-      {id:6,type:"business",typeName:"Seguro de Negocio",insurer:"liberty",insurerName:"Liberty Mutual",policyNumber:"#BUSI-321654",expirationDate:expirationDates[5],insuredId:"6549873210",insuredName:"Pedro Sánchez",coverage:115000000,conditions:"- Responsabilidad civil comercial hasta $500.000.000.\n- Interrupción de negocio (30 días carencia).\n- Deducible: $1.500.000 por evento."},
-      // NUEVO: ejemplo vencida
-      {id:7,type:"auto",typeName:"Seguro de Auto",insurer:"allianz",insurerName:"Allianz",policyNumber:"#AUTO-000999",expirationDate:iso(addDays(today,-20)),insuredId:"111222333",insuredName:"Ejemplo Vencida",coverage:80000000,conditions:"- Póliza de ejemplo vencida para pruebas.\n- Deducible 10%."}
+      {id:6,type:"business",typeName:"Seguro de Negocio",insurer:"liberty",insurerName:"Liberty Mutual",policyNumber:"#BUSI-321654",expirationDate:expirationDates[5],insuredId:"6549873210",insuredName:"Pedro Sánchez",coverage:115000000,conditions:"- Responsabilidad civil comercial hasta $500.000.000.\n- Interrupción de negocio (30 días carencia).\n- Deducible: $1.500.000 por evento."}
     ];
-
-    /* ===== Documentos subidos ===== */
-    const uploadedDocs=[]; // {name, url, size, type, assignedPolicyNumber|null}
 
     /* ===== DOM ===== */
     const sidebar=qs('#sidebar');
     const toggleSidebar=qs('#toggleSidebar');
+    // Sin botón de cierre en sidebar (permanente)
 
     // En móvil, oculto por defecto; en desktop, visible.
     function syncSidebarByViewport(){
@@ -750,17 +722,15 @@
     }
     syncSidebarByViewport();
     window.addEventListener('resize', syncSidebarByViewport);
-
     safe(toggleSidebar, btn => btn.addEventListener('click',()=> sidebar.classList.toggle('hidden')));
 
-    // Sidebar buttons
     const sarlaftBadge=qs('#sarlaftBadge');
     const openSARLAFTBtn=qs('#openSARLAFT');
     const sarlaftModal=qs('#sarlaftModal');
     const closeSarlaftModal=qs('#closeSarlaftModal');
     const sarlaftForm=qs('#sarlaftForm');
 
-    const openAutoImportBtn=qs('#openAutoImport');
+    const openBulkBtn=qs('#openBulkPolicies');
     const bulkModal=qs('#bulkPoliciesModal');
     const closeBulk=qs('#closeBulkPolicies');
     const downloadTemplate=qs('#downloadTemplate');
@@ -768,31 +738,18 @@
     const dropZone=qs('#dropZone');
     const bulkResult=qs('#bulkResult');
 
-    const openManualPolicyBtn=qs('#openManualPolicy');
-
-    const openMyPoliciesBtn=qs('#openMyPolicies');
-    const myPoliciesModal=qs('#myPoliciesModal');
-    const closeMyPolicies=qs('#closeMyPolicies');
-    const docsContainer=qs('#docsContainer');
-    const docsCountBadge=qs('#docsCountBadge');
-
-    const openDataUpdateBtn=qs('#openDataUpdate');
-    const dataUpdateModal=qs('#dataUpdateModal');
-    const closeDataUpdate=qs('#closeDataUpdate');
-    const accountData=qs('#accountData');
-    const policiesSummary=qs('#policiesSummary');
-    const docsSummary=qs('#docsSummary');
-
-    // Header actions
     const loginBtn=qs('#loginBtn');
     const loginModal=qs('#loginModal');
-    const fakeLoginBtn=qs('#fakeLogin');
-
+    const addPolicyBtn=qs('#addPolicyBtn');
     const policyModal=qs('#policyModal');
     const renewalModal=qs('#renewalModal');
     const conditionsModal=qs('#conditionsModal');
     const paymentModal=qs('#paymentModal');
     const successModal=qs('#successModal');
+
+    const openManualPolicy = qs('#openManualPolicy');
+    const openPoliciesVault = qs('#openPoliciesVault');
+    const openDataUpdateBtn = qs('#openDataUpdate');
 
     const policyForm=qs('#policyForm');
     const renewalOptions=qs('#renewalOptions');
@@ -817,25 +774,44 @@
     bindClose('#closeRenewalModal',renewalModal);
     bindClose('#closeConditionsModal',conditionsModal);
     bindClose('#closePaymentModal',paymentModal);
-    bindClose('#closeMyPolicies',myPoliciesModal);
-    bindClose('#closeDataUpdate',dataUpdateModal);
 
+    // Botones que habían dejado de funcionar:
     safe(loginBtn, b=> b.addEventListener('click',()=>{ loginModal.style.display='flex'; }));
-    safe(openManualPolicyBtn, b=> b.addEventListener('click',()=>{ policyModal.style.display='flex'; }));
+    safe(addPolicyBtn, b=> b.addEventListener('click',()=>{ policyModal.style.display='flex'; }));
+    // También desde el sidebar:
+    safe(openManualPolicy, b=> b.addEventListener('click',()=>{ policyModal.style.display='flex'; }));
+    safe(openBulkBtn, b=> b.addEventListener('click',()=>{ bulkModal.style.display='flex'; if(bulkResult) bulkResult.textContent=''; }));
+    // “Tus pólizas”: abrimos una vista rápida (reutilizamos condicionesModal como visor simple)
+    safe(openPoliciesVault, b=> b.addEventListener('click',()=>{
+      const title = qs('#conditionsTitle'); const sub = qs('#conditionsSubtitle'); const body = qs('#conditionsBody');
+      if(title) title.textContent = 'Tus pólizas (resumen)';
+      if(sub) sub.textContent = 'Documentos cargados automáticamente (CSV/PDF) y pólizas activas';
+      if(body) {
+        const list = policies.map(p=>`• ${p.policyNumber} · ${p.insurerName} · Vence: ${new Date(p.expirationDate).toLocaleDateString('es-ES')} · Cobertura: ${fmtCOP(p.coverage)}`).join('\n');
+        body.textContent = (list || 'Sin pólizas aún.') + '\n\n(Para ver/gestionar cada póliza usa el tablero principal.)';
+      }
+      if(conditionsModal) conditionsModal.style.display='flex';
+    }));
+    // “Actualización de datos”: abrimos un resumen de lo que se tiene (simple)
+    safe(openDataUpdateBtn, b=> b.addEventListener('click',()=>{
+      const title = qs('#conditionsTitle'); const sub = qs('#conditionsSubtitle'); const body = qs('#conditionsBody');
+      if(title) title.textContent = 'Actualización de datos';
+      if(sub) sub.textContent = 'Información recolectada de inicio de sesión, SARLAFT y pólizas importadas';
+      let sarlaftOk = sarlaftIsComplete();
+      const total = policies.length;
+      const vencen30 = policies.filter(p=> daysLeft(p.expirationDate) <= 30).length;
+      const texto = `• Inicio de sesión: (simulado)\n• SARLAFT: ${sarlaftOk?'Completo ✅':'Pendiente ❗'}\n• Pólizas importadas/creadas: ${total}\n• Por vencer (30 días): ${vencen30}\n\nSi necesitas corregir algo, actualiza SARLAFT o carga/edita tus pólizas.`;
+      if(body) body.textContent = texto;
+      if(conditionsModal) conditionsModal.style.display='flex';
+    }));
 
-    [loginModal,policyModal,renewalModal,conditionsModal,paymentModal,successModal,sarlaftModal,bulkModal,myPoliciesModal,dataUpdateModal]
+    [loginModal,policyModal,renewalModal,conditionsModal,paymentModal,successModal,bulkModal,sarlaftModal]
       .forEach(m=> m && m.addEventListener('click',e=>{ if(e.target===m) m.style.display='none'; }));
 
     // Social login (stubs)
     safe(qs('#loginGoogle'), el=>el.addEventListener('click',()=>alert('Continuar con Google (conectar OAuth aquí)')));
     safe(qs('#loginFacebook'),el=>el.addEventListener('click',()=>alert('Continuar con Facebook (conectar OAuth aquí)')));
     safe(qs('#loginApple'),   el=>el.addEventListener('click',()=>alert('Continuar con Apple (conectar OAuth aquí)')));
-
-    // Login fake para poblar "Actualización de datos"
-    safe(fakeLoginBtn, btn=> btn.addEventListener('click', ()=>{
-      toast('Sesión iniciada', 'Datos disponibles para “Actualización de datos”.');
-      loginModal.style.display='none';
-    }));
 
     const openConditions=(t,st,b)=>{
       const tt=qs('#conditionsTitle'), stt=qs('#conditionsSubtitle'), bd=qs('#conditionsBody');
@@ -899,26 +875,10 @@
         const hdrLogo=card.querySelector('.insurer-logo-header img'); if(hdrLogo){ loadLogoSmart(hdrLogo); }
         safe(card.querySelector('.conditions-btn'),btn=>btn.addEventListener('click',()=>openConditions('Condiciones de la Póliza',`${p.policyNumber} · ${p.insurerName}`,p.conditions)));
         safe(card.querySelector('.renew-btn'),btn=>btn.addEventListener('click',()=>openRenewal(p)));
-        safe(card.querySelector('.delete-btn'),btn=>btn.addEventListener('click',()=>deletePolicy(p.id)));
       });
       if(totalPoliciesEl) totalPoliciesEl.textContent=policies.length;
       if(expiringPoliciesEl) expiringPoliciesEl.textContent=exp;
       if(totalCoverageEl) totalCoverageEl.textContent=fmtCOP(total);
-    }
-
-    /* ===== Eliminar póliza ===== */
-    function deletePolicy(id){
-      const msg = "eliminando esta poliza, no se podrña renovar automaticamente porque saldrña del ecosistema InsuraHub";
-      if(!confirm(msg)) return;
-      const idx = policies.findIndex(p=>p.id===id);
-      if(idx>-1){
-        const removed = policies.splice(idx,1)[0];
-        // Desasignar documentos vinculados a esta póliza
-        uploadedDocs.forEach(d=>{ if(normalizePN(d.assignedPolicyNumber)===normalizePN(removed.policyNumber)) d.assignedPolicyNumber=null; });
-        renderPolicies();
-        renderDocsBadge();
-        toast('Póliza eliminada', `${removed.policyNumber} salió del ecosistema.`);
-      }
     }
 
     /* ===== Renovación ===== */
@@ -994,7 +954,7 @@
       if(renewalModal) renewalModal.style.display='flex';
     }
 
-    /* ===== Pago ===== */
+    /* Pago */
     if(payTabs){
       payTabs.addEventListener('click',e=>{
         const tab=e.target.closest('.pay-tab'); if(!tab) return;
@@ -1013,7 +973,7 @@
       if(paymentModal) paymentModal.style.display='none'; toast('Forma de pago guardada',`Método: ${m.toUpperCase()}`);
     }));
 
-    /* ===== Nueva póliza manual ===== */
+    /* Nueva póliza */
     if(policyForm){
       policyForm.addEventListener('submit',e=>{
         e.preventDefault();
@@ -1024,7 +984,7 @@
       });
     }
 
-    /* ===== Confirmar renovación (+1 año) ===== */
+    /* Confirmar renovación (+1 año) */
     safe(confirmRenewalBtn, btn=> btn.addEventListener('click',()=>{
       const sel=qs('.insurer-option.selected'); if(!sel){alert('Selecciona una aseguradora.');return;}
       if(!selectedPayment.method){alert('Selecciona una forma de pago.'); if(paymentModal) paymentModal.style.display='flex'; return;}
@@ -1038,7 +998,7 @@
       currentRenewPolicyId=null; selectedPayment={method:null}; if(payHint) payHint.style.display='none'; if(payMethodLabel) payMethodLabel.textContent='—';
     }));
 
-    /* ===== Sidebar: SARLAFT ===== */
+    /* ====== Sidebar: SARLAFT ====== */
     function sarlaftIsComplete(){
       if(!sarlaftForm) return false;
       const req = sarlaftForm.querySelectorAll('select[required], input[required]');
@@ -1058,8 +1018,7 @@
     safe(sarlaftForm, f=> f.addEventListener('change', paintSarlaftBadge));
     safe(sarlaftForm, f=> f.addEventListener('submit', (e)=>{ e.preventDefault(); paintSarlaftBadge(); if(sarlaftIsComplete()){ toast('SARLAFT guardado', 'Tu formulario quedó AL DÍA.'); } else { alert('Faltan campos obligatorios.'); } }));
 
-    /* ===== Sidebar: Cargar automáticamente ===== */
-    safe(openAutoImportBtn, btn=> btn.addEventListener('click',()=>{ if(bulkModal) bulkModal.style.display='flex'; if(bulkResult) bulkResult.textContent=''; }));
+    /* ====== Sidebar: Carga masiva ====== */
     safe(closeBulk, btn=> btn.addEventListener('click',()=>{ if(bulkModal) bulkModal.style.display='none'; }));
 
     // Descarga plantilla CSV
@@ -1071,41 +1030,17 @@
       URL.revokeObjectURL(url);
     }));
 
+    // Zona de arrastre
     function openFileDialog(){ csvFile && csvFile.click(); }
     safe(dropZone, dz=>{
       dz.addEventListener('click', openFileDialog);
       ['dragenter','dragover'].forEach(evt=> dz.addEventListener(evt, e=>{ e.preventDefault(); e.stopPropagation(); dz.style.borderColor='#2c80b9'; }));
       ['dragleave','drop'].forEach(evt=> dz.addEventListener(evt, e=>{ e.preventDefault(); e.stopPropagation(); dz.style.borderColor='rgba(52,152,219,.35)'; }));
-      dz.addEventListener('drop', e=>{
-        const files = [...e.dataTransfer.files];
-        if(!files.length) return;
-        handleFiles(files);
-      });
+      dz.addEventListener('drop', e=>{ const file = e.dataTransfer.files[0]; if(file) parseCSV(file); });
     });
-    safe(csvFile, inp=> inp.addEventListener('change', e=>{
-      const files=[...e.target.files]; if(files.length) handleFiles(files);
-    }));
+    safe(csvFile, inp=> inp.addEventListener('change', e=>{ const file=e.target.files[0]; if(file) parseCSV(file); }));
 
-    function handleFiles(files){
-      let added=0, errors=0, docs=0;
-      files.forEach(file=>{
-        const name=file.name.toLowerCase();
-        if(name.endsWith('.csv')){
-          // CSV crea pólizas
-          parseCSVFile(file, (a,e)=>{added+=a; errors+=e; renderPolicies(); if(bulkResult) bulkResult.textContent = `Importadas: ${added} · Errores: ${errors} · Documentos: ${docs}`;});
-        }else if(/\.(pdf|jpg|jpeg|png|heic)$/.test(name)){
-          // Documento
-          const url = URL.createObjectURL(file);
-          const entry={name:file.name,url, size:file.size, type:file.type||'document', assignedPolicyNumber: tryMatchPolicyNumber(file.name)};
-          uploadedDocs.push(entry); docs++;
-        }
-      });
-      renderDocsBadge();
-      if(docs>0){ toast('Documentos cargados', `${docs} archivo(s) agregado(s).`); }
-      if(bulkResult) bulkResult.textContent = `Importadas: ${added} · Errores: ${errors} · Documentos: ${docs}`;
-    }
-
-    function parseCSVFile(file, cb){
+    function parseCSV(file){
       const reader=new FileReader();
       reader.onload = () => {
         const text = reader.result;
@@ -1113,11 +1048,10 @@
         const header = rows.shift().split(',').map(s=>s.trim());
         const needed = ['policyNumber','type','insurer','insuredId','insuredName','coverage','expirationDate'];
         const hasAll = needed.every(k => header.includes(k));
-        if(!hasAll){ alert('La cabecera del CSV no es válida. Requeridos: '+needed.join(', ')); cb(0,1); return; }
+        if(!hasAll){ alert('La cabecera del CSV no es válida. Requeridos: '+needed.join(', ')); return; }
 
         let added=0, errors=0;
         rows.forEach(line=>{
-          if(!line.trim()) return;
           const cols = line.split(',');
           const rec = Object.fromEntries(header.map((h,i)=>[h, (cols[i]??'').trim()]));
           try{
@@ -1143,87 +1077,33 @@
             policies.push(newP); added++;
           }catch(err){ errors++; }
         });
-        cb(added,errors);
+        renderPolicies();
+        if(bulkResult) bulkResult.textContent = `Importadas: ${added} · Errores: ${errors}`;
         if(added>0) toast('Importación completa', `Se agregaron ${added} pólizas.`);
       };
       reader.readAsText(file);
     }
 
-    /* ===== "Tus pólizas" (documentos) ===== */
-    function renderDocsBadge(){
-      if(docsCountBadge) docsCountBadge.textContent = `${uploadedDocs.length} docs`;
-    }
-    function normalizePN(s){ return (s||'').replace(/[^A-Za-z0-9]/g,'').toUpperCase(); }
-    function tryMatchPolicyNumber(filename){
-      // Busca patrones tipo AUTO-123456 o con #AUTO-123456
-      const m = filename.match(/[# ]?([A-Z]{3,}-?\d{3,})/i);
-      if(!m) return null;
-      const token = m[1].toUpperCase().replace(/[^A-Z0-9-]/g,'');
-      // Intenta encontrar en policies ignorando símbolos
-      const found = policies.find(p=> normalizePN(p.policyNumber).includes(normalizePN(token)));
-      return found ? found.policyNumber : null;
-    }
-    function renderMyPolicies(){
-      if(!docsContainer) return;
-      docsContainer.innerHTML='';
-      if(uploadedDocs.length===0){
-        docsContainer.innerHTML='<div class="muted">Aún no has subido documentos. Usa “Cargar pólizas automáticamente”.</div>';
-        return;
-      }
-      uploadedDocs.forEach((doc,idx)=>{
-        const wrap=document.createElement('div'); wrap.className='doc-card';
-        const assigned = doc.assignedPolicyNumber ? `<span class="pill">Asignado a ${doc.assignedPolicyNumber}</span>` : `<span class="pill" style="background:#fff3f3;border-color:#ffc9c9;color:#9b1b1b">Sin asignar</span>`;
-        const sizeKB = Math.round(doc.size/1024);
-        wrap.innerHTML=`
-          <h4><i class="fas fa-file"></i> ${doc.name}</h4>
-          <div class="muted">Tipo: ${doc.type||'documento'} · ${sizeKB} KB</div>
-          <div style="margin:8px 0">${assigned}</div>
-          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-            <a class="link" href="${doc.url}" target="_blank"><i class="fas fa-eye"></i> Ver</a>
-            <label class="muted">Vincular a póliza:</label>
-            <select data-doc-idx="${idx}" class="assign-select" style="padding:6px;border-radius:8px;border:1px solid #d0dee9">
-              <option value="">-- seleccionar --</option>
-              ${policies.map(p=>`<option value="${p.policyNumber}" ${doc.assignedPolicyNumber===p.policyNumber?'selected':''}>${p.policyNumber} · ${p.insurerName}</option>`).join('')}
-            </select>
-          </div>
-        `;
-        docsContainer.appendChild(wrap);
+    /* ====== Eliminar póliza: confirmación actualizada ====== */
+    const DELETE_CONFIRM_MSG = "eliminando esta poliza, saldrás del ecosistema InsuraHub, no te enviaremos recordatorios de Renovación";
+    safe(policyGrid, grid=>{
+      grid.addEventListener('click', (e)=>{
+        const btn = e.target.closest('.delete-btn');
+        if(!btn) return;
+        const id = +btn.dataset.policyId;
+        if(confirm(DELETE_CONFIRM_MSG)){
+          const idx = policies.findIndex(p=>p.id===id);
+          if(idx>-1){
+            const removed = policies.splice(idx,1)[0];
+            renderPolicies();
+            toast('Póliza eliminada', `${removed.policyNumber} fue eliminada del ecosistema.`);
+          }
+        }
       });
-      // listeners asignación
-      docsContainer.querySelectorAll('.assign-select').forEach(sel=>{
-        sel.addEventListener('change', e=>{
-          const idx = +e.target.dataset.docIdx;
-          uploadedDocs[idx].assignedPolicyNumber = e.target.value || null;
-          renderDocsBadge();
-          toast('Documento actualizado', uploadedDocs[idx].assignedPolicyNumber ? `Vinculado a ${uploadedDocs[idx].assignedPolicyNumber}` : 'Sin asignar');
-        });
-      });
-    }
-    safe(openMyPoliciesBtn, btn=> btn.addEventListener('click',()=>{ renderMyPolicies(); if(myPoliciesModal) myPoliciesModal.style.display='flex'; }));
-
-    /* ===== Actualización de datos ===== */
-    function renderDataUpdate(){
-      // Cuenta (simple: toma lo digitado en login si existe)
-      const email = qs('#email')?.value || null;
-      if(email){
-        accountData.innerHTML = `<strong>Correo:</strong> ${email}`;
-      }else{
-        accountData.textContent = 'Sin datos de sesión.';
-      }
-      // Resumen pólizas
-      const total = policies.length;
-      const vencen30 = policies.reduce((a,p)=>a+(daysLeft(p.expirationDate)<=30?1:0),0);
-      const cobertura = policies.reduce((a,p)=>a+p.coverage,0);
-      policiesSummary.innerHTML = `<strong>Total:</strong> ${total} · <strong>Por vencer (&lt;30 días):</strong> ${vencen30} · <strong>Cobertura total:</strong> ${fmtCOP(cobertura)}`;
-      // Documentos
-      const asignados = uploadedDocs.filter(d=>d.assignedPolicyNumber).length;
-      docsSummary.innerHTML = `<strong>Documentos:</strong> ${uploadedDocs.length} · <strong>Asignados:</strong> ${asignados}`;
-    }
-    safe(openDataUpdateBtn, btn=> btn.addEventListener('click',()=>{ renderDataUpdate(); dataUpdateModal.style.display='flex'; }));
+    });
 
     /* ===== Init ===== */
     renderPolicies();
-    renderDocsBadge();
 
     /* ===== Manifest + Service Worker (sin error en file://) ===== */
     (function(){
