@@ -16,9 +16,11 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- PDF.js (para preview y extracción de texto de PDFs) -->
+  <!-- PDF.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.5.136/pdf.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.5.136/pdf.worker.min.js"></script>
+  <!-- Tesseract.js para OCR (imágenes y PDFs escaneados) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.3/tesseract.min.js"></script>
 
   <style>
     :root{
@@ -40,7 +42,7 @@
       display:flex; gap:16px;
     }
 
-    /* ===== Sidebar ===== */
+    /* Sidebar */
     .sidebar{
       width:280px; flex:0 0 280px;
       background:linear-gradient(180deg,#e8fff2 0%, #c9f7df 45%, #a6edc7 100%);
@@ -50,7 +52,6 @@
     }
     .side-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
     .side-title{font-weight:900;color:#0e7d4c;display:flex;align-items:center;gap:8px}
-
     .side-btn{
       width:100%; display:flex; align-items:center; gap:10px; padding:12px; border-radius:12px;
       border:1px solid rgba(52,152,219,.25);
@@ -60,17 +61,10 @@
       cursor:pointer; font-weight:800; margin-bottom:10px; transition:transform .2s, box-shadow .2s, filter .2s;
     }
     .side-btn:hover{transform:translateY(-2px); box-shadow:var(--depth-2); filter:saturate(1.05)}
-    .side-badge{
-      margin-left:auto; padding:4px 10px; border-radius:999px; font-size:12px; font-weight:900;
-      border:1px solid rgba(255,255,255,.4); background:rgba(255,255,255,.2);
-      color:#fff
-    }
+    .side-badge{ margin-left:auto; padding:4px 10px; border-radius:999px; font-size:12px; font-weight:900; border:1px solid rgba(255,255,255,.4); background:rgba(255,255,255,.2); color:#fff }
     .ok{background:linear-gradient(180deg,#c8ffd6,#a9f7bf); color:#0d6b3a; border-color:rgba(46,204,113,.35)}
     .bad{background:linear-gradient(180deg,#ffd6d6,#ffc5c5); color:#8b1e1e; border-color:rgba(231,76,60,.35)}
-    .hamburger{
-      display:none; position:fixed; left:12px; top:12px; z-index:10001;
-      width:44px; height:44px; border-radius:12px; border:none; background:#fff; box-shadow:var(--depth-2); color:#2c80b9; font-size:20px;
-    }
+    .hamburger{ display:none; position:fixed; left:12px; top:12px; z-index:10001; width:44px; height:44px; border-radius:12px; border:none; background:#fff; box-shadow:var(--depth-2); color:#2c80b9; font-size:20px; }
 
     @media(max-width:1100px){
       body{padding-top:72px}
@@ -159,7 +153,7 @@
     }
     footer p{font-size:12px;font-weight:600}
 
-    /* Modales base */
+    /* Modales */
     .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;justify-content:center;align-items:center;backdrop-filter:blur(6px)}
     .modal-content{background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.98));border-radius:18px;width:96%;max-width:1400px;padding:28px;box-shadow:var(--depth-3);max-height:90vh;overflow:auto;position:relative;border:1px solid rgba(52,152,219,.15)}
     .modal-header{text-align:center;margin-bottom:14px;position:relative}
@@ -177,7 +171,7 @@
     .section-card{background:linear-gradient(180deg,#ffffff,#f6f8ff);border:1px solid rgba(52,152,219,.15);border-radius:16px;padding:16px;box-shadow:var(--depth-1);margin-bottom:14px}
     .section-title{font-weight:900;color:#155a8f;margin-bottom:8px;display:flex;align-items:center;gap:8px}
 
-    /* Renovación / comparación / pago */
+    /* Renovación */
     .renewal-layout{display:grid;grid-template-columns:1fr 1.25fr;gap:20px}
     @media(max-width:1180px){.renewal-layout{grid-template-columns:1fr}}
     .renewal-col{background:linear-gradient(180deg,#fff,#f9fbff);border:1px solid rgba(52,152,219,.12);border-radius:14px;box-shadow:var(--depth-1);padding:16px}
@@ -221,10 +215,8 @@
       .ring-row{align-items:stretch}
     }
 
-    /* ===== Modal “Tus pólizas” (Vault) ===== */
-    .vault-layout{
-      display:grid; grid-template-columns:320px 1fr; gap:16px; align-items:start;
-    }
+    /* Modal “Tus pólizas” */
+    .vault-layout{ display:grid; grid-template-columns:320px 1fr; gap:16px; align-items:start; }
     @media(max-width:900px){ .vault-layout{ grid-template-columns:1fr; } }
 
     .vault-list{
@@ -244,9 +236,7 @@
       background:linear-gradient(180deg,#eef6ff,#e8f1ff); border:1px solid rgba(52,152,219,.18);
       color:#2c80b9;
     }
-    .vault-empty{
-      color:#567; font-weight:700; text-align:center; padding:12px;
-    }
+    .vault-empty{ color:#567; font-weight:700; text-align:center; padding:12px; }
 
     .vault-preview{
       background:#fff; border:1px solid rgba(52,152,219,.15); border-radius:14px; padding:12px;
@@ -259,24 +249,24 @@
       margin-top:12px; background:linear-gradient(180deg,#f8fbff,#eef6ff);
       border:1px solid rgba(52,152,219,.2); border-radius:12px; padding:12px;
     }
-    .extracted-grid{
-      display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px;
-    }
+    .extracted-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
     .extracted-grid .item{font-size:14px}
     .extracted-grid .item b{color:#0b3d66}
+    .spinner{ display:inline-block; width:22px; height:22px; border:3px solid #cfe2ff; border-top-color:#2c80b9; border-radius:50%; animation:spin 1s linear infinite; vertical-align:middle }
+    @keyframes spin{to{transform:rotate(360deg)}}
   </style>
 </head>
 <body>
   <!-- Toggle sidebar (móvil) -->
   <button class="hamburger" id="toggleSidebar" aria-label="Menú"><i class="fas fa-bars"></i></button>
 
-  <!-- ===== Sidebar ===== -->
+  <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <div class="side-header">
       <div class="side-title"><i class="fas fa-layer-group"></i> Ecosistema InsuraHub</div>
     </div>
 
-    <!-- SARLAFT PRIMERO -->
+    <!-- SARLAFT primero -->
     <button class="side-btn" id="openSARLAFT">
       <i class="fas fa-clipboard-check"></i> Tu formulario SARLAFT al día
       <span class="side-badge bad" id="sarlaftBadge">Pendiente</span>
@@ -287,9 +277,7 @@
       <span class="side-badge">Importar</span>
     </button>
 
-    <!-- Eliminado botón “Nueva Póliza” como pediste -->
-    <!-- <button class="side-btn" id="openManualPolicy"><i class="fas fa-pen-to-square"></i> Añadir póliza manualmente</button> -->
-
+    <!-- Eliminado botón “Nueva Póliza” -->
     <button class="side-btn" id="openPoliciesVault">
       <i class="fas fa-folder-open"></i> Tus pólizas
     </button>
@@ -307,7 +295,6 @@
         <div class="app-title-text"><h1>InsuraHub</h1><p>Gestión Inteligente de Seguros</p></div>
       </div>
       <div class="user-actions">
-        <!-- Eliminado botón Nueva Póliza -->
         <button class="btn btn-outline" id="loginBtn"><i class="fas fa-user"></i> Iniciar Sesión</button>
       </div>
     </header>
@@ -322,13 +309,10 @@
     <!-- Grid pólizas -->
     <div class="card-grid" id="policyGrid"></div>
 
-    <!-- Footer -->
     <footer>
       <p>© 2025 InsuraHub - Todos tus seguros en un solo lugar</p>
     </footer>
   </div>
-
-  <!-- ===== Modales ===== -->
 
   <!-- Login / Registro -->
   <div class="modal" id="loginModal" aria-hidden="true">
@@ -413,7 +397,7 @@
     </div>
   </div>
 
-  <!-- Condiciones (detalle) -->
+  <!-- Condiciones -->
   <div class="modal" id="conditionsModal" aria-hidden="true">
     <div class="modal-content" role="dialog" aria-modal="true" style="z-index:10000">
       <div class="modal-header">
@@ -634,7 +618,7 @@
     </div>
   </div>
 
-  <!-- Carga Masiva de Pólizas -->
+  <!-- Carga Masiva -->
   <div class="modal" id="bulkPoliciesModal" aria-hidden="true">
     <div class="modal-content" role="dialog" aria-modal="true">
       <div class="modal-header">
@@ -660,7 +644,7 @@
     </div>
   </div>
 
-  <!-- “Tus pólizas” (Vault con preview + extracción) -->
+  <!-- Tus pólizas (Vault) -->
   <div class="modal" id="vaultModal" aria-hidden="true">
     <div class="modal-content" role="dialog" aria-modal="true" style="z-index:10002">
       <div class="modal-header">
@@ -691,47 +675,20 @@
     </div>
   </div>
 
-  <!-- Success (ya arriba) -->
-
+  <!-- Scripts -->
   <script>
-    /* ===== Datos ===== */
+    /* ===== Datos / helpers (igual que antes) ===== */
     const insurerLogos={allianz:"logos/allianz.png",axa:"logos/axa.png",generali:"logos/generali.png",cigna:"logos/cigna.png",zurich:"logos/zurich.png",liberty:"logos/liberty.png"};
     const insurerNames={allianz:"Allianz",axa:"AXA",generali:"Generali",cigna:"Cigna",zurich:"Zurich",liberty:"Liberty Mutual"};
     const insurerPhones={allianz:"+57 01 8000 510 510",axa:"+57 01 8000 123 456",generali:"+57 01 8000 345 678",cigna:"+57 01 8000 765 432",zurich:"+57 01 8000 111 222",liberty:"+57 01 8000 999 888"};
     const renewalPrices={allianz:850000,axa:920000,generali:780000,cigna:950000,zurich:890000,liberty:810000};
     const coverageAmounts={allianz:200000000,axa:220000000,generali:180000000,cigna:240000000,zurich:210000000,liberty:190000000};
-    const offerConditions={
-      allianz:{deductible:"10% o $2.000.000",extras:"Asistencia 24/7 + carro sustituto",details:"- Cobertura daños y pérdida total.\n- Deducible: 10% o $2.000.000.\n- Asistencia vial 24/7, grúa, cerrajería.\n- Carro sustituto 5 días por siniestro.\n- Exclusiones: embriaguez, uso competitivo."},
-      axa:{deductible:"8% o $1.800.000",extras:"Vidrios sin deducible",details:"- Cobertura ampliada + RC.\n- Deducible: 8% o $1.800.000.\n- Reposición de vidrios sin deducible.\n- Asistencia jurídica.\n- Exclusiones: dolo, carreras."},
-      generali:{deductible:"12% o $2.200.000",extras:"Revisión anual preventiva",details:"- Cobertura estándar integral.\n- Deducible: 12% o $2.200.000.\n- Revisión mecánica preventiva anual.\n- Cobertura a accesorios declarados.\n- Exclusiones: accesorios no declarados."},
-      cigna:{deductible:"10% o $2.500.000",extras:"Cobertura médica ampliada",details:"- Enfoque salud/viaje.\n- Deducible: 10% o $2.500.000.\n- Gastos médicos ampliados.\n- Telemedicina.\n- Exclusiones: preexistencias según plan."},
-      zurich:{deductible:"9% o $2.000.000",extras:"RC ampliada + asistencia jurídica",details:"- Cobertura integral + RC ampliada.\n- Deducible: 9% o $2.000.000.\n- Asistencia jurídica.\n- Coberturas internacionales acotadas.\n- Exclusiones: uso comercial sin declaración."},
-      liberty:{deductible:"10% o $1.900.000",extras:"Pérdida de llaves + grúa",details:"- Cobertura estándar.\n- Deducible: 10% o $1.900.000.\n- Pérdida de llaves.\n- Grúa 2 eventos/año.\n- Exclusiones: desgaste normal."}
-    };
+    const offerConditions={allianz:{deductible:"10% o $2.000.000",extras:"Asistencia 24/7 + carro sustituto",details:"- Cobertura daños y pérdida total.\n- Deducible: 10% o $2.000.000.\n- Asistencia vial 24/7, grúa, cerrajería.\n- Carro sustituto 5 días por siniestro.\n- Exclusiones: embriaguez, uso competitivo."},axa:{deductible:"8% o $1.800.000",extras:"Vidrios sin deducible",details:"- Cobertura ampliada + RC.\n- Deducible: 8% o $1.800.000.\n- Reposición de vidrios sin deducible.\n- Asistencia jurídica.\n- Exclusiones: dolo, carreras."},generali:{deductible:"12% o $2.200.000",extras:"Revisión anual preventiva",details:"- Cobertura estándar integral.\n- Deducible: 12% o $2.200.000.\n- Revisión mecánica preventiva anual.\n- Cobertura a accesorios declarados.\n- Exclusiones: accesorios no declarados."},cigna:{deductible:"10% o $2.500.000",extras:"Cobertura médica ampliada",details:"- Enfoque salud/viaje.\n- Deducible: 10% o $2.500.000.\n- Gastos médicos ampliados.\n- Telemedicina.\n- Exclusiones: preexistencias según plan."},zurich:{deductible:"9% o $2.000.000",extras:"RC ampliada + asistencia jurídica",details:"- Cobertura integral + RC ampliada.\n- Deducible: 9% o $2.000.000.\n- Asistencia jurídica.\n- Coberturas internacionales acotadas.\n- Exclusiones: uso comercial sin declaración."},liberty:{deductible:"10% o $1.900.000",extras:"Pérdida de llaves + grúa",details:"- Cobertura estándar.\n- Deducible: 10% o $1.900.000.\n- Pérdida de llaves.\n- Grúa 2 eventos/año.\n- Exclusiones: desgaste normal."}};
     const typeIcons={auto:"car",home:"home",life:"heart",health:"heartbeat",travel:"plane",business:"briefcase"};
-
-    /* ===== Helpers DOM ===== */
-    const qs = s => document.querySelector(s);
-    const qsa= s => document.querySelectorAll(s);
-    const safe = (el, fn) => { if (el) fn(el); };
-
-    /* ===== Carga inteligente de logos ===== */
+    const qs = s => document.querySelector(s); const qsa= s => document.querySelectorAll(s); const safe = (el, fn) => { if (el) fn(el); };
     const LOGO_EXTS=['png','svg','jpg','jpeg','webp','PNG','SVG','JPG','JPEG','WEBP'];
-    function logoCandidates(key){
-      const base=(key||'').toLowerCase(),cap=base.charAt(0).toUpperCase()+base.slice(1),upper=base.toUpperCase();
-      const variants=[base,cap,upper,`${base}-logo`,`logo-${base}`]; const paths=[];
-      variants.forEach(n=>LOGO_EXTS.forEach(ext=>paths.push(`logos/${n}.${ext}`)));
-      return paths;
-    }
-    function loadLogoSmart(img){
-      const key=(img.dataset.insurer||'').toLowerCase(); const friendly=img.dataset.friendly||key||'Logo';
-      const first=(typeof insurerLogos!=='undefined'&&insurerLogos[key])?insurerLogos[key]:null;
-      const list=[...new Set([first,...logoCandidates(key)].filter(Boolean))];
-      let i=-1; const next=()=>{i++; if(i<list.length){img.onerror=next; img.src=list[i];} else {img.onerror=null; img.style.display='none'; const ph=document.createElement('div'); ph.className='logo-placeholder'; ph.textContent=friendly; img.parentNode.appendChild(ph);} };
-      next();
-    }
-
-    /* ===== Utilidades ===== */
+    function logoCandidates(key){ const base=(key||'').toLowerCase(),cap=base.charAt(0).toUpperCase()+base.slice(1),upper=base.toUpperCase(); const variants=[base,cap,upper,`${base}-logo`,`logo-${base}`]; const paths=[]; variants.forEach(n=>LOGO_EXTS.forEach(ext=>paths.push(`logos/${n}.${ext}`))); return paths; }
+    function loadLogoSmart(img){ const key=(img.dataset.insurer||'').toLowerCase(); const friendly=img.dataset.friendly||key||'Logo'; const first=(typeof insurerLogos!=='undefined'&&insurerLogos[key])?insurerLogos[key]:null; const list=[...new Set([first,...logoCandidates(key)].filter(Boolean))]; let i=-1; const next=()=>{i++; if(i<list.length){img.onerror=next; img.src=list[i];} else {img.onerror=null; img.style.display='none'; const ph=document.createElement('div'); ph.className='logo-placeholder'; ph.textContent=friendly; img.parentNode.appendChild(ph);} }; next(); }
     const fmtCOP=n=>new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',minimumFractionDigits:0,maximumFractionDigits:0}).format(n);
     const addDays=(d,n)=>{const r=new Date(d);r.setDate(r.getDate()+n);return r};
     const addYears=(d,n)=>{const r=new Date(d);r.setFullYear(r.getFullYear()+n);return r};
@@ -743,7 +700,6 @@
     const ringClass=d=>d>180?"status-ring-good":d>30?"status-ring-warning":"status-ring-danger";
     const ringProg=d=>Math.min(100,(d/365)*100);
 
-    /* ===== Datos demo ===== */
     const today=new Date();
     const expirationDates=[iso(addDays(today,28)),iso(addDays(today,120)),iso(addDays(today,230)),iso(addDays(today,350)),iso(addDays(today,15)),iso(addDays(today,80))];
     const policies=[
@@ -755,73 +711,23 @@
       {id:6,type:"business",typeName:"Seguro de Negocio",insurer:"liberty",insurerName:"Liberty Mutual",policyNumber:"#BUSI-321654",expirationDate:expirationDates[5],insuredId:"6549873210",insuredName:"Pedro Sánchez",coverage:115000000,conditions:"- Responsabilidad civil comercial hasta $500.000.000.\n- Interrupción de negocio (30 días carencia).\n- Deducible: $1.500.000 por evento."}
     ];
 
-    /* ===== Archivos subidos para “Tus pólizas” ===== */
-    const uploadedFiles = []; // { id, file, name, type, url, parsed: {text, fields} }
+    const uploadedFiles = []; // {id, file, name, type, url, parsed}
 
-    /* ===== DOM ===== */
-    const sidebar=qs('#sidebar');
-    const toggleSidebar=qs('#toggleSidebar');
+    /* ===== DOM refs ===== */
+    const sidebar=qs('#sidebar'); const toggleSidebar=qs('#toggleSidebar');
+    const sarlaftBadge=qs('#sarlaftBadge'); const openSARLAFTBtn=qs('#openSARLAFT'); const sarlaftModal=qs('#sarlaftModal'); const closeSarlaftModal=qs('#closeSarlaftModal'); const sarlaftForm=qs('#sarlaftForm');
+    const openBulkBtn=qs('#openBulkPolicies'); const bulkModal=qs('#bulkPoliciesModal'); const closeBulk=qs('#closeBulkPolicies'); const downloadTemplate=qs('#downloadTemplate'); const csvFile=qs('#csvFile'); const dropZone=qs('#dropZone'); const bulkResult=qs('#bulkResult');
+    const loginBtn=qs('#loginBtn'); const loginModal=qs('#loginModal');
+    const renewalModal=qs('#renewalModal'); const conditionsModal=qs('#conditionsModal'); const paymentModal=qs('#paymentModal'); const successModal=qs('#successModal');
+    const openPoliciesVault = qs('#openPoliciesVault'); const vaultModal = qs('#vaultModal'); const closeVaultModal = qs('#closeVaultModal'); const vaultList = qs('#vaultList'); const previewHolder = qs('#previewHolder'); const extractedBox = qs('#extractedBox'); const exPol = qs('#ex_pol'), exIns = qs('#ex_ins'), exExp = qs('#ex_exp'), exCov = qs('#ex_cov'); const relateBtn = qs('#relateBtn');
+    const openDataUpdateBtn = qs('#openDataUpdate');
+    const renewalOptions=qs('#renewalOptions'); const compareTableBody=qs('#compareTable tbody'); const currentPolicyChip=qs('#currentPolicyChip'); const confirmRenewalBtn=qs('#confirmRenewal'); const policyGrid=qs('#policyGrid'); const totalPoliciesEl=qs('#totalPolicies'); const expiringPoliciesEl=qs('#expiringPolicies'); const totalCoverageEl=qs('#totalCoverage'); const payTabs=qs('#payTabs'); const payHint=qs('#payHint'); const payMethodLabel=qs('#payMethodLabel');
+    let currentRenewPolicyId=null; let selectedPayment={method:null};
 
-    function syncSidebarByViewport(){
-      if (window.matchMedia('(max-width:1100px)').matches){
-        sidebar.classList.add('hidden');
-      } else {
-        sidebar.classList.remove('hidden');
-      }
-    }
-    syncSidebarByViewport();
-    window.addEventListener('resize', syncSidebarByViewport);
+    function syncSidebarByViewport(){ if (window.matchMedia('(max-width:1100px)').matches){ sidebar.classList.add('hidden'); } else { sidebar.classList.remove('hidden'); } }
+    syncSidebarByViewport(); window.addEventListener('resize', syncSidebarByViewport);
     safe(toggleSidebar, btn => btn.addEventListener('click',()=> sidebar.classList.toggle('hidden')));
 
-    const sarlaftBadge=qs('#sarlaftBadge');
-    const openSARLAFTBtn=qs('#openSARLAFT');
-    const sarlaftModal=qs('#sarlaftModal');
-    const closeSarlaftModal=qs('#closeSarlaftModal');
-    const sarlaftForm=qs('#sarlaftForm');
-
-    const openBulkBtn=qs('#openBulkPolicies');
-    const bulkModal=qs('#bulkPoliciesModal');
-    const closeBulk=qs('#closeBulkPolicies');
-    const downloadTemplate=qs('#downloadTemplate');
-    const csvFile=qs('#csvFile');
-    const dropZone=qs('#dropZone');
-    const bulkResult=qs('#bulkResult');
-
-    const loginBtn=qs('#loginBtn');
-    const loginModal=qs('#loginModal');
-
-    const renewalModal=qs('#renewalModal');
-    const conditionsModal=qs('#conditionsModal');
-    const paymentModal=qs('#paymentModal');
-    const successModal=qs('#successModal');
-
-    const openPoliciesVault = qs('#openPoliciesVault');
-    const vaultModal = qs('#vaultModal');
-    const closeVaultModal = qs('#closeVaultModal');
-    const vaultList = qs('#vaultList');
-    const previewHolder = qs('#previewHolder');
-    const extractedBox = qs('#extractedBox');
-    const exPol = qs('#ex_pol'), exIns = qs('#ex_ins'), exExp = qs('#ex_exp'), exCov = qs('#ex_cov');
-    const relateBtn = qs('#relateBtn');
-
-    const openDataUpdateBtn = qs('#openDataUpdate');
-
-    const renewalOptions=qs('#renewalOptions');
-    const compareTableBody=qs('#compareTable tbody');
-    const currentPolicyChip=qs('#currentPolicyChip');
-    const confirmRenewalBtn=qs('#confirmRenewal');
-    const policyGrid=qs('#policyGrid');
-    const totalPoliciesEl=qs('#totalPolicies');
-    const expiringPoliciesEl=qs('#expiringPolicies');
-    const totalCoverageEl=qs('#totalCoverage');
-    const payTabs=qs('#payTabs');
-    const payHint=qs('#payHint');
-    const payMethodLabel=qs('#payMethodLabel');
-
-    let currentRenewPolicyId=null;
-    let selectedPayment={method:null};
-
-    /* ===== Abrir/Cerrar modales ===== */
     const bindClose=(btnSel,modal)=>{ const b=qs(btnSel); if(b&&modal){ b.addEventListener('click',()=>{ modal.style.display='none'; }); } };
     bindClose('#closeLoginModal',loginModal);
     bindClose('#closeRenewalModal',renewalModal);
@@ -829,29 +735,15 @@
     bindClose('#closePaymentModal',paymentModal);
     bindClose('#closeBulkPolicies',bulkModal);
     bindClose('#closeVaultModal',vaultModal);
+    [loginModal,renewalModal,conditionsModal,paymentModal,successModal,bulkModal,vaultModal,sarlaftModal].forEach(m=> m && m.addEventListener('click',e=>{ if(e.target===m) m.style.display='none'; }));
+
     safe(loginBtn, b=> b.addEventListener('click',()=>{ loginModal.style.display='flex'; }));
-
-    [loginModal,renewalModal,conditionsModal,paymentModal,successModal,bulkModal,vaultModal,sarlaftModal]
-      .forEach(m=> m && m.addEventListener('click',e=>{ if(e.target===m) m.style.display='none'; }));
-
-    // Social login (stubs)
     safe(qs('#loginGoogle'), el=>el.addEventListener('click',()=>alert('Continuar con Google (conectar OAuth aquí)')));
     safe(qs('#loginFacebook'),el=>el.addEventListener('click',()=>alert('Continuar con Facebook (conectar OAuth aquí)')));
     safe(qs('#loginApple'),   el=>el.addEventListener('click',()=>alert('Continuar con Apple (conectar OAuth aquí)')));
 
-    const openConditions=(t,st,b)=>{
-      const tt=qs('#conditionsTitle'), stt=qs('#conditionsSubtitle'), bd=qs('#conditionsBody');
-      if(tt) tt.textContent=t||'Condiciones';
-      if(stt) stt.textContent=st||'';
-      if(bd) bd.textContent=b||'Sin información.';
-      if(conditionsModal) conditionsModal.style.display='flex';
-    };
-    const toast=(t,s)=>{
-      const msg=qs('#successMessage'), sub=qs('#successSub');
-      if(msg) msg.textContent=t||'¡Operación exitosa!';
-      if(sub) sub.textContent=s||'';
-      if(successModal){ successModal.style.display='flex'; setTimeout(()=>successModal.style.display='none',1600); }
-    };
+    function openConditions(t,st,b){ const tt=qs('#conditionsTitle'), stt=qs('#conditionsSubtitle'), bd=qs('#conditionsBody'); if(tt) tt.textContent=t||'Condiciones'; if(stt) stt.textContent=st||''; if(bd) bd.textContent=b||'Sin información.'; if(conditionsModal) conditionsModal.style.display='flex'; }
+    function toast(t,s){ const msg=qs('#successMessage'), sub=qs('#successSub'); if(msg) msg.textContent=t||'¡Operación exitosa!'; if(sub) sub.textContent=s||''; if(successModal){ successModal.style.display='flex'; setTimeout(()=>successModal.style.display='none',1600); } }
 
     /* ===== Render tarjetas ===== */
     function renderPolicies(){
@@ -870,14 +762,11 @@
               <div class="insurance-icon"><i class="fas fa-${typeIcons[p.type]||'shield-halved'}"></i></div>
             </div>
           </div>
-
           <div class="card-details">
             <div class="detail-item"><span class="detail-label">Asegurado:</span><span class="detail-value">${p.insuredName}</span></div>
             <div class="detail-item"><span class="detail-label">Vencimiento:</span><span class="detail-value">${new Date(p.expirationDate).toLocaleDateString('es-ES')}</span></div>
             <div class="detail-item"><span class="detail-label">Cobertura:</span><span class="detail-value">${fmtCOP(p.coverage)}</span></div>
-
             <div class="contact-line"><i class="fas fa-phone"></i><span>Contacto:</span><span style="font-weight:900">${tel(p.insurer)}</span></div>
-
             <div class="ring-row">
               <div class="status-container">
                 <div class="status-ring ${ringClass(d)}" style="--progress:${ringProg(d)}%">
@@ -897,7 +786,6 @@
             </div>
           </div>`;
         policyGrid.appendChild(card);
-
         const hdrLogo=card.querySelector('.insurer-logo-header img'); if(hdrLogo){ loadLogoSmart(hdrLogo); }
         safe(card.querySelector('.conditions-btn'),btn=>btn.addEventListener('click',()=>openConditions('Condiciones de la Póliza',`${p.policyNumber} · ${p.insurerName}`,p.conditions)));
         safe(card.querySelector('.renew-btn'),btn=>btn.addEventListener('click',()=>openRenewal(p)));
@@ -910,10 +798,8 @@
     /* ===== Renovación ===== */
     function highlightCheapest(){const opts=[...qsa('.insurer-option')];let m=Infinity,el=null;opts.forEach(o=>{const p=+o.dataset.price||0;if(p<m){m=p;el=o;}});opts.forEach(o=>o.classList.remove('cheapest'));if(el)el.classList.add('cheapest');}
     function highlightRow(k){if(!compareTableBody)return; compareTableBody.querySelectorAll('tr').forEach(r=>r.classList.remove('selected-row'));const r=compareTableBody.querySelector(`tr[data-insurer="${k}"]`);if(r)r.classList.add('selected-row');}
-
     function renderRenewalOptions(keys){
-      if(!renewalOptions) return;
-      renewalOptions.innerHTML='';
+      if(!renewalOptions) return; renewalOptions.innerHTML='';
       keys.forEach(k=>{
         const div=document.createElement('div');
         div.className='insurer-option'; div.tabIndex=0; div.setAttribute('role','button'); div.dataset.insurer=k; div.dataset.price=renewalPrices[k];
@@ -926,10 +812,8 @@
       });
       highlightCheapest();
     }
-
     function buildCompareTable(keys,policy){
-      if(!compareTableBody) return;
-      compareTableBody.innerHTML='';
+      if(!compareTableBody) return; compareTableBody.innerHTML='';
       keys.forEach(k=>{
         const tr=document.createElement('tr'); tr.dataset.insurer=k;
         const cond=offerConditions[k]||{};
@@ -955,7 +839,6 @@
         };
       }
     }
-
     function selectInsurerOption(el){
       if(!el) return;
       qsa('.insurer-option').forEach(o=>{o.classList.remove('selected');o.setAttribute('aria-selected','false');});
@@ -964,11 +847,6 @@
       const sub=qs('#paymentSubtitle'); if(sub) sub.textContent=`Método para ${insurerNames[k]}`;
       if(paymentModal) paymentModal.style.display='flex';
     }
-    if(renewalOptions){
-      renewalOptions.addEventListener('click',e=>{const el=e.target.closest('.insurer-option');if(!el)return;selectInsurerOption(el);});
-      renewalOptions.addEventListener('keydown',e=>{const el=e.target.closest('.insurer-option');if(!el)return;if(e.key==='Enter'||e.key===' '){e.preventDefault();selectInsurerOption(el);}});
-    }
-
     function openRenewal(p){
       currentRenewPolicyId=p.id;
       const rn=qs('#renewalPolicyNumber'); if(rn) rn.textContent=p.policyNumber;
@@ -979,8 +857,10 @@
       buildCompareTable(keys,p);
       if(renewalModal) renewalModal.style.display='flex';
     }
-
-    /* Pago */
+    if(renewalOptions){
+      renewalOptions.addEventListener('click',e=>{const el=e.target.closest('.insurer-option');if(!el)return;selectInsurerOption(el);});
+      renewalOptions.addEventListener('keydown',e=>{const el=e.target.closest('.insurer-option');if(!el)return;if(e.key==='Enter'||e.key===' '){e.preventDefault();selectInsurerOption(el);}});
+    }
     if(payTabs){
       payTabs.addEventListener('click',e=>{
         const tab=e.target.closest('.pay-tab'); if(!tab) return;
@@ -999,78 +879,40 @@
       if(paymentModal) paymentModal.style.display='none'; toast('Forma de pago guardada',`Método: ${m.toUpperCase()}`);
     }));
 
-    /* Confirmar renovación (+1 año) */
-    safe(confirmRenewalBtn, btn=> btn.addEventListener('click',()=>{
-      const sel=qs('.insurer-option.selected'); if(!sel){alert('Selecciona una aseguradora.');return;}
-      if(!selectedPayment.method){alert('Selecciona una forma de pago.'); if(paymentModal) paymentModal.style.display='flex'; return;}
-      const k=sel.dataset.insurer; const i=policies.findIndex(p=>p.id===currentRenewPolicyId);
-      if(i!==-1){
-        const newExp=iso(addYears(new Date(),1));
-        policies[i].expirationDate=newExp; policies[i].insurer=k; policies[i].insurerName=insurerNames[k]||policies[i].insurerName;
-        if(renewalModal) renewalModal.style.display='none'; renderPolicies();
-        toast('¡Renovación exitosa!',`Póliza ${policies[i].policyNumber} renovada con ${insurerNames[k]}. Nueva fecha: ${human(newExp)} · Pago: ${selectedPayment.method.toUpperCase()}.`);
-      }
-      currentRenewPolicyId=null; selectedPayment={method:null}; if(payHint) payHint.style.display='none'; if(payMethodLabel) payMethodLabel.textContent='—';
-    }));
-
-    /* ====== Sidebar: SARLAFT ====== */
-    function sarlaftIsComplete(){
-      if(!sarlaftForm) return false;
-      const req = sarlaftForm.querySelectorAll('select[required], input[required]');
-      for(const el of req){ if(!el.value || el.value.trim()==='') return false; }
-      return true;
-    }
-    function paintSarlaftBadge(){
-      const ok=sarlaftIsComplete();
-      if(sarlaftBadge){
-        sarlaftBadge.textContent = ok ? 'Al día' : 'Pendiente';
-        sarlaftBadge.classList.toggle('ok', ok);
-        sarlaftBadge.classList.toggle('bad', !ok);
-      }
-    }
+    /* SARLAFT */
+    function sarlaftIsComplete(){ if(!sarlaftForm) return false; const req = sarlaftForm.querySelectorAll('select[required], input[required]'); for(const el of req){ if(!el.value || el.value.trim()==='') return false; } return true; }
+    function paintSarlaftBadge(){ const ok=sarlaftIsComplete(); if(sarlaftBadge){ sarlaftBadge.textContent = ok ? 'Al día' : 'Pendiente'; sarlaftBadge.classList.toggle('ok', ok); sarlaftBadge.classList.toggle('bad', !ok); } }
     safe(openSARLAFTBtn, btn=> btn.addEventListener('click',()=>{ if(sarlaftModal) sarlaftModal.style.display='flex'; paintSarlaftBadge(); }));
     safe(closeSarlaftModal, btn=> btn.addEventListener('click',()=> sarlaftModal.style.display='none'));
     safe(sarlaftForm, f=> f.addEventListener('change', paintSarlaftBadge));
     safe(sarlaftForm, f=> f.addEventListener('submit', (e)=>{ e.preventDefault(); paintSarlaftBadge(); if(sarlaftIsComplete()){ toast('SARLAFT guardado', 'Tu formulario quedó AL DÍA.'); } else { alert('Faltan campos obligatorios.'); } }));
 
-    /* ====== Carga automática (CSV/PDF/IMG) ====== */
-    safe(bulkModal, m=>{});
-    safe(closeBulk, btn=> btn.addEventListener('click',()=>{ if(bulkModal) bulkModal.style.display='none'; }));
+    /* Carga automática (CSV/PDF/IMG) */
     safe(openBulkBtn, b=> b.addEventListener('click',()=>{ bulkModal.style.display='flex'; if(bulkResult) bulkResult.textContent=''; }));
-
+    safe(closeBulk, btn=> btn.addEventListener('click',()=>{ if(bulkModal) bulkModal.style.display='none'; }));
     safe(downloadTemplate, btn=> btn.addEventListener('click',()=>{
       const csv = "policyNumber,type,insurer,insuredId,insuredName,coverage,expirationDate,conditions\n#AUTO-0001,auto,allianz,123,Juan Beltrán,200000000,2026-01-15,Condiciones ejemplo...";
-      const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = 'plantilla_policies.csv'; a.click();
-      URL.revokeObjectURL(url);
+      const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'}); const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'plantilla_policies.csv'; a.click(); URL.revokeObjectURL(url);
     }));
-
     function openFileDialog(){ csvFile && csvFile.click(); }
     safe(dropZone, dz=>{
       dz.addEventListener('click', openFileDialog);
       ['dragenter','dragover'].forEach(evt=> dz.addEventListener(evt, e=>{ e.preventDefault(); e.stopPropagation(); dz.style.borderColor='#2c80b9'; }));
       ['dragleave','drop'].forEach(evt=> dz.addEventListener(evt, e=>{ e.preventDefault(); e.stopPropagation(); dz.style.borderColor='rgba(52,152,219,.35)'; }));
       dz.addEventListener('drop', e=>{
-        const files = [...e.dataTransfer.files||[]];
-        if(files.length) handleUploads(files);
+        const files = [...e.dataTransfer.files||[]]; if(files.length) handleUploads(files);
       });
     });
     safe(csvFile, inp=> inp.addEventListener('change', e=>{
-      const files = [...e.target.files||[]];
-      if(files.length) handleUploads(files);
-      csvFile.value = '';
+      const files = [...e.target.files||[]]; if(files.length) handleUploads(files); csvFile.value = '';
     }));
 
     function handleUploads(files){
-      // Separar CSVs del resto
       const csvs = files.filter(f=> /\.csv$/i.test(f.name));
       const others = files.filter(f=> !/\.csv$/i.test(f.name));
-
-      // CSVs -> importar en lote
       if(csvs.length){
-        let totalAdded=0, totalErr=0;
-        let processed=0;
+        let totalAdded=0, totalErr=0; let processed=0;
         csvs.forEach(file=>{
           parseCSV(file,(added,errors)=>{
             totalAdded+=added; totalErr+=errors; processed++;
@@ -1082,8 +924,6 @@
           });
         });
       }
-
-      // Otros archivos -> agregar a “Tus pólizas”
       if(others.length){
         others.forEach(file=>{
           const id = 'f_'+Math.random().toString(36).slice(2);
@@ -1094,7 +934,6 @@
         refreshVaultList();
       }
     }
-
     function parseCSV(file, cb){
       const reader=new FileReader();
       reader.onload = () => {
@@ -1104,7 +943,6 @@
         const needed = ['policyNumber','type','insurer','insuredId','insuredName','coverage','expirationDate'];
         const hasAll = needed.every(k => header.includes(k));
         if(!hasAll){ alert('La cabecera del CSV no es válida. Requeridos: '+needed.join(', ')); cb?.(0, rows.length); return; }
-
         let added=0, errors=0;
         rows.forEach(line=>{
           const cols = line.split(',');
@@ -1113,12 +951,7 @@
             const newP = {
               id: policies.length+1,
               type: rec.type,
-              typeName: (rec.type==='auto'?'Seguro de Auto':
-                         rec.type==='home'?'Seguro de Hogar':
-                         rec.type==='life'?'Seguro de Vida':
-                         rec.type==='health'?'Seguro Médico':
-                         rec.type==='travel'?'Seguro de Viaje':
-                         rec.type==='business'?'Seguro de Negocio':'Seguro'),
+              typeName: (rec.type==='auto'?'Seguro de Auto': rec.type==='home'?'Seguro de Hogar': rec.type==='life'?'Seguro de Vida': rec.type==='health'?'Seguro Médico': rec.type==='travel'?'Seguro de Viaje': rec.type==='business'?'Seguro de Negocio':'Seguro'),
               insurer: rec.insurer,
               insurerName: insurerNames[rec.insurer] || rec.insurer,
               policyNumber: rec.policyNumber,
@@ -1137,59 +970,96 @@
       reader.readAsText(file);
     }
 
-    /* ====== “Tus pólizas” (Vault) ====== */
+    /* ===== Vault (preview + OCR) ===== */
     function refreshVaultList(){
-      if(!vaultList) return;
-      vaultList.innerHTML='';
+      if(!vaultList) return; vaultList.innerHTML='';
       if(uploadedFiles.length===0){
-        const empty = document.createElement('div');
-        empty.className='vault-empty';
-        empty.textContent='Aún no has cargado archivos.';
-        vaultList.appendChild(empty);
+        const empty = document.createElement('div'); empty.className='vault-empty'; empty.textContent='Aún no has cargado archivos.'; vaultList.appendChild(empty);
         if(previewHolder){ previewHolder.innerHTML='Selecciona un archivo para ver el preview'; extractedBox.style.display='none'; }
         return;
       }
       uploadedFiles.forEach(f=>{
-        const item=document.createElement('div');
-        item.className='vault-item';
-        item.dataset.id=f.id;
+        const item=document.createElement('div'); item.className='vault-item'; item.dataset.id=f.id;
         const ext = (f.name.split('.').pop()||'').toUpperCase();
         item.innerHTML=`
-          <div class="icon"><i class="fas ${/pdf/i.test(ext)?'fa-file-pdf':'fa-file-image'}"></i></div>
+          <div class="icon"><i class="fas ${/PDF/i.test(ext)?'fa-file-pdf':'fa-file-image'}"></i></div>
           <div style="flex:1">
             <div style="font-weight:800">${f.name}</div>
             <div style="font-size:12px;color:#567">${f.type||'archivo'}</div>
-          </div>
-        `;
+          </div>`;
         item.addEventListener('click',()=> openVaultPreview(f.id));
         vaultList.appendChild(item);
       });
     }
 
-    function openVaultPreview(id){
+    async function ocrFromCanvas(canvas){
+      try{
+        const { data:{ text } } = await Tesseract.recognize(canvas, 'eng', { logger:()=>{} });
+        return text || '';
+      }catch{ return ''; }
+    }
+    async function ocrFromImageURL(url){
+      try{
+        const { data:{ text } } = await Tesseract.recognize(url, 'eng', { logger:()=>{} });
+        return text || '';
+      }catch{ return ''; }
+    }
+
+    function tryExtractFields(text, filename){
+      const src = (text||'') + ' ' + (filename||'');
+      // N° de póliza: #ABC-123456 o variantes
+      const numMatch =
+        src.match(/(#?\s?[A-Z]{3,}[-]?\d{4,})/) ||
+        src.match(/pol[íi]za[:\s\-]*([A-Z0-9\-]{6,})/i);
+      const policyNumber = (numMatch?.[1]||numMatch?.[0]||'').replace(/poliza|póliza|:/ig,'').trim();
+
+      // Aseguradora (por nombre o clave)
+      let insurerKey = '';
+      let insurerName = '';
+      for(const [k,name] of Object.entries(insurerNames)){
+        const reName = new RegExp(`\\b${name}\\b`,'i');
+        const reKey  = new RegExp(`\\b${k}\\b`,'i');
+        if(reName.test(src)){ insurerName = name; insurerKey = k; break; }
+        if(reKey.test(src)){ insurerKey = k; insurerName = name; break; }
+      }
+
+      // Fecha (YYYY-MM-DD | DD/MM/YYYY | DD-MM-YYYY)
+      let expirationDate = '';
+      const mISO = src.match(/\b(20\d{2})[-\/.](0[1-9]|1[0-2])[-\/.](0[1-9]|[12]\d|3[01])\b/);
+      const mDMY = src.match(/\b(0[1-9]|[12]\d|3[01])[\/\-\.](0[1-9]|1[0-2])[\/\-\.](20\d{2})\b/);
+      if(mISO){ expirationDate = mISO[0].replace(/[.]/g,'-'); }
+      else if(mDMY){ const [_,d,m,y]=mDMY; expirationDate = `${y}-${m}-${d}`; }
+
+      // Cobertura (número grande con símbolos)
+      let coverage=0;
+      const mMoney = src.match(/(?:\$|\bCOP\b)?\s*([\d\.\s]{6,})/i);
+      if(mMoney){
+        const num = mMoney[1].replace(/\D/g,'');
+        if(num.length>=6){ coverage = parseInt(num,10); }
+      }
+      if(!coverage) coverage = 100000000; // fallback
+
+      return { policyNumber, insurerKey, insurerName, expirationDate, coverage };
+    }
+
+    async function openVaultPreview(id){
       const f = uploadedFiles.find(x=>x.id===id);
       if(!f || !previewHolder) return;
-
       extractedBox.style.display='none';
       exPol.textContent=''; exIns.textContent=''; exExp.textContent=''; exCov.textContent='';
 
       if(/pdf$/i.test(f.name)){
-        previewHolder.innerHTML='';
-        const canvas = document.createElement('canvas');
-        canvas.style.display='block';
-        previewHolder.appendChild(canvas);
-
-        const loadingTask = pdfjsLib.getDocument({ url: f.url });
-        loadingTask.promise.then(async (pdf)=>{
-          // Render primera página
+        previewHolder.innerHTML='<div><span class="spinner"></span> Cargando PDF…</div>';
+        const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+        try{
+          const pdf = await pdfjsLib.getDocument({ url: f.url }).promise;
           const page = await pdf.getPage(1);
           const viewport = page.getViewport({ scale: 1.4 });
-          const ctx = canvas.getContext('2d');
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
+          canvas.width = viewport.width; canvas.height = viewport.height;
           await page.render({ canvasContext: ctx, viewport }).promise;
+          previewHolder.innerHTML=''; previewHolder.appendChild(canvas);
 
-          // Extraer texto de 1-2 páginas
+          // Intento 1: texto embebido
           let combinedText = '';
           const total = Math.min(pdf.numPages,2);
           for(let i=1;i<=total;i++){
@@ -1197,23 +1067,34 @@
             const textContent = await p.getTextContent();
             combinedText += textContent.items.map(it=>it.str).join(' ') + ' ';
           }
-          f.parsed = { text: combinedText, fields: tryExtractFields(combinedText, f.name) };
-          fillExtractedBox(f.parsed.fields);
-        }).catch(()=>{
+
+          let fields = tryExtractFields(combinedText, f.name);
+
+          // Si no se detectó casi nada, Intento 2: OCR del canvas
+          const textQuality = (combinedText||'').replace(/\s+/g,' ').trim().length;
+          if(!fields.policyNumber && textQuality < 50){
+            const ocrText = await ocrFromCanvas(canvas);
+            fields = tryExtractFields((combinedText+' '+ocrText), f.name);
+          }
+
+          f.parsed = { text: combinedText, fields };
+          fillExtractedBox(fields);
+        }catch{
           previewHolder.textContent='No fue posible previsualizar el PDF.';
-        });
+        }
       } else if(/^image\//i.test(f.type) || /\.(png|jpg|jpeg|webp)$/i.test(f.name)){
-        previewHolder.innerHTML='';
+        previewHolder.innerHTML='<div><span class="spinner"></span> Analizando imagen…</div>';
         const img = new Image();
-        img.onload=()=>{ /* listo */ };
+        img.onload = async ()=>{
+          previewHolder.innerHTML=''; previewHolder.appendChild(img);
+          // OCR directo sobre la URL (Tesseract acepta URL/Blob)
+          const ocrText = await ocrFromImageURL(f.url);
+          const fields = tryExtractFields(ocrText, f.name);
+          f.parsed = { text: ocrText, fields };
+          fillExtractedBox(fields);
+        };
         img.onerror=()=>{ previewHolder.textContent='No fue posible previsualizar la imagen.'; };
         img.src = f.url;
-        previewHolder.appendChild(img);
-
-        // Sin OCR: intentamos extraer por nombre de archivo
-        const fields = tryExtractFields('', f.name);
-        f.parsed = { text:'', fields };
-        fillExtractedBox(fields);
       } else {
         previewHolder.innerHTML='<div style="padding:20px;text-align:center;color:#567">No hay preview disponible para este tipo de archivo.</div>';
         const fields = tryExtractFields('', f.name);
@@ -1222,54 +1103,8 @@
       }
     }
 
-    function tryExtractFields(text, filename){
-      const src = (text||'') + ' ' + (filename||'');
-      const numMatch = src.match(/(#?[A-Z]{3,}-\d{3,}|P[óo]liza[:\s-]*([A-Z0-9-]{6,}))/i);
-      const policyNumber = (numMatch?.[0]||'').replace(/Poliza|Póliza|:/ig,'').trim() || '';
-
-      // Aseguradora por nombre
-      const insurers = Object.values(insurerNames);
-      let insurerName = '';
-      for(const name of insurers){
-        const re = new RegExp(`\\b${name}\\b`,'i');
-        if(re.test(src)){ insurerName = name; break; }
-      }
-      // Si no aparece el nombre completo, intentamos por claves
-      if(!insurerName){
-        for(const k of Object.keys(insurerNames)){
-          const re = new RegExp(`\\b${k}\\b`,'i');
-          if(re.test(src)){ insurerName = insurerNames[k]; break; }
-        }
-      }
-      const insurerKey = Object.keys(insurerNames).find(k=>insurerNames[k].toLowerCase()===insurerName.toLowerCase()) || '';
-
-      // Fecha (YYYY-MM-DD o DD/MM/YYYY)
-      let expirationDate = '';
-      const mISO = src.match(/\b(20\d{2})[-\/.](0[1-9]|1[0-2])[-\/.](0[1-9]|[12]\d|3[01])\b/);
-      const mDMY = src.match(/\b(0[1-9]|[12]\d|3[01])[\/.](0[1-9]|1[0-2])[\/.](20\d{2})\b/);
-      if(mISO){ expirationDate = mISO[0].replace(/[.]/g,'-'); }
-      else if(mDMY){ const [_,d,m,y]=mDMY; expirationDate = `${y}-${m}-${d}`; }
-
-      // Cobertura (cifra grande)
-      let coverage=0;
-      const mMoney = src.match(/(\$\s?)?(\d[\d\.\s]{5,})/);
-      if(mMoney){
-        const num = mMoney[2].replace(/\D/g,'');
-        if(num.length>=6){ coverage = parseInt(num,10); }
-      }
-      if(!coverage) coverage = 100000000; // fallback
-
-      return {
-        policyNumber,
-        insurerKey: insurerKey || (Object.keys(insurerNames).find(k=>insurerNames[k].toLowerCase().includes((insurerName||'').toLowerCase()))||''),
-        insurerName: insurerName || '',
-        expirationDate,
-        coverage
-      };
-    }
-
     function fillExtractedBox(fields){
-      if(!fields) { extractedBox.style.display='none'; return; }
+      if(!fields){ extractedBox.style.display='none'; return; }
       exPol.textContent = fields.policyNumber || '—';
       exIns.textContent = fields.insurerName || (fields.insurerKey? insurerNames[fields.insurerKey] : '—');
       exExp.textContent = fields.expirationDate ? new Date(fields.expirationDate).toLocaleDateString('es-ES') : '—';
@@ -1279,7 +1114,6 @@
     }
 
     function relateExtracted(fields){
-      // Requerimos mínimamente: policyNumber + insurer + expirationDate
       const insurerKey = fields.insurerKey;
       const insurerName = fields.insurerName || (insurerKey?insurerNames[insurerKey]:'');
       if(!fields.policyNumber || !(insurerKey||insurerName) || !fields.expirationDate){
@@ -1287,11 +1121,10 @@
         return;
       }
       const key = insurerKey || (Object.keys(insurerNames).find(k=>insurerNames[k]===insurerName)||'');
-      const type = 'auto'; // si no hay tipo se usa “auto” (placeholder)
+      const type = 'auto'; // placeholder si no se conoce
       const newP = {
         id: policies.length+1,
-        type,
-        typeName: 'Seguro de Auto',
+        type, typeName: 'Seguro de Auto',
         insurer: key || 'allianz',
         insurerName: insurerName || insurerNames[key] || 'Allianz',
         policyNumber: fields.policyNumber,
@@ -1312,7 +1145,7 @@
       if(vaultModal) vaultModal.style.display='flex';
     }));
 
-    // “Actualización de datos”: simple (igual)
+    // Actualización de datos
     safe(openDataUpdateBtn, b=> b.addEventListener('click',()=>{
       const title = qs('#conditionsTitle'); const sub = qs('#conditionsSubtitle'); const body = qs('#conditionsBody');
       if(title) title.textContent = 'Actualización de datos';
@@ -1330,28 +1163,23 @@ Si necesitas corregir algo, actualiza SARLAFT o carga/edita tus pólizas.`;
       if(conditionsModal) conditionsModal.style.display='flex';
     }));
 
-    /* ====== Eliminar póliza ====== */
+    // Eliminar póliza
     const DELETE_CONFIRM_MSG = "eliminando esta poliza, saldrás del ecosistema InsuraHub, no te enviaremos recordatorios de Renovación";
     safe(policyGrid, grid=>{
       grid.addEventListener('click', (e)=>{
-        const btn = e.target.closest('.delete-btn');
-        if(!btn) return;
+        const btn = e.target.closest('.delete-btn'); if(!btn) return;
         const id = +btn.dataset.policyId;
         if(confirm(DELETE_CONFIRM_MSG)){
           const idx = policies.findIndex(p=>p.id===id);
-          if(idx>-1){
-            const removed = policies.splice(idx,1)[0];
-            renderPolicies();
-            toast('Póliza eliminada', `${removed.policyNumber} fue eliminada del ecosistema.`);
-          }
+          if(idx>-1){ const removed = policies.splice(idx,1)[0]; renderPolicies(); toast('Póliza eliminada', `${removed.policyNumber} fue eliminada del ecosistema.`); }
         }
       });
     });
 
-    /* ===== Init ===== */
+    /* Init */
     renderPolicies();
 
-    /* ===== Manifest + Service Worker (seguro) ===== */
+    /* Manifest + SW */
     (function(){
       const manifest={name:"InsuraHub",short_name:"InsuraHub",start_url:".",scope:".",display:"standalone",background_color:"#ffffff",theme_color:"#3498db",icons:[{src:"icons/icon-192.png",sizes:"192x192",type:"image/png"},{src:"icons/icon-512.png",sizes:"512x512",type:"image/png"}]};
       const blob=new Blob([JSON.stringify(manifest)],{type:"application/manifest+json"});
