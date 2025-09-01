@@ -16,16 +16,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- OCR / PDF -->
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.js"></script>
-  <script>
-    // pdf.js worker (CDN)
-    if (window['pdfjsLib']) {
-      pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.js";
-    }
-  </script>
-
   <style>
     :root{
       --primary:#3498db;--primary-light:#5dade2;--primary-dark:#2c80b9;
@@ -56,8 +46,21 @@
     }
     .side-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
     .side-title{font-weight:900;color:#0e7d4c;display:flex;align-items:center;gap:8px}
+    .side-logo{
+      display:flex; align-items:center; gap:10px;
+      background:rgba(255,255,255,.55);
+      border:1px solid rgba(255,255,255,.6);
+      border-radius:12px; padding:8px 10px; box-shadow:var(--depth-1)
+    }
+    .side-logo .logo-box{
+      width:36px;height:36px;border-radius:10px;overflow:hidden;
+      display:flex;align-items:center;justify-content:center;
+      background:#ffffffcc;border:1px solid rgba(0,0,0,.05)
+    }
+    .side-logo img{width:100%;height:100%;object-fit:contain}
+    .side-logo .brand{font-weight:900;color:#106d42}
 
-    /* Botones del sidebar con degradado azul */
+    /* Botones del sidebar */
     .side-btn{
       width:100%; display:flex; align-items:center; gap:10px; padding:12px; border-radius:12px;
       border:1px solid rgba(52,152,219,.25);
@@ -168,7 +171,7 @@
     }
     footer p{font-size:12px;font-weight:600}
 
-    /* Modales */
+    /* Modales base */
     .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;justify-content:center;align-items:center;backdrop-filter:blur(6px)}
     .modal-content{background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.98));border-radius:18px;width:96%;max-width:1400px;padding:28px;box-shadow:var(--depth-3);max-height:90vh;overflow:auto;position:relative;border:1px solid rgba(52,152,219,.15)}
     .modal-header{text-align:center;margin-bottom:14px;position:relative}
@@ -187,7 +190,7 @@
     .section-card{background:linear-gradient(180deg,#ffffff,#f6f8ff);border:1px solid rgba(52,152,219,.15);border-radius:16px;padding:16px;box-shadow:var(--depth-1);margin-bottom:14px}
     .section-title{font-weight:900;color:#155a8f;margin-bottom:8px;display:flex;align-items:center;gap:8px}
 
-    /* Renovación / comparación / pago / success (sin cambios visuales extra) */
+    /* Renovación / comparación / pago / success */
     .renewal-layout{display:grid;grid-template-columns:1fr 1.25fr;gap:20px}
     @media(max-width:1180px){.renewal-layout{grid-template-columns:1fr}}
     .renewal-col{background:linear-gradient(180deg,#fff,#f9fbff);border:1px solid rgba(52,152,219,.12);border-radius:14px;box-shadow:var(--depth-1);padding:16px}
@@ -207,6 +210,7 @@
     .pill{display:inline-block;padding:4px 10px;border-radius:999px;font-weight:700;font-size:12px;background:linear-gradient(180deg,#f7fbff,#eef6ff);border:1px solid rgba(52,152,219,.2);color:#2c3e50}
     .btn-mini{padding:8px 12px;border-radius:10px;font-weight:700;border:1px solid rgba(52,152,219,.2);background:#fff;box-shadow:var(--depth-1);cursor:pointer}
     .selected-row{box-shadow:inset 0 0 0 2px rgba(52,152,219,.35)}
+
     #paymentModal .modal-content{max-width:720px}
     .pay-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
     .pay-tab{padding:10px 14px;border-radius:10px;border:1px solid rgba(52,152,219,.2);background:#fff;box-shadow:var(--depth-1);cursor:pointer;font-weight:700;display:flex;align-items:center;gap:8px}
@@ -222,40 +226,32 @@
     @keyframes popScale{0%{transform:scale(.8);opacity:0}100%{transform:scale(1);opacity:1}}
     .checkmark{animation:popScale .5s ease-out both}
 
-    /* Móvil detalles */
-    @media(max-width:768px){
-      .stats-bar{flex-direction:column;gap:14px}
-      .stat-item:not(:last-child)::after{display:none}
-      header{flex-direction:column;gap:12px;text-align:center}
-      .user-actions{justify-content:center}
-      .ring-row{align-items:stretch}
-    }
+    /* Z-index: asegurar superposición correcta */
+    #renewalModal { z-index: 10001; }
+    #paymentModal { z-index: 10002 !important; }  /* pago arriba de renovación */
+    #conditionsModal { z-index: 10003; }          /* detalle arriba de ambos */
 
-    /* Vault (Tus pólizas) */
-    .vault-grid{
-      display:grid;
-      grid-template-columns: repeat(auto-fill,minmax(220px,1fr));
-      gap:12px;
+    /* Modal "Tus pólizas" (lista + preview) */
+    #policiesVaultModal .modal-content{max-width:1100px}
+    .vault-layout{display:grid;grid-template-columns:320px 1fr;gap:14px}
+    @media(max-width:900px){.vault-layout{grid-template-columns:1fr}}
+    .vault-list{
+      background:linear-gradient(180deg,#ffffff,#f6f8ff);
+      border:1px solid rgba(52,152,219,.15);border-radius:14px;padding:12px;box-shadow:var(--depth-1);
+      max-height:70vh; overflow:auto
     }
-    .vault-item{
-      background:#fff;border:1px solid rgba(52,152,219,.15);border-radius:12px;box-shadow:var(--depth-1);
-      overflow:hidden;display:flex;flex-direction:column
+    .file-item{
+      display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:10px;
+      padding:10px;border-radius:10px;border:1px solid #eef2f7;background:#fff;margin-bottom:8px;cursor:pointer
     }
+    .file-item.active{border-color:var(--primary);box-shadow:0 0 0 2px rgba(52,152,219,.2)}
+    .file-item .name{font-weight:800;color:#2c3e50}
+    .file-item .meta{font-size:12px;color:#567;font-weight:700}
     .vault-preview{
-      height:180px;background:#f5f8ff;display:flex;align-items:center;justify-content:center;overflow:hidden;border-bottom:1px solid rgba(52,152,219,.1)
+      background:linear-gradient(180deg,#ffffff,#f6f8ff);
+      border:1px solid rgba(52,152,219,.15);border-radius:14px;padding:12px;box-shadow:var(--depth-1);
+      min-height:300px
     }
-    .vault-preview img{max-width:100%;max-height:100%;display:block}
-    .vault-preview object{width:100%;height:100%;border:none}
-    .vault-body{padding:10px;display:flex;flex-direction:column;gap:6px}
-    .vault-name{font-weight:800;color:#1f2d3d;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .vault-meta{font-size:12px;color:#567}
-
-    .whatsapp-fab{
-      position:fixed; right:18px; bottom:18px; width:56px; height:56px; border-radius:50%;
-      background:#25D366; color:#fff; display:flex; align-items:center; justify-content:center;
-      box-shadow:var(--depth-3); z-index:10050; cursor:pointer; font-size:26px
-    }
-    .whatsapp-fab:hover{filter:brightness(1.05)}
   </style>
 </head>
 <body>
@@ -265,10 +261,16 @@
   <!-- ===== Sidebar ===== -->
   <aside class="sidebar" id="sidebar">
     <div class="side-header">
-      <div class="side-title"><i class="fas fa-layer-group"></i> Ecosistema InsuraHub</div>
+      <div class="side-logo">
+        <div class="logo-box">
+          <img src="logos/insurahublogo.png" alt="InsuraHub" onerror="this.remove();this.parentNode.textContent='IH'">
+        </div>
+        <div class="brand">InsuraHub</div>
+      </div>
     </div>
 
-    <!-- SARLAFT PRIMERO -->
+    <div class="side-title"><i class="fas fa-layer-group"></i> Ecosistema InsuraHub</div>
+
     <button class="side-btn" id="openSARLAFT">
       <i class="fas fa-clipboard-check"></i> Tu formulario SARLAFT al día
       <span class="side-badge bad" id="sarlaftBadge">Pendiente</span>
@@ -300,7 +302,7 @@
         <div class="app-title-text"><h1>InsuraHub</h1><p>Gestión Inteligente de Seguros</p></div>
       </div>
       <div class="user-actions">
-        <!-- BOTÓN NUEVA PÓLIZA ELIMINADO -->
+        <!-- Mantengo botones como estaban -->
         <button class="btn btn-outline" id="loginBtn"><i class="fas fa-user"></i> Iniciar Sesión</button>
       </div>
     </header>
@@ -323,47 +325,26 @@
 
   <!-- ===== Modales ===== -->
 
-  <!-- Login + Registro -->
+  <!-- Login -->
   <div class="modal" id="loginModal" aria-hidden="true">
     <div class="modal-content" role="dialog" aria-modal="true">
       <div class="modal-header">
-        <h2>Accede a tu cuenta</h2>
-        <p>Inicia sesión o crea una cuenta</p>
+        <h2>Iniciar Sesión</h2>
+        <p>Accede a tu cuenta para gestionar tus seguros</p>
         <button class="close-modal" id="closeLoginModal">×</button>
       </div>
 
-      <!-- Tabs -->
-      <div class="pay-tabs" id="authTabs">
-        <button class="pay-tab active" data-auth="login"><i class="fas fa-right-to-bracket"></i> Iniciar Sesión</button>
-        <button class="pay-tab" data-auth="register"><i class="fas fa-user-plus"></i> Registrarse</button>
+      <div class="social-login" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:12px">
+        <button type="button" class="btn" id="loginGoogle"><i class="fab fa-google"></i> Continuar con Google</button>
+        <button type="button" class="btn" id="loginFacebook"><i class="fab fa-facebook-f"></i> Continuar con Facebook</button>
+        <button type="button" class="btn" id="loginApple"><i class="fab fa-apple"></i> Continuar con Apple</button>
       </div>
 
-      <!-- Social buttons -->
-      <div id="authSocial" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
-        <button type="button" class="btn" id="loginGoogle"><i class="fab fa-google"></i> Google</button>
-        <button type="button" class="btn" id="loginFacebook" style="background:#1877F2;color:#fff"><i class="fab fa-facebook-f"></i> Facebook</button>
-        <button type="button" class="btn" id="loginApple" style="background:#000;color:#fff"><i class="fab fa-apple"></i> Apple</button>
-      </div>
-
-      <!-- LOGIN -->
-      <form id="loginForm">
+      <div style="text-align:center;color:#99a3ad;font-weight:700;margin:8px 0 14px">o con tu correo</div>
+      <form>
         <div class="form-group"><label class="form-label" for="email"><i class="fas fa-envelope"></i> Correo Electrónico</label><div class="input-wrap"><input type="email" id="email" required placeholder="tucorreo@dominio.com"></div></div>
         <div class="form-group"><label class="form-label" for="password"><i class="fas fa-lock"></i> Contraseña</label><div class="input-wrap"><input type="password" id="password" required placeholder="••••••••"></div></div>
         <button type="submit" class="btn" style="width:100%"><i class="fas fa-right-to-bracket"></i> Iniciar Sesión</button>
-      </form>
-
-      <!-- REGISTRO -->
-      <form id="registerForm" style="display:none">
-        <div class="section-card" style="margin-top:6px">
-          <div class="section-title"><i class="fas fa-id-card-clip"></i> Datos básicos</div>
-          <div class="form-grid">
-            <div class="form-group"><label class="form-label"><i class="fas fa-user"></i> Nombres</label><div class="input-wrap"><input type="text" id="regName" required placeholder="Tu nombre"></div></div>
-            <div class="form-group"><label class="form-label"><i class="fas fa-user"></i> Apellidos</label><div class="input-wrap"><input type="text" id="regLast" required placeholder="Tus apellidos"></div></div>
-            <div class="form-group"><label class="form-label"><i class="fas fa-envelope"></i> Correo</label><div class="input-wrap"><input type="email" id="regEmail" required placeholder="tucorreo@dominio.com"></div></div>
-            <div class="form-group"><label class="form-label"><i class="fas fa-lock"></i> Contraseña</label><div class="input-wrap"><input type="password" id="regPass" required placeholder="Mínimo 8 caracteres"></div></div>
-          </div>
-        </div>
-        <button type="submit" class="btn" style="width:100%"><i class="fas fa-user-plus"></i> Crear cuenta</button>
       </form>
     </div>
   </div>
@@ -382,7 +363,7 @@
           <div class="section-title"><i class="fas fa-id-card"></i> Datos del asegurado</div>
           <div class="form-grid">
             <div class="form-group"><label class="form-label" for="insuredId"><i class="fas fa-hashtag"></i> Identificación</label><div class="input-wrap"><input type="text" id="insuredId" required placeholder="Ej: 1234567890"></div><div class="hint">Cédula o NIT del titular</div></div>
-            <div class="form-group"><label class="form-label" for="insuredName"><i class="fas fa-user"></i> Nombre y Apellidos</label><div class="input-wrap"><input type="text" id="insuredName" required placeholder="Nombre completo" value="Juan Beltrán"></div></div>
+            <div class="form-group"><label class="form-label" for="insuredName"><i class="fas fa-user"></i> Nombre y Apellidos</label><div class="input-wrap"><input type="text" id="insuredName" required placeholder="Nombre completo"></div></div>
           </div>
         </div>
 
@@ -404,7 +385,7 @@
   </div>
 
   <!-- Renovación -->
-  <div class="modal" id="renewalModal" aria-hidden="true" style="z-index:10001">
+  <div class="modal" id="renewalModal" aria-hidden="true">
     <div class="modal-content" role="dialog" aria-modal="true">
       <div class="modal-header">
         <h2>Renovar Póliza</h2>
@@ -443,26 +424,19 @@
     </div>
   </div>
 
-  <!-- Condiciones / Visor reutilizable -->
-  <div class="modal" id="conditionsModal" aria-hidden="true" style="z-index:10002">
+  <!-- Condiciones (detalle) -->
+  <div class="modal" id="conditionsModal" aria-hidden="true">
     <div class="modal-content" role="dialog" aria-modal="true">
       <div class="modal-header">
         <h2 id="conditionsTitle">Condiciones</h2>
         <p id="conditionsSubtitle" style="color:#567;font-weight:600"></p>
         <button class="close-modal" id="closeConditionsModal">×</button>
       </div>
-      <div id="conditionsBody" style="white-space:pre-wrap;background:#fff;border:1px solid rgba(52,152,219,.15);border-radius:12px;padding:14px;box-shadow:var(--depth-1)"></div>
-      <!-- Contenedor de preview incrustado para "Tus pólizas" -->
-      <div id="docPreviewContainer" style="margin-top:12px;display:none">
-        <div class="section-title"><i class="fas fa-eye"></i> Vista previa del documento</div>
-        <div id="docPreviewBox" style="height:70vh;background:#f7f9ff;border:1px solid rgba(52,152,219,.15);border-radius:12px;overflow:hidden;display:flex;align-items:center;justify-content:center">
-          <!-- object/img dinámico -->
-        </div>
-      </div>
+      <div class="conditions-text" id="conditionsBody" style="white-space:pre-wrap;background:#fff;border:1px solid rgba(52,152,219,.15);border-radius:12px;padding:14px;box-shadow:var(--depth-1)"></div>
     </div>
   </div>
 
-  <!-- Pago -->
+  <!-- Formas de Pago -->
   <div class="modal" id="paymentModal" aria-hidden="true">
     <div class="modal-content" role="dialog" aria-modal="true">
       <div class="modal-header">
@@ -518,7 +492,7 @@
   </div>
 
   <!-- Success -->
-  <div class="modal" id="successModal" aria-hidden="true" style="z-index:10003">
+  <div class="modal" id="successModal" aria-hidden="true" style="z-index:10000">
     <div class="success-card" role="alert" aria-live="polite">
       <div class="checkmark"><svg viewBox="0 0 64 64"><path class="path" d="M16 34 L28 46 L50 22"></path></svg></div>
       <div id="successMessage">¡Operación exitosa!</div>
@@ -573,11 +547,6 @@
                   <option>Estudiante</option><option>Pensionado</option><option>Otro</option>
                 </select>
               </div>
-            </div>
-            <!-- Campo pedido: Número de ID -->
-            <div class="form-group">
-              <label class="form-label"><i class="fas fa-hashtag"></i> Número de ID</label>
-              <div class="input-wrap"><input name="numeroId" placeholder="Documento de identidad" required></div>
             </div>
           </div>
         </div>
@@ -670,7 +639,7 @@
     </div>
   </div>
 
-  <!-- Carga Masiva -->
+  <!-- Carga Masiva de Pólizas (CSV) -->
   <div class="modal" id="bulkPoliciesModal" aria-hidden="true">
     <div class="modal-content" role="dialog" aria-modal="true">
       <div class="modal-header">
@@ -686,27 +655,56 @@
       </div>
 
       <div class="section-card">
-        <div class="section-title"><i class="fas fa-upload"></i> Subir archivo (cualquier tipo)</div>
+        <div class="section-title"><i class="fas fa-upload"></i> Subir archivo</div>
         <div id="dropZone" style="padding:18px;border:2px dashed rgba(52,152,219,.35);border-radius:12px;text-align:center;background:#f8fbff">
-          Arrastra y suelta tu archivo aquí (o haz clic)
+          Arrastra y suelta tu archivo CSV aquí (o haz clic)
           <input type="file" id="csvFile" accept=".csv" style="display:none">
-        </div>
-        <div style="height:8px"></div>
-        <div class="section-title"><i class="fas fa-file-import"></i> Cargar pólizas automáticamente (PDF/Imagen/otros)</div>
-        <div id="autoDrop" style="padding:18px;border:2px dashed rgba(52,152,219,.35);border-radius:12px;text-align:center;background:#f8fbff">
-          Arrastra o selecciona pólizas (PDF, JPG, PNG, etc.)
-          <input type="file" id="autoFiles" accept="*/*" multiple style="display:none">
         </div>
         <div id="bulkResult" style="margin-top:10px;color:#155a8f;font-weight:700"></div>
       </div>
     </div>
   </div>
 
-  <!-- FAB WhatsApp -->
-  <a class="whatsapp-fab" href="https://wa.me/573001112233" target="_blank" aria-label="Contáctanos por WhatsApp">
-    <i class="fab fa-whatsapp"></i>
-  </a>
+  <!-- Tus pólizas (lista + preview, acumula TODO) -->
+  <div class="modal" id="policiesVaultModal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h2>Tus pólizas</h2>
+        <p style="color:#567;font-weight:600">Archivos cargados automáticamente (se acumulan todos)</p>
+        <button class="close-modal" id="closePoliciesVault">×</button>
+      </div>
 
+      <div class="vault-layout">
+        <div>
+          <div class="section-title"><i class="fas fa-cloud-upload-alt"></i> Adjuntar documentos</div>
+          <div class="vault-list" id="vaultUploader" style="padding:12px;display:flex;gap:10px;align-items:center;justify-content:center;margin-bottom:12px">
+            <button class="btn" id="addDocsBtn"><i class="fas fa-plus"></i> Agregar archivos</button>
+            <input type="file" id="docsInput" accept="image/*,application/pdf" multiple style="display:none">
+            <div id="docsResult" style="color:#155a8f;font-weight:800"></div>
+          </div>
+
+          <div class="section-title" style="margin-top:4px"><i class="fas fa-list"></i> Lista de archivos</div>
+          <div class="vault-list" id="vaultList">
+            <!-- items renderizados -->
+          </div>
+          <div id="vaultEmpty" style="text-align:center;color:#567;font-weight:700;margin-top:10px">Aún no has subido documentos.</div>
+        </div>
+
+        <div>
+          <div class="section-title"><i class="fas fa-eye"></i> Vista previa</div>
+          <div class="vault-preview" id="previewPane">
+            <!-- preview renderizado -->
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="btn" id="extractBtn"><i class="fas fa-magnifying-glass"></i> Extraer datos</button>
+            <a class="btn" id="downloadDoc" href="#" download style="display:none"><i class="fas fa-download"></i> Descargar</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Script ===== -->
   <script>
     /* ===== Datos ===== */
     const insurerLogos={allianz:"logos/allianz.png",axa:"logos/axa.png",generali:"logos/generali.png",cigna:"logos/cigna.png",zurich:"logos/zurich.png",liberty:"logos/liberty.png"};
@@ -724,29 +722,10 @@
     };
     const typeIcons={auto:"car",home:"home",life:"heart",health:"heartbeat",travel:"plane",business:"briefcase"};
 
-    /* ===== Helpers DOM ===== */
+    /* ===== Helpers ===== */
     const qs = s => document.querySelector(s);
     const qsa= s => document.querySelectorAll(s);
     const safe = (el, fn) => { if (el) fn(el); };
-
-    /* ===== Logo loader ===== */
-    const LOGO_EXTS=['png','svg','jpg','jpeg','webp','PNG','SVG','JPG','JPEG','WEBP'];
-    function logoCandidates(key){
-      const base=(key||'').toLowerCase(),cap=base.charAt(0).toUpperCase()+base.slice(1),upper=base.toUpperCase();
-      const variants=[base,cap,upper,`${base}-logo`,`logo-${base}`];
-      const paths=[];
-      variants.forEach(n=>LOGO_EXTS.forEach(ext=>paths.push(`logos/${n}.${ext}`)));
-      return paths;
-    }
-    function loadLogoSmart(img){
-      const key=(img.dataset.insurer||'').toLowerCase(); const friendly=img.dataset.friendly||key||'Logo';
-      const first=(typeof insurerLogos!=='undefined'&&insurerLogos[key])?insurerLogos[key]:null;
-      const list=[...new Set([first,...logoCandidates(key)].filter(Boolean))];
-      let i=-1; const next=()=>{i++; if(i<list.length){img.onerror=next; img.src=list[i];} else {img.onerror=null; img.style.display='none'; const ph=document.createElement('div'); ph.className='logo-placeholder'; ph.textContent=friendly; img.parentNode.appendChild(ph);} };
-      next();
-    }
-
-    /* ===== Utilidades ===== */
     const fmtCOP=n=>new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',minimumFractionDigits:0,maximumFractionDigits:0}).format(n);
     const addDays=(d,n)=>{const r=new Date(d);r.setDate(r.getDate()+n);return r};
     const addYears=(d,n)=>{const r=new Date(d);r.setFullYear(r.getFullYear()+n);return r};
@@ -762,22 +741,29 @@
     const today=new Date();
     const expirationDates=[iso(addDays(today,28)),iso(addDays(today,120)),iso(addDays(today,230)),iso(addDays(today,350)),iso(addDays(today,15)),iso(addDays(today,80))];
     const policies=[
-      {id:1,type:"auto",typeName:"Seguro de Auto",insurer:"allianz",insurerName:"Allianz",policyNumber:"#AUTO-789456",expirationDate:expirationDates[0],insuredId:"1234567890",insuredName:"Juan Beltrán",coverage:200000000,conditions:"- Deducible: 10% del siniestro o $2.000.000, lo que sea mayor.\n- Cobertura pérdida total/daños parciales.\n- Asistencia en carretera 24/7.\n- Exclusiones: conducción en estado de embriaguez, uso competitivo."},
-      {id:2,type:"home",typeName:"Seguro de Hogar",insurer:"axa",insurerName:"AXA",policyNumber:"#HOME-123789",expirationDate:expirationDates[1],insuredId:"0987654321",insuredName:"Juan Beltrán",coverage:350000000,conditions:"- Cobertura incendio, terremoto y robo calificado.\n- Deducible: 1% del valor asegurado por evento.\n- Límites para contenidos: $50.000.000.\n- Exclusiones: humedad por falta de mantenimiento."},
-      {id:3,type:"life",typeName:"Seguro de Vida",insurer:"generali",insurerName:"Generali",policyNumber:"#LIFE-456123",expirationDate:expirationDates[2],insuredId:"4561237890",insuredName:"Juan Beltrán",coverage:150000000,conditions:"- Fallecimiento por cualquier causa (carencia 90 días para enfermedad).\n- Anticipo por enfermedad terminal 30%.\n- Exclusiones: suicidio dentro de los primeros 2 años."},
-      {id:4,type:"health",typeName:"Seguro Médico",insurer:"cigna",insurerName:"Cigna",policyNumber:"#MED-987321",expirationDate:expirationDates[3],insuredId:"7890123456",insuredName:"Juan Beltrán",coverage:120000000,conditions:"- Red de prestadores nacional.\n- Copago por consulta general: $40.000.\n- Preexistencias cubiertas después de 12 meses.\n- Exclusiones: procedimientos estéticos."},
-      {id:5,type:"travel",typeName:"Seguro de Viaje",insurer:"zurich",insurerName:"Zurich",policyNumber:"#TRAV-654987",expirationDate:expirationDates[4],insuredId:"3216549870",insuredName:"Juan Beltrán",coverage:50000000,conditions:"- Asistencia médica internacional hasta $50.000.000.\n- Repatriación sanitaria y pérdida de equipaje.\n- Franquicia por evento: $100.000."},
-      {id:6,type:"business",typeName:"Seguro de Negocio",insurer:"liberty",insurerName:"Liberty Mutual",policyNumber:"#BUSI-321654",expirationDate:expirationDates[5],insuredId:"6549873210",insuredName:"Juan Beltrán",coverage:115000000,conditions:"- Responsabilidad civil comercial hasta $500.000.000.\n- Interrupción de negocio (30 días carencia).\n- Deducible: $1.500.000 por evento."}
+      {id:1,type:"auto",typeName:"Seguro de Auto",insurer:"allianz",insurerName:"Allianz",policyNumber:"#AUTO-789456",expirationDate:expirationDates[0],insuredId:"1234567890",insuredName:"Juan Pérez",coverage:200000000,conditions:"- Deducible: 10% del siniestro o $2.000.000, lo que sea mayor.\n- Cobertura pérdida total/daños parciales.\n- Asistencia en carretera 24/7.\n- Exclusiones: conducción en estado de embriaguez, uso competitivo."},
+      {id:2,type:"home",typeName:"Seguro de Hogar",insurer:"axa",insurerName:"AXA",policyNumber:"#HOME-123789",expirationDate:expirationDates[1],insuredId:"0987654321",insuredName:"María García",coverage:350000000,conditions:"- Cobertura incendio, terremoto y robo calificado.\n- Deducible: 1% del valor asegurado por evento.\n- Límites para contenidos: $50.000.000.\n- Exclusiones: humedad por falta de mantenimiento."},
+      {id:3,type:"life",typeName:"Seguro de Vida",insurer:"generali",insurerName:"Generali",policyNumber:"#LIFE-456123",expirationDate:expirationDates[2],insuredId:"4561237890",insuredName:"Carlos López",coverage:150000000,conditions:"- Fallecimiento por cualquier causa (carencia 90 días para enfermedad).\n- Anticipo por enfermedad terminal 30%.\n- Exclusiones: suicidio dentro de los primeros 2 años."},
+      {id:4,type:"health",typeName:"Seguro Médico",insurer:"cigna",insurerName:"Cigna",policyNumber:"#MED-987321",expirationDate:expirationDates[3],insuredId:"7890123456",insuredName:"Ana Rodríguez",coverage:120000000,conditions:"- Red de prestadores nacional.\n- Copago por consulta general: $40.000.\n- Preexistencias cubiertas después de 12 meses.\n- Exclusiones: procedimientos estéticos."},
+      {id:5,type:"travel",typeName:"Seguro de Viaje",insurer:"zurich",insurerName:"Zurich",policyNumber:"#TRAV-654987",expirationDate:expirationDates[4],insuredId:"3216549870",insuredName:"Laura Martínez",coverage:50000000,conditions:"- Asistencia médica internacional hasta $50.000.000.\n- Repatriación sanitaria y pérdida de equipaje.\n- Franquicia por evento: $100.000."},
+      {id:6,type:"business",typeName:"Seguro de Negocio",insurer:"liberty",insurerName:"Liberty Mutual",policyNumber:"#BUSI-321654",expirationDate:expirationDates[5],insuredId:"6549873210",insuredName:"Pedro Sánchez",coverage:115000000,conditions:"- Responsabilidad civil comercial hasta $500.000.000.\n- Interrupción de negocio (30 días carencia).\n- Deducible: $1.500.000 por evento."}
     ];
 
-    /* ===== Almacenamiento de documentos subidos ===== */
-    const uploadedDocs = []; // { id, name, type, url, createdAt, ocrText?, extracted? }
-
-    /* ===== DOM refs ===== */
+    /* ===== DOM ===== */
     const sidebar=qs('#sidebar');
     const toggleSidebar=qs('#toggleSidebar');
 
-    // Modales/botones
+    function syncSidebarByViewport(){
+      if (window.matchMedia('(max-width:1100px)').matches){
+        sidebar.classList.add('hidden');
+      } else {
+        sidebar.classList.remove('hidden');
+      }
+    }
+    syncSidebarByViewport();
+    window.addEventListener('resize', syncSidebarByViewport);
+    safe(toggleSidebar, btn => btn.addEventListener('click',()=> sidebar.classList.toggle('hidden')));
+
     const sarlaftBadge=qs('#sarlaftBadge');
     const openSARLAFTBtn=qs('#openSARLAFT');
     const sarlaftModal=qs('#sarlaftModal');
@@ -790,33 +776,24 @@
     const downloadTemplate=qs('#downloadTemplate');
     const csvFile=qs('#csvFile');
     const dropZone=qs('#dropZone');
-
-    const autoDrop=qs('#autoDrop');
-    const autoFiles=qs('#autoFiles');
-
     const bulkResult=qs('#bulkResult');
 
     const loginBtn=qs('#loginBtn');
     const loginModal=qs('#loginModal');
-    const closeLoginModal=qs('#closeLoginModal');
-    const authTabs=qs('#authTabs');
-    const loginForm=qs('#loginForm');
-    const registerForm=qs('#registerForm');
 
-    const openManualPolicy = qs('#openManualPolicy');
+    const addPolicyBtn=null; /* eliminado botón “Nueva póliza” */
     const policyModal=qs('#policyModal');
-    const closePolicyModal=qs('#closePolicyModal');
-    const policyForm=qs('#policyForm');
 
     const renewalModal=qs('#renewalModal');
     const conditionsModal=qs('#conditionsModal');
-    const closeConditionsModal=qs('#closeConditionsModal');
     const paymentModal=qs('#paymentModal');
     const successModal=qs('#successModal');
 
+    const openManualPolicy = qs('#openManualPolicy');
     const openPoliciesVault = qs('#openPoliciesVault');
     const openDataUpdateBtn = qs('#openDataUpdate');
 
+    const policyForm=qs('#policyForm');
     const renewalOptions=qs('#renewalOptions');
     const compareTableBody=qs('#compareTable tbody');
     const currentPolicyChip=qs('#currentPolicyChip');
@@ -829,77 +806,61 @@
     const payHint=qs('#payHint');
     const payMethodLabel=qs('#payMethodLabel');
 
-    const conditionsTitle=qs('#conditionsTitle');
-    const conditionsSubtitle=qs('#conditionsSubtitle');
-    const conditionsBody=qs('#conditionsBody');
-    const docPreviewContainer=qs('#docPreviewContainer');
-    const docPreviewBox=qs('#docPreviewBox');
+    // Vault (Tus pólizas)
+    const policiesVaultModal = qs('#policiesVaultModal');
+    const closePoliciesVault = qs('#closePoliciesVault');
+    const addDocsBtn = qs('#addDocsBtn');
+    const docsInput = qs('#docsInput');
+    const docsResult = qs('#docsResult');
+    const vaultList = qs('#vaultList');
+    const vaultEmpty = qs('#vaultEmpty');
+    const previewPane = qs('#previewPane');
+    const extractBtn = qs('#extractBtn');
+    const downloadDoc = qs('#downloadDoc');
 
     let currentRenewPolicyId=null;
     let selectedPayment={method:null};
 
-    /* ===== Sidebar móvil ===== */
-    function syncSidebarByViewport(){
-      if (window.matchMedia('(max-width:1100px)').matches){
-        sidebar.classList.add('hidden');
-      } else {
-        sidebar.classList.remove('hidden');
-      }
-    }
-    syncSidebarByViewport();
-    window.addEventListener('resize', syncSidebarByViewport);
-    safe(toggleSidebar, btn => btn.addEventListener('click',()=> sidebar.classList.toggle('hidden')));
-
     /* ===== Abrir/Cerrar modales ===== */
-    const bindClose=(btn,modal)=>{ safe(btn, b=> b.addEventListener('click',()=>{ modal.style.display='none'; })); };
-    bindClose(closeLoginModal,loginModal);
-    bindClose(closePolicyModal,policyModal);
-    safe(qs('#closeRenewalModal'), b=> b.addEventListener('click',()=> renewalModal.style.display='none'));
-    bindClose(closeConditionsModal,conditionsModal);
-    safe(qs('#closePaymentModal'), b=> b.addEventListener('click',()=> paymentModal.style.display='none'));
-
-    [loginModal,policyModal,renewalModal,conditionsModal,paymentModal,successModal,bulkModal,sarlaftModal]
-      .forEach(m=> m && m.addEventListener('click',e=>{ if(e.target===m) m.style.display='none'; }));
+    const bindClose=(btnSel,modal)=>{ const b=typeof btnSel==='string'?qs(btnSel):btnSel; if(b&&modal){ b.addEventListener('click',()=>{ modal.style.display='none'; }); } };
+    bindClose('#closeLoginModal',loginModal);
+    bindClose('#closePolicyModal',policyModal);
+    bindClose('#closeRenewalModal',renewalModal);
+    bindClose('#closeConditionsModal',conditionsModal);
+    bindClose('#closePaymentModal',paymentModal);
+    bindClose(closePoliciesVault, policiesVaultModal);
 
     safe(loginBtn, b=> b.addEventListener('click',()=>{ loginModal.style.display='flex'; }));
     safe(openManualPolicy, b=> b.addEventListener('click',()=>{ policyModal.style.display='flex'; }));
+
     safe(openBulkBtn, b=> b.addEventListener('click',()=>{ bulkModal.style.display='flex'; if(bulkResult) bulkResult.textContent=''; }));
 
-    // Auth tabs
-    if (authTabs){
-      authTabs.addEventListener('click', e=>{
-        const tab=e.target.closest('.pay-tab'); if(!tab) return;
-        qsa('#authTabs .pay-tab').forEach(t=>t.classList.remove('active')); tab.classList.add('active');
-        const mode=tab.dataset.auth;
-        if(mode==='login'){ loginForm.style.display='block'; registerForm.style.display='none'; }
-        else { loginForm.style.display='none'; registerForm.style.display='block'; }
-      });
-    }
-    // Social login stubs
+    // “Tus pólizas” (modal propio con lista + preview)
+    safe(openPoliciesVault, b=> b.addEventListener('click',()=>{
+      renderVault(); // siempre refrescar lista
+      if(policiesVaultModal) policiesVaultModal.style.display='flex';
+    }));
+
+    [loginModal,policyModal,renewalModal,conditionsModal,paymentModal,successModal,bulkModal,sarlaftModal,policiesVaultModal]
+      .forEach(m=> m && m.addEventListener('click',e=>{ if(e.target===m) m.style.display='none'; }));
+
+    // Social login (stubs)
     safe(qs('#loginGoogle'), el=>el.addEventListener('click',()=>alert('Continuar con Google (conectar OAuth aquí)')));
     safe(qs('#loginFacebook'),el=>el.addEventListener('click',()=>alert('Continuar con Facebook (conectar OAuth aquí)')));
     safe(qs('#loginApple'),   el=>el.addEventListener('click',()=>alert('Continuar con Apple (conectar OAuth aquí)')));
 
-    const openConditions=(t,st,b,previewHTML=null)=>{
-      if(conditionsTitle) conditionsTitle.textContent=t||'Condiciones';
-      if(conditionsSubtitle) conditionsSubtitle.textContent=st||'';
-      if(conditionsBody) conditionsBody.textContent=b||'Sin información.';
-      if (previewHTML){
-        docPreviewContainer.style.display='block';
-        docPreviewBox.innerHTML='';
-        docPreviewBox.appendChild(previewHTML);
-      } else {
-        docPreviewContainer.style.display='none';
-        docPreviewBox.innerHTML='';
-      }
-      // Siempre arriba de renovar (z-index ya mayor)
-      conditionsModal.style.display='flex';
+    const openConditions=(t,st,b)=>{
+      const tt=qs('#conditionsTitle'), stt=qs('#conditionsSubtitle'), bd=qs('#conditionsBody');
+      if(tt) tt.textContent=t||'Condiciones';
+      if(stt) stt.textContent=st||'';
+      if(bd) bd.textContent=b||'Sin información.';
+      if(conditionsModal) conditionsModal.style.display='flex';
     };
     const toast=(t,s)=>{
       const msg=qs('#successMessage'), sub=qs('#successSub');
       if(msg) msg.textContent=t||'¡Operación exitosa!';
       if(sub) sub.textContent=s||'';
-      successModal.style.display='flex'; setTimeout(()=>successModal.style.display='none',1600);
+      if(successModal){ successModal.style.display='flex'; setTimeout(()=>successModal.style.display='none',1600); }
     };
 
     /* ===== Render tarjetas ===== */
@@ -907,26 +868,25 @@
       if(!policyGrid) return;
       policyGrid.innerHTML='';let exp=0,total=0;
       policies.forEach(p=>{
-        const d=daysLeft(p.expirationDate||iso(addDays(new Date(),180)));
-        if(d<=30) exp++; total+=p.coverage||0;
+        const d=daysLeft(p.expirationDate); if(d<=30) exp++; total+=p.coverage;
         const card=document.createElement('div'); card.className=`card status-${statusClass(d)}`;
         card.innerHTML=`
           <div class="card-header">
             <div class="insurer-logo-header">
-              <img alt="${p.insurerName||'Aseguradora'}" data-insurer="${p.insurer||''}" data-friendly="${p.insurerName||'Aseguradora'}">
+              <img alt="${p.insurerName}" data-insurer="${p.insurer}" data-friendly="${p.insurerName}">
             </div>
             <div class="header-right">
-              <div class="insurance-type">${p.typeName||'Seguro'}</div>
-              <div class="insurance-icon"><i class="fas fa-${typeIcons[p.type]||'shield-alt'}"></i></div>
+              <div class="insurance-type">${p.typeName}</div>
+              <div class="insurance-icon"><i class="fas fa-${typeIcons[p.type]||'shield-halved'}"></i></div>
             </div>
           </div>
 
           <div class="card-details">
-            <div class="detail-item"><span class="detail-label">Asegurado:</span><span class="detail-value">${p.insuredName||'Juan Beltrán'}</span></div>
-            <div class="detail-item"><span class="detail-label">Vencimiento:</span><span class="detail-value">${p.expirationDate?new Date(p.expirationDate).toLocaleDateString('es-ES'):'—'}</span></div>
-            <div class="detail-item"><span class="detail-label">Cobertura:</span><span class="detail-value">${p.coverage?fmtCOP(p.coverage):'—'}</span></div>
+            <div class="detail-item"><span class="detail-label">Asegurado:</span><span class="detail-value">${p.insuredName}</span></div>
+            <div class="detail-item"><span class="detail-label">Vencimiento:</span><span class="detail-value">${new Date(p.expirationDate).toLocaleDateString('es-ES')}</span></div>
+            <div class="detail-item"><span class="detail-label">Cobertura:</span><span class="detail-value">${fmtCOP(p.coverage)}</span></div>
 
-            <div class="contact-line"><i class="fas fa-phone"></i><span>Contacto:</span><span style="font-weight:900">${p.insurer?tel(p.insurer):'N/A'}</span></div>
+            <div class="contact-line"><i class="fas fa-phone"></i><span>Contacto:</span><span style="font-weight:900">${tel(p.insurer)}</span></div>
 
             <div class="ring-row">
               <div class="status-container">
@@ -949,12 +909,28 @@
         policyGrid.appendChild(card);
 
         const hdrLogo=card.querySelector('.insurer-logo-header img'); if(hdrLogo){ loadLogoSmart(hdrLogo); }
-        safe(card.querySelector('.conditions-btn'),btn=>btn.addEventListener('click',()=>openConditions('Condiciones de la Póliza',`${p.policyNumber||''} · ${p.insurerName||'—'}`,p.conditions||'Sin detalles.')));
+        safe(card.querySelector('.conditions-btn'),btn=>btn.addEventListener('click',()=>openConditions('Condiciones de la Póliza',`${p.policyNumber} · ${p.insurerName}`,p.conditions)));
         safe(card.querySelector('.renew-btn'),btn=>btn.addEventListener('click',()=>openRenewal(p)));
       });
       if(totalPoliciesEl) totalPoliciesEl.textContent=policies.length;
       if(expiringPoliciesEl) expiringPoliciesEl.textContent=exp;
       if(totalCoverageEl) totalCoverageEl.textContent=fmtCOP(total);
+    }
+
+    /* ===== Carga inteligente de logos ===== */
+    const LOGO_EXTS=['png','svg','jpg','jpeg','webp','PNG','SVG','JPG','JPEG','WEBP'];
+    function logoCandidates(key){
+      const base=(key||'').toLowerCase(),cap=base.charAt(0).toUpperCase()+base.slice(1),upper=base.toUpperCase();
+      const variants=[base,cap,upper,`${base}-logo`,`logo-${base}`]; const paths=[];
+      variants.forEach(n=>LOGO_EXTS.forEach(ext=>paths.push(`logos/${n}.${ext}`)));
+      return paths;
+    }
+    function loadLogoSmart(img){
+      const key=(img.dataset.insurer||'').toLowerCase(); const friendly=img.dataset.friendly||key||'Logo';
+      const first=(typeof insurerLogos!=='undefined'&&insurerLogos[key])?insurerLogos[key]:null;
+      const list=[...new Set([first,...logoCandidates(key)].filter(Boolean))];
+      let i=-1; const next=()=>{i++; if(i<list.length){img.onerror=next; img.src=list[i];} else {img.onerror=null; img.style.display='none'; const ph=document.createElement('div'); ph.className='logo-placeholder'; ph.textContent=friendly; img.parentNode.appendChild(ph);} };
+      next();
     }
 
     /* ===== Renovación ===== */
@@ -1001,7 +977,7 @@
         table.onclick=e=>{
           const btn=e.target.closest('button.details'); if(!btn) return;
           const k=btn.dataset.key;
-          openConditions(`Condiciones de la oferta · ${insurerNames[k]}`,`Propuesta para ${policy.policyNumber||''}`,(offerConditions[k]||{}).details||'Sin detalles.');
+          openConditions(`Condiciones de la oferta · ${insurerNames[k]}`,`Propuesta para ${policy.policyNumber}`,(offerConditions[k]||{}).details||'Sin detalles.');
         };
       }
     }
@@ -1012,7 +988,7 @@
       el.classList.add('selected'); el.setAttribute('aria-selected','true');
       const k=el.dataset.insurer; highlightRow(k);
       const sub=qs('#paymentSubtitle'); if(sub) sub.textContent=`Método para ${insurerNames[k]}`;
-      paymentModal.style.display='flex';
+      if(paymentModal) paymentModal.style.display='flex';
     }
     if(renewalOptions){
       renewalOptions.addEventListener('click',e=>{const el=e.target.closest('.insurer-option');if(!el)return;selectInsurerOption(el);});
@@ -1021,13 +997,13 @@
 
     function openRenewal(p){
       currentRenewPolicyId=p.id;
-      const rn=qs('#renewalPolicyNumber'); if(rn) rn.textContent=p.policyNumber||'';
+      const rn=qs('#renewalPolicyNumber'); if(rn) rn.textContent=p.policyNumber;
       selectedPayment={method:null}; if(payHint) payHint.style.display='none'; if(payMethodLabel) payMethodLabel.textContent='—';
       const keys=Object.keys(insurerNames);
       renderRenewalOptions(keys);
-      if(currentPolicyChip) currentPolicyChip.innerHTML=`<span class="pill">Actual: ${p.insurerName||'—'} · Cobertura ${p.coverage?fmtCOP(p.coverage):'—'} · Vence ${p.expirationDate?new Date(p.expirationDate).toLocaleDateString('es-ES'):'—'} <span style="font-size:11px;font-weight:800;color:#2cb56f;margin-left:6px">vigente</span></span>`;
+      if(currentPolicyChip) currentPolicyChip.innerHTML=`<span class="pill">Actual: ${p.insurerName} · Cobertura ${fmtCOP(p.coverage)} · Vence ${new Date(p.expirationDate).toLocaleDateString('es-ES')} <span style="font-size:11px;font-weight:800;color:#2cb56f;margin-left:6px">vigente</span></span>`;
       buildCompareTable(keys,p);
-      renewalModal.style.display='flex';
+      if(renewalModal) renewalModal.style.display='flex';
     }
 
     /* Pago */
@@ -1046,29 +1022,29 @@
       }
       if(m==='pse'&&(!(qs('#pseBank')?.value)||!(qs('#pseEmail')?.value))){alert('Selecciona banco e ingresa correo.');return;}
       selectedPayment.method=m; if(payHint) payHint.style.display='block'; if(payMethodLabel) payMethodLabel.textContent=m.toUpperCase();
-      paymentModal.style.display='none'; toast('Forma de pago guardada',`Método: ${m.toUpperCase()}`);
+      if(paymentModal) paymentModal.style.display='none'; toast('Forma de pago guardada',`Método: ${m.toUpperCase()}`);
     }));
 
-    /* Nueva póliza (manual) */
+    /* Nueva póliza manual */
     if(policyForm){
       policyForm.addEventListener('submit',e=>{
         e.preventDefault();
-        const insuredId=qs('#insuredId')?.value,insuredName=(qs('#insuredName')?.value||'Juan Beltrán'),insuranceType=qs('#insuranceType')?.value,coverageAmount=parseInt(qs('#coverageAmount')?.value||'0'),expirationDate=qs('#expirationDate')?.value,policyNumber=qs('#policyNumber')?.value,insurer=qs('#insurer')?.value,policyConditions=(qs('#policyConditions')?.value||'').trim();
+        const insuredId=qs('#insuredId')?.value,insuredName=qs('#insuredName')?.value,insuranceType=qs('#insuranceType')?.value,coverageAmount=parseInt(qs('#coverageAmount')?.value||'0'),expirationDate=qs('#expirationDate')?.value,policyNumber=qs('#policyNumber')?.value,insurer=qs('#insurer')?.value,policyConditions=(qs('#policyConditions')?.value||'').trim();
         const typeSel=qs('#insuranceType'); const insurerSel=qs('#insurer');
-        const newP={id:policies.length+1,type:insuranceType,typeName:typeSel?typeSel.options[typeSel.selectedIndex].text:'Seguro',insurer,insurerName:insurerNames[insurer]||(insurerSel?insurerSel.options[insurerSel.selectedIndex].text:'Desconocida'),policyNumber,expirationDate,insuredId,insuredName,coverage:coverageAmount,conditions:policyConditions||'Condiciones no especificadas.'};
-        policies.push(newP); renderPolicies(); policyModal.style.display='none'; policyForm.reset(); toast('¡Póliza creada!',`Nueva póliza ${newP.policyNumber} registrada correctamente.`);
+        const newP={id:policies.length+1,type:insuranceType,typeName:typeSel?typeSel.options[typeSel.selectedIndex].text:'Seguro',insurer,insurerName:insurerNames[insurer]||(insurerSel?insurerSel.options[insurerSel.selectedIndex].text:''),policyNumber,expirationDate,insuredId,insuredName,coverage:coverageAmount,conditions:policyConditions||'Condiciones no especificadas.'};
+        policies.push(newP); renderPolicies(); if(policyModal) policyModal.style.display='none'; policyForm.reset(); toast('¡Póliza creada!',`Nueva póliza ${newP.policyNumber} registrada correctamente.`);
       });
     }
 
     /* Confirmar renovación (+1 año) */
     safe(confirmRenewalBtn, btn=> btn.addEventListener('click',()=>{
       const sel=qs('.insurer-option.selected'); if(!sel){alert('Selecciona una aseguradora.');return;}
-      if(!selectedPayment.method){alert('Selecciona una forma de pago.'); paymentModal.style.display='flex'; return;}
+      if(!selectedPayment.method){alert('Selecciona una forma de pago.'); if(paymentModal) paymentModal.style.display='flex'; return;}
       const k=sel.dataset.insurer; const i=policies.findIndex(p=>p.id===currentRenewPolicyId);
       if(i!==-1){
         const newExp=iso(addYears(new Date(),1));
         policies[i].expirationDate=newExp; policies[i].insurer=k; policies[i].insurerName=insurerNames[k]||policies[i].insurerName;
-        renewalModal.style.display='none'; renderPolicies();
+        if(renewalModal) renewalModal.style.display='none'; renderPolicies();
         toast('¡Renovación exitosa!',`Póliza ${policies[i].policyNumber} renovada con ${insurerNames[k]}. Nueva fecha: ${human(newExp)} · Pago: ${selectedPayment.method.toUpperCase()}.`);
       }
       currentRenewPolicyId=null; selectedPayment={method:null}; if(payHint) payHint.style.display='none'; if(payMethodLabel) payMethodLabel.textContent='—';
@@ -1089,22 +1065,25 @@
         sarlaftBadge.classList.toggle('bad', !ok);
       }
     }
-    safe(openSARLAFTBtn, btn=> btn.addEventListener('click',()=>{ sarlaftModal.style.display='flex'; paintSarlaftBadge(); }));
+    safe(openSARLAFTBtn, btn=> btn.addEventListener('click',()=>{ if(sarlaftModal) sarlaftModal.style.display='flex'; paintSarlaftBadge(); }));
     safe(closeSarlaftModal, btn=> btn.addEventListener('click',()=> sarlaftModal.style.display='none'));
     safe(sarlaftForm, f=> f.addEventListener('change', paintSarlaftBadge));
     safe(sarlaftForm, f=> f.addEventListener('submit', (e)=>{ e.preventDefault(); paintSarlaftBadge(); if(sarlaftIsComplete()){ toast('SARLAFT guardado', 'Tu formulario quedó AL DÍA.'); } else { alert('Faltan campos obligatorios.'); } }));
 
-    /* ====== Carga masiva CSV ====== */
-    safe(closeBulk, btn=> btn.addEventListener('click',()=>{ bulkModal.style.display='none'; }));
+    /* ====== Carga masiva (CSV) ====== */
+    safe(closeBulk, btn=> btn.addEventListener('click',()=>{ if(bulkModal) bulkModal.style.display='none'; }));
+
     safe(downloadTemplate, btn=> btn.addEventListener('click',()=>{
-      const csv = "policyNumber,type,insurer,insuredId,insuredName,coverage,expirationDate,conditions\n#AUTO-0001,auto,allianz,123,Juan Beltrán,200000000,2026-01-15,Condiciones ejemplo...";
-      const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'}); const url = URL.createObjectURL(blob);
+      const csv = "policyNumber,type,insurer,insuredId,insuredName,coverage,expirationDate,conditions\n#AUTO-0001,auto,allianz,123,Juan Perez,200000000,2026-01-15,Condiciones ejemplo...";
+      const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
       const a = document.createElement('a'); a.href = url; a.download = 'plantilla_policies.csv'; a.click();
       URL.revokeObjectURL(url);
     }));
-    function openFileDialogCsv(){ csvFile && csvFile.click(); }
+
+    function openFileDialog(){ csvFile && csvFile.click(); }
     safe(dropZone, dz=>{
-      dz.addEventListener('click', openFileDialogCsv);
+      dz.addEventListener('click', openFileDialog);
       ['dragenter','dragover'].forEach(evt=> dz.addEventListener(evt, e=>{ e.preventDefault(); e.stopPropagation(); dz.style.borderColor='#2c80b9'; }));
       ['dragleave','drop'].forEach(evt=> dz.addEventListener(evt, e=>{ e.preventDefault(); e.stopPropagation(); dz.style.borderColor='rgba(52,152,219,.35)'; }));
       dz.addEventListener('drop', e=>{ const file = e.dataTransfer.files[0]; if(file) parseCSV(file); });
@@ -1116,6 +1095,7 @@
       reader.onload = () => {
         const text = reader.result;
         const rows = text.split(/\r?\n/).filter(r=>r.trim().length>0);
+        if(rows.length===0){ alert('Archivo vacío.'); return; }
         const header = rows.shift().split(',').map(s=>s.trim());
         const needed = ['policyNumber','type','insurer','insuredId','insuredName','coverage','expirationDate'];
         const hasAll = needed.every(k => header.includes(k));
@@ -1136,11 +1116,11 @@
                          rec.type==='travel'?'Seguro de Viaje':
                          rec.type==='business'?'Seguro de Negocio':'Seguro'),
               insurer: rec.insurer,
-              insurerName: insurerNames[rec.insurer] || rec.insurer || 'Desconocida',
+              insurerName: insurerNames[rec.insurer] || rec.insurer,
               policyNumber: rec.policyNumber,
               expirationDate: rec.expirationDate,
               insuredId: rec.insuredId,
-              insuredName: rec.insuredName || 'Juan Beltrán',
+              insuredName: rec.insuredName,
               coverage: parseInt(rec.coverage)||0,
               conditions: rec.conditions || 'Condiciones no especificadas.'
             };
@@ -1153,297 +1133,6 @@
         if(added>0) toast('Importación completa', `Se agregaron ${added} pólizas.`);
       };
       reader.readAsText(file);
-    }
-
-    /* ====== Carga automática (documentos varios con OCR) ====== */
-    function openAutoDialog(){ autoFiles && autoFiles.click(); }
-    safe(autoDrop, dz=>{
-      dz.addEventListener('click', openAutoDialog);
-      ['dragenter','dragover'].forEach(evt=> dz.addEventListener(evt, e=>{ e.preventDefault(); e.stopPropagation(); dz.style.borderColor='#2c80b9'; }));
-      ['dragleave','drop'].forEach(evt=> dz.addEventListener(evt, e=>{ e.preventDefault(); e.stopPropagation(); dz.style.borderColor='rgba(52,152,219,.35)'; }));
-      dz.addEventListener('drop', e=>{
-        const files = Array.from(e.dataTransfer.files||[]);
-        if(files.length) handleAutoFiles(files);
-      });
-    });
-    safe(autoFiles, inp=> inp.addEventListener('change', e=>{
-      const files = Array.from(e.target.files||[]);
-      if(files.length) handleAutoFiles(files);
-      autoFiles.value='';
-    }));
-
-    async function handleAutoFiles(files){
-      let processed=0;
-      for(const file of files){
-        const url = URL.createObjectURL(file);
-        const doc = { id: `doc_${Date.now()}_${Math.random().toString(36).slice(2)}`, name:file.name, type:file.type, url, createdAt:new Date().toISOString(), ocrText:null, extracted:null };
-        uploadedDocs.push(doc);
-        // Intentar OCR si es PDF o imagen
-        try{
-          if (file.type === 'application/pdf'){
-            const text = await ocrPdfFirstPage(file);
-            doc.ocrText = text;
-          } else if (file.type.startsWith('image/')){
-            const text = await ocrImageFile(file);
-            doc.ocrText = text;
-          } else {
-            // otros tipos: no OCR
-            doc.ocrText = null;
-          }
-          // Intentar extracción
-          if (doc.ocrText){
-            doc.extracted = extractPolicyData(doc.ocrText);
-            // Si tiene policyNumber y coverage -> crear tarjeta
-            if (doc.extracted.policyNumber && doc.extracted.coverage){
-              createPolicyFromExtract(doc.extracted);
-            }
-          }
-        }catch(err){
-          console.warn('OCR error', err);
-        }
-        processed++;
-      }
-      bulkResult.textContent = `Archivos cargados: ${processed}.`;
-      toast('Carga automática', `Se cargaron ${processed} documento(s).`);
-    }
-
-    /* ====== OCR helpers ====== */
-    function canvasFromImage(img){
-      const canvas=document.createElement('canvas'); const ctx=canvas.getContext('2d');
-      canvas.width=img.naturalWidth||img.width; canvas.height=img.naturalHeight||img.height;
-      ctx.drawImage(img,0,0);
-      return canvas;
-    }
-    function readFileAsDataURL(file){
-      return new Promise((resolve,reject)=>{
-        const fr=new FileReader();
-        fr.onload=()=>resolve(fr.result);
-        fr.onerror=reject;
-        fr.readAsDataURL(file);
-      });
-    }
-    async function ocrImageFile(file){
-      const dataURL = await readFileAsDataURL(file);
-      const img = new Image(); img.src=dataURL;
-      await new Promise((res,rej)=>{ img.onload=res; img.onerror=rej; });
-      const canvas = canvasFromImage(img);
-      const { data: { text } } = await Tesseract.recognize(canvas, 'spa+eng', { logger: ()=>{} });
-      return (text||'').replace(/\s{2,}/g,' ');
-    }
-
-    async function ocrPdfFirstPage(file){
-      const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
-      const page = await pdf.getPage(1);
-      const viewport = page.getViewport({scale: 2});
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      canvas.width = viewport.width; canvas.height = viewport.height;
-      await page.render({canvasContext: ctx, viewport}).promise;
-      const { data: { text } } = await Tesseract.recognize(canvas, 'spa+eng', { logger: ()=>{} });
-      return (text||'').replace(/\s{2,}/g,' ');
-    }
-
-    /* ====== Extracción regex ====== */
-    const KNOWN_INSURERS = ['Allianz','AXA','Generali','Cigna','Zurich','Liberty','Liberty Mutual','SURA','Mapfre','AIG','Seguros Bolívar','HDI'];
-    const TYPE_HINTS = [
-      {re:/auto|veh[ií]culo|placa|conductor/i, type:'auto', typeName:'Seguro de Auto'},
-      {re:/hogar|vivienda|inmueble/i, type:'home', typeName:'Seguro de Hogar'},
-      {re:/vida/i, type:'life', typeName:'Seguro de Vida'},
-      {re:/salud|m[eé]dico|eps|copago/i, type:'health', typeName:'Seguro Médico'},
-      {re:/viaje|asistencia internacional/i, type:'travel', typeName:'Seguro de Viaje'},
-      {re:/empresa|negocio|comercial|rc/i, type:'business', typeName:'Seguro de Negocio'},
-    ];
-
-    function extractPolicyData(text){
-      const out = {};
-
-      // Número de póliza
-      // Busca etiquetas comunes o patrones de serie con letras/números
-      let m = text.match(/p[óo]liza|poliza|policy|n[úu]mero\s*de\s*p[óo]liza/gi);
-      // Captura general robusta
-      let m2 = text.match(/(?:p[óo]liza|poliza|policy|n[úu]mero\s*de\s*p[óo]liza|Nº\s*poliza|No\.?\s*p[óo]liza|pol\.?)(?:\s*[:\-]?\s*)?([A-Z0-9#\-\./]{6,})/i);
-      if (m2 && m2[1]) out.policyNumber = m2[1].trim();
-      if (!out.policyNumber){
-        // Fallback: algo como AUTO-123456 / TRAV-654987 / #BUSI-321654
-        let m3 = text.match(/[#]?[A-Z]{2,5}[-]\d{3,}/);
-        if (m3) out.policyNumber = m3[0].trim();
-      }
-
-      // Valor asegurado / Cobertura
-      // acepta formatos $ 500.000.000, COP 1,200,000, 985.000.000 etc.
-      let cov = text.match(/(?:valor\s+(?:asegurado|de\s+cobertura)|cobertura|suma\s+asegurada)\s*[:\-]?\s*(?:COP|COL\$|\$)?\s*([0-9\.\,]{5,})/i);
-      if (cov && cov[1]){
-        out.coverage = parseInt(cov[1].replace(/[^\d]/g,''));
-      } else {
-        // Fallback: busca la mayor cifra con separadores (heurística)
-        const nums = [...text.matchAll(/(?:COP|COL\$|\$)?\s*([0-9][0-9\.\,]{5,})/g)].map(x=>x[1]);
-        if (nums.length){
-          const values = nums.map(n=>parseInt((n||'').replace(/[^\d]/g,''))).filter(n=>n>0);
-          const max = Math.max(...values);
-          if (isFinite(max) && max>1000000) out.coverage=max; // evita capturar números pequeños
-        }
-      }
-
-      // Aseguradora
-      for (const name of KNOWN_INSURERS){
-        const re = new RegExp(`\\b${name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}\\b`, 'i');
-        if (re.test(text)){ out.insurerName=name; break; }
-      }
-      if (out.insurerName){
-        const key = Object.keys(insurerNames).find(k=>insurerNames[k].toLowerCase()===out.insurerName.toLowerCase() || out.insurerName.toLowerCase().includes(insurerNames[k].toLowerCase()));
-        if (key) out.insurer = key;
-      }
-
-      // Tipo (heurística)
-      for (const t of TYPE_HINTS){
-        if (t.re.test(text)){ out.type=t.type; out.typeName=t.typeName; break; }
-      }
-      if (!out.type){ out.type='auto'; out.typeName='Seguro de Auto'; }
-
-      // Fecha de vencimiento (si existe)
-      let dm = text.match(/vencim(?:iento)?\s*[:\-]?\s*(\d{1,2}[\/\-\s]\d{1,2}[\/\-\s]\d{2,4})/i)
-             || text.match(/expir(?:a|aci[oó]n|y date)?\s*[:\-]?\s*(\d{1,2}[\/\-\s]\d{1,2}[\/\-\s]\d{2,4})/i);
-      if (dm && dm[1]){
-        const parts = dm[1].replace(/\s+/g,'/').split(/[\/\-]/).map(x=>x.trim());
-        let d,mn,y;
-        if (parts[2] && parts[2].length===2){ // yy
-          y = 2000 + parseInt(parts[2],10);
-        } else { y=parseInt(parts[2]||parts[0],10); }
-        d = parseInt(parts[0],10); mn=parseInt(parts[1],10);
-        if (!isNaN(d)&&!isNaN(mn)&&!isNaN(y)){
-          const dt = new Date(y, mn-1, d);
-          if (!isNaN(dt.getTime())) out.expirationDate = iso(dt);
-        }
-      }
-      return out;
-    }
-
-    function createPolicyFromExtract(ext){
-      // Solo procede si tiene policyNumber y coverage (tu requisito)
-      if (!ext.policyNumber || !ext.coverage) return false;
-      const exp = ext.expirationDate || iso(addDays(new Date(),180));
-      const insurerKey = ext.insurer || null;
-      const insurerName = ext.insurerName || (insurerKey?insurerNames[insurerKey]:'Desconocida');
-
-      const newP = {
-        id: policies.length+1,
-        type: ext.type || 'auto',
-        typeName: ext.typeName || 'Seguro',
-        insurer: insurerKey,
-        insurerName,
-        policyNumber: ext.policyNumber,
-        expirationDate: exp,
-        insuredId: '—',
-        insuredName: 'Juan Beltrán',
-        coverage: ext.coverage,
-        conditions: 'Condiciones no especificadas (extraídas por OCR).'
-      };
-      policies.push(newP);
-      renderPolicies();
-      toast('Póliza añadida', `Se creó la tarjeta ${newP.policyNumber} a partir del documento.`);
-      return true;
-    }
-
-    /* ====== “Tus pólizas” ====== */
-    safe(openPoliciesVault, b=> b.addEventListener('click',()=>{
-      renderVault();
-      openConditions('Tus pólizas (archivos cargados)', 'Solo documentos subidos automáticamente', '(Selecciona un archivo para previsualizarlo y extraer datos si aplica.)');
-    }));
-
-    function renderVault(){
-      if(!conditionsBody) return;
-      const container = document.createElement('div');
-      container.className='vault-grid';
-      if(uploadedDocs.length===0){
-        const p=document.createElement('p');
-        p.textContent='Aún no has subido pólizas. Cárgalas desde “Cargar pólizas automáticamente”.';
-        conditionsBody.innerHTML=''; conditionsBody.appendChild(p);
-        docPreviewContainer.style.display='none'; docPreviewBox.innerHTML='';
-        return;
-      }
-      uploadedDocs.forEach(doc=>{
-        const item=document.createElement('div'); item.className='vault-item';
-        const prev=document.createElement('div'); prev.className='vault-preview';
-        let thumb;
-        if (doc.type==='application/pdf'){
-          thumb=document.createElement('object'); thumb.type='application/pdf'; thumb.data=doc.url; thumb.innerHTML='PDF no soportado';
-        } else if (doc.type && doc.type.startsWith('image/')){
-          thumb=document.createElement('img'); thumb.src=doc.url; thumb.alt=doc.name;
-        } else {
-          thumb=document.createElement('div'); thumb.textContent='Archivo'; thumb.style.fontWeight='800';
-        }
-        prev.appendChild(thumb);
-
-        const body=document.createElement('div'); body.className='vault-body';
-        const name=document.createElement('div'); name.className='vault-name'; name.textContent=doc.name;
-        const meta=document.createElement('div'); meta.className='vault-meta'; meta.textContent=new Date(doc.createdAt).toLocaleString('es-ES');
-
-        const btns=document.createElement('div'); btns.style.display='flex'; btns.style.gap='8px';
-        const viewBtn=document.createElement('button'); viewBtn.className='btn btn-soft'; viewBtn.innerHTML='<i class="fas fa-eye"></i> Ver';
-        const extractBtn=document.createElement('button'); extractBtn.className='btn'; extractBtn.innerHTML='<i class="fas fa-wand-magic-sparkles"></i> Extraer';
-
-        viewBtn.addEventListener('click',()=>showDocPreview(doc));
-        extractBtn.addEventListener('click',async ()=>{
-          await tryExtractFromDoc(doc);
-        });
-
-        btns.appendChild(viewBtn); btns.appendChild(extractBtn);
-        body.appendChild(name); body.appendChild(meta); body.appendChild(btns);
-
-        item.appendChild(prev); item.appendChild(body);
-        container.appendChild(item);
-      });
-
-      conditionsBody.innerHTML=''; conditionsBody.appendChild(container);
-      // Mantener la sección de preview vacía hasta que el usuario elija
-      docPreviewContainer.style.display='none'; docPreviewBox.innerHTML='';
-      // Traer a primer plano
-      conditionsModal.style.zIndex = 10002;
-      renewalModal.style.zIndex = 10001;
-    }
-
-    function showDocPreview(doc){
-      let node;
-      if (doc.type==='application/pdf'){
-        node=document.createElement('object'); node.type='application/pdf'; node.data=doc.url; node.style.width='100%'; node.style.height='100%';
-      } else if (doc.type && doc.type.startsWith('image/')){
-        node=document.createElement('img'); node.src=doc.url; node.alt=doc.name; node.style.maxWidth='100%'; node.style.maxHeight='100%';
-      } else {
-        node=document.createElement('div'); node.textContent='Vista previa no disponible'; node.style.fontWeight='800';
-      }
-      openConditions('Tus pólizas (archivos cargados)', doc.name, '(Preview del documento seleccionado)', node);
-    }
-
-    async function tryExtractFromDoc(doc){
-      try{
-        if(!doc.ocrText){
-          // Hacer OCR ahora si aún no lo tiene (solo pdf/img)
-          const res = await fetch(doc.url);
-          const blob = await res.blob();
-          if (doc.type==='application/pdf'){
-            doc.ocrText = await ocrPdfFirstPage(blob);
-          } else if (doc.type && doc.type.startsWith('image/')){
-            doc.ocrText = await ocrImageFile(blob);
-          } else {
-            alert('El tipo de archivo no soporta OCR en el navegador.');
-            return;
-          }
-        }
-        doc.extracted = extractPolicyData(doc.ocrText||'');
-
-        if (doc.extracted && doc.extracted.policyNumber && doc.extracted.coverage){
-          const created = createPolicyFromExtract(doc.extracted);
-          if (!created){
-            alert('Ocurrió un problema creando la tarjeta.');
-          }
-        } else {
-          alert('No se pudo extraer suficiente información (se requieren: número de póliza y valor asegurado/cobertura).');
-        }
-      }catch(err){
-        console.error(err);
-        alert('Error intentando extraer datos del documento.');
-      }
     }
 
     /* ====== Eliminar póliza ====== */
@@ -1464,10 +1153,130 @@
       });
     });
 
+    /* ====== “Tus pólizas” (acumulador) ====== */
+    const uploadedDocs = []; // acumulador global
+
+    function handleFiles(files){
+      let added=0;
+      [...files].forEach(file=>{
+        const url = URL.createObjectURL(file);
+        uploadedDocs.push({
+          name:file.name,
+          type:file.type||'archivo',
+          sizeKB:Math.max(1,Math.round(file.size/1024)),
+          url
+        });
+        added++;
+        tryExtractPolicyFromFilename(file.name);
+      });
+      if(docsResult) docsResult.textContent = `Agregados ${added} archivo(s).`;
+      renderVault();
+    }
+
+    function renderVault(){
+      if(!vaultList || !vaultEmpty) return;
+      vaultList.innerHTML='';
+      if(uploadedDocs.length===0){ vaultEmpty.style.display='block'; previewPane.innerHTML=''; downloadDoc.style.display='none'; return; }
+      vaultEmpty.style.display='none';
+
+      uploadedDocs.forEach((doc,idx)=>{
+        const li=document.createElement('div');
+        li.className='file-item'; li.dataset.idx=idx;
+        const icon = doc.type.startsWith('image/')?'fa-file-image':
+                     (doc.type.startsWith('application/pdf')?'fa-file-pdf':'fa-file');
+        const thumb = doc.type.startsWith('image/')
+          ? `<img src="${doc.url}" alt="" style="width:36px;height:36px;object-fit:cover;border-radius:8px;border:1px solid rgba(0,0,0,.08)">`
+          : `<i class="fas ${icon}" style="font-size:20px;color:#2c80b9"></i>`;
+        li.innerHTML = `${thumb}<span class="name">${doc.name}</span><span class="meta">${doc.type} · ${doc.sizeKB} KB</span>`;
+        li.addEventListener('click',()=>selectDoc(idx));
+        vaultList.appendChild(li);
+      });
+
+      // Seleccionar el primero por defecto si no hay activo
+      selectDoc(0);
+    }
+
+    function selectDoc(idx){
+      const items = vaultList?.children || [];
+      [...items].forEach(el=>el.classList.remove('active'));
+      const active = vaultList?.querySelector(`[data-idx="${idx}"]`);
+      if(active) active.classList.add('active');
+
+      const doc = uploadedDocs[idx];
+      if(!doc){ previewPane.innerHTML='<div style="color:#567;font-weight:700">Archivo no encontrado.</div>'; downloadDoc.style.display='none'; return; }
+
+      downloadDoc.href = doc.url; downloadDoc.download = doc.name; downloadDoc.style.display='inline-flex';
+
+      if(doc.type.startsWith('image/')){
+        previewPane.innerHTML = `<img src="${doc.url}" alt="${doc.name}" style="max-width:100%;max-height:70vh;display:block;margin:0 auto">`;
+      } else if(doc.type.startsWith('application/pdf')){
+        previewPane.innerHTML = `<embed src="${doc.url}" type="application/pdf" style="width:100%;height:70vh;border:none;border-radius:8px" />`;
+      } else {
+        previewPane.innerHTML = `
+          <div style="text-align:center;padding:20px">
+            <div style="font-size:40px;margin-bottom:8px"><i class="fas fa-file"></i></div>
+            <div style="font-weight:900;color:#1f2d3d">${doc.name}</div>
+            <div style="color:#567;font-weight:700;margin:6px 0">${doc.type} · ${doc.sizeKB} KB</div>
+            <a class="btn" href="${doc.url}" download>Descargar</a>
+          </div>`;
+      }
+    }
+
+    // Extracción mínima desde el NOMBRE del archivo (sin OCR)
+    // Busca número de póliza y valor asegurado; si encuentra ambos -> crea tarjeta.
+    function tryExtractPolicyFromFilename(filename){
+      const name = (filename||'').toLowerCase();
+
+      // Policy number: patrones como AUTO-123456 / HOME_98765 / POL-0001
+      const numMatch = name.match(/(?:auto|home|life|health|med|trav|busi|pol|policy|póliza|poliza)[-_]?\d{3,}/i);
+
+      // Coverage (valor asegurado): secuencia de 6+ dígitos (p.ej. 200000000)
+      const covMatch = name.match(/(\d{6,12})/);
+
+      if(numMatch && covMatch){
+        const policyNumber = `#${numMatch[0].toUpperCase()}`;
+        const coverage = parseInt(covMatch[1],10);
+
+        const newP={
+          id:policies.length+1,
+          type:'auto',
+          typeName:'Seguro de Auto',
+          insurer:'allianz',
+          insurerName:'Allianz',
+          policyNumber,
+          expirationDate: iso(addDays(new Date(), 365)),
+          insuredId:'0000000000',
+          insuredName:'Juan Pérez',
+          coverage: isNaN(coverage) ? 0 : coverage,
+          conditions:'Condiciones no especificadas.'
+        };
+        policies.push(newP);
+        renderPolicies();
+        toast('Póliza relacionada desde archivo', `${policyNumber} · Cobertura ${fmtCOP(newP.coverage)}`);
+      }
+    }
+
+    // Botonería del modal “Tus pólizas”
+    safe(addDocsBtn, b=> b.addEventListener('click', ()=> docsInput?.click() ));
+    safe(docsInput, inp=> inp.addEventListener('change', e=>{
+      if(e.target.files && e.target.files.length>0) handleFiles(e.target.files);
+      // reset para permitir volver a subir mismo archivo si hace falta
+      e.target.value = '';
+    }));
+    safe(extractBtn, b=> b.addEventListener('click', ()=>{
+      // Forzar intento a partir del seleccionado actual
+      const active = vaultList?.querySelector('.file-item.active');
+      if(!active) { alert('Selecciona un documento.'); return; }
+      const idx = +active.dataset.idx;
+      const doc = uploadedDocs[idx];
+      if(!doc){ alert('Documento no encontrado.'); return; }
+      tryExtractPolicyFromFilename(doc.name);
+    }));
+
     /* ===== Init ===== */
     renderPolicies();
 
-    /* ===== Manifest + Service Worker (evita error en file://) ===== */
+    /* ===== Manifest + Service Worker (sin error en file://) ===== */
     (function(){
       const manifest={name:"InsuraHub",short_name:"InsuraHub",start_url:".",scope:".",display:"standalone",background_color:"#ffffff",theme_color:"#3498db",icons:[{src:"icons/icon-192.png",sizes:"192x192",type:"image/png"},{src:"icons/icon-512.png",sizes:"512x512",type:"image/png"}]};
       const blob=new Blob([JSON.stringify(manifest)],{type:"application/manifest+json"});
