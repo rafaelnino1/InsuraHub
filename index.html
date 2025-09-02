@@ -302,7 +302,6 @@
         <div class="app-title-text"><h1>InsuraHub</h1><p>Gestión Inteligente de Seguros</p></div>
       </div>
       <div class="user-actions">
-        <!-- Mantengo botones como estaban -->
         <button class="btn btn-outline" id="loginBtn"><i class="fas fa-user"></i> Iniciar Sesión</button>
       </div>
     </header>
@@ -639,28 +638,40 @@
     </div>
   </div>
 
-  <!-- Carga Masiva de Pólizas (CSV) -->
+  <!-- Cargar pólizas automáticamente (CSV + Archivos de cualquier tipo) -->
   <div class="modal" id="bulkPoliciesModal" aria-hidden="true">
     <div class="modal-content" role="dialog" aria-modal="true">
       <div class="modal-header">
-        <h2>Cargar pólizas (CSV)</h2>
-        <p style="color:#567;font-weight:600">Importa varias pólizas y se agregarán al panel.</p>
+        <h2>Cargar pólizas automáticamente</h2>
+        <p style="color:#567;font-weight:600">Sube tu CSV o adjunta archivos (PDF/imagenes/otros). Se sumarán a “Tus pólizas”.</p>
         <button class="close-modal" id="closeBulkPolicies">×</button>
       </div>
 
+      <!-- Bloque CSV (se mantiene) -->
       <div class="section-card">
-        <div class="section-title"><i class="fas fa-file-csv"></i> Plantilla</div>
+        <div class="section-title"><i class="fas fa-file-csv"></i> Plantilla CSV</div>
         <p style="margin-bottom:10px">Columnas requeridas: <strong>policyNumber,type,insurer,insuredId,insuredName,coverage,expirationDate</strong> — opcional: <strong>conditions</strong></p>
         <button class="btn" id="downloadTemplate"><i class="fas fa-download"></i> Descargar plantilla CSV</button>
       </div>
 
       <div class="section-card">
-        <div class="section-title"><i class="fas fa-upload"></i> Subir archivo</div>
+        <div class="section-title"><i class="fas fa-upload"></i> Subir CSV</div>
         <div id="dropZone" style="padding:18px;border:2px dashed rgba(52,152,219,.35);border-radius:12px;text-align:center;background:#f8fbff">
           Arrastra y suelta tu archivo CSV aquí (o haz clic)
           <input type="file" id="csvFile" accept=".csv" style="display:none">
         </div>
         <div id="bulkResult" style="margin-top:10px;color:#155a8f;font-weight:700"></div>
+      </div>
+
+      <!-- NUEVO: Bloque de subida de documentos de cualquier tipo -->
+      <div class="section-card">
+        <div class="section-title"><i class="fas fa-cloud-upload-alt"></i> Subir documentos de póliza (PDF / imágenes / otros)</div>
+        <div id="docsDropZone" style="padding:18px;border:2px dashed rgba(52,152,219,.35);border-radius:12px;text-align:center;background:#f8fbff">
+          Arrastra y suelta tus archivos aquí (o haz clic)
+          <input type="file" id="docsAnyFile" accept="*/*" multiple style="display:none">
+        </div>
+        <div id="docsAnyResult" style="margin-top:10px;color:#155a8f;font-weight:800"></div>
+        <div style="margin-top:8px;color:#567;font-weight:700">Tip: usa nombres de archivo que incluyan el <strong>número de póliza</strong> y el <strong>valor asegurado</strong> (p.ej. <em>AUTO-123456_200000000.pdf</em>) para auto-relacionarlas en el tablero.</div>
       </div>
     </div>
   </div>
@@ -676,25 +687,14 @@
 
       <div class="vault-layout">
         <div>
-          <div class="section-title"><i class="fas fa-cloud-upload-alt"></i> Adjuntar documentos</div>
-          <div class="vault-list" id="vaultUploader" style="padding:12px;display:flex;gap:10px;align-items:center;justify-content:center;margin-bottom:12px">
-            <button class="btn" id="addDocsBtn"><i class="fas fa-plus"></i> Agregar archivos</button>
-            <input type="file" id="docsInput" accept="image/*,application/pdf" multiple style="display:none">
-            <div id="docsResult" style="color:#155a8f;font-weight:800"></div>
-          </div>
-
           <div class="section-title" style="margin-top:4px"><i class="fas fa-list"></i> Lista de archivos</div>
-          <div class="vault-list" id="vaultList">
-            <!-- items renderizados -->
-          </div>
+          <div class="vault-list" id="vaultList"></div>
           <div id="vaultEmpty" style="text-align:center;color:#567;font-weight:700;margin-top:10px">Aún no has subido documentos.</div>
         </div>
 
         <div>
           <div class="section-title"><i class="fas fa-eye"></i> Vista previa</div>
-          <div class="vault-preview" id="previewPane">
-            <!-- preview renderizado -->
-          </div>
+          <div class="vault-preview" id="previewPane"></div>
           <div style="display:flex;gap:8px;margin-top:10px">
             <button class="btn" id="extractBtn"><i class="fas fa-magnifying-glass"></i> Extraer datos</button>
             <a class="btn" id="downloadDoc" href="#" download style="display:none"><i class="fas fa-download"></i> Descargar</a>
@@ -778,10 +778,14 @@
     const dropZone=qs('#dropZone');
     const bulkResult=qs('#bulkResult');
 
+    // NUEVOS refs de subida de documentos en "Cargar pólizas automáticamente"
+    const docsDropZone = qs('#docsDropZone');
+    const docsAnyFile  = qs('#docsAnyFile');
+    const docsAnyResult= qs('#docsAnyResult');
+
     const loginBtn=qs('#loginBtn');
     const loginModal=qs('#loginModal');
 
-    const addPolicyBtn=null; /* eliminado botón “Nueva póliza” */
     const policyModal=qs('#policyModal');
 
     const renewalModal=qs('#renewalModal');
@@ -809,9 +813,6 @@
     // Vault (Tus pólizas)
     const policiesVaultModal = qs('#policiesVaultModal');
     const closePoliciesVault = qs('#closePoliciesVault');
-    const addDocsBtn = qs('#addDocsBtn');
-    const docsInput = qs('#docsInput');
-    const docsResult = qs('#docsResult');
     const vaultList = qs('#vaultList');
     const vaultEmpty = qs('#vaultEmpty');
     const previewPane = qs('#previewPane');
@@ -829,17 +830,14 @@
     bindClose('#closeConditionsModal',conditionsModal);
     bindClose('#closePaymentModal',paymentModal);
     bindClose(closePoliciesVault, policiesVaultModal);
+    bindClose(closeBulk, bulkModal);
 
     safe(loginBtn, b=> b.addEventListener('click',()=>{ loginModal.style.display='flex'; }));
     safe(openManualPolicy, b=> b.addEventListener('click',()=>{ policyModal.style.display='flex'; }));
 
-    safe(openBulkBtn, b=> b.addEventListener('click',()=>{ bulkModal.style.display='flex'; if(bulkResult) bulkResult.textContent=''; }));
+    safe(openBulkBtn, b=> b.addEventListener('click',()=>{ bulkModal.style.display='flex'; bulkResult.textContent=''; docsAnyResult.textContent=''; }));
 
-    // “Tus pólizas” (modal propio con lista + preview)
-    safe(openPoliciesVault, b=> b.addEventListener('click',()=>{
-      renderVault(); // siempre refrescar lista
-      if(policiesVaultModal) policiesVaultModal.style.display='flex';
-    }));
+    safe(openPoliciesVault, b=> b.addEventListener('click',()=>{ renderVault(); policiesVaultModal.style.display='flex'; }));
 
     [loginModal,policyModal,renewalModal,conditionsModal,paymentModal,successModal,bulkModal,sarlaftModal,policiesVaultModal]
       .forEach(m=> m && m.addEventListener('click',e=>{ if(e.target===m) m.style.display='none'; }));
@@ -1071,8 +1069,6 @@
     safe(sarlaftForm, f=> f.addEventListener('submit', (e)=>{ e.preventDefault(); paintSarlaftBadge(); if(sarlaftIsComplete()){ toast('SARLAFT guardado', 'Tu formulario quedó AL DÍA.'); } else { alert('Faltan campos obligatorios.'); } }));
 
     /* ====== Carga masiva (CSV) ====== */
-    safe(closeBulk, btn=> btn.addEventListener('click',()=>{ if(bulkModal) bulkModal.style.display='none'; }));
-
     safe(downloadTemplate, btn=> btn.addEventListener('click',()=>{
       const csv = "policyNumber,type,insurer,insuredId,insuredName,coverage,expirationDate,conditions\n#AUTO-0001,auto,allianz,123,Juan Perez,200000000,2026-01-15,Condiciones ejemplo...";
       const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
@@ -1081,9 +1077,9 @@
       URL.revokeObjectURL(url);
     }));
 
-    function openFileDialog(){ csvFile && csvFile.click(); }
+    function openFileDialogCSV(){ csvFile && csvFile.click(); }
     safe(dropZone, dz=>{
-      dz.addEventListener('click', openFileDialog);
+      dz.addEventListener('click', openFileDialogCSV);
       ['dragenter','dragover'].forEach(evt=> dz.addEventListener(evt, e=>{ e.preventDefault(); e.stopPropagation(); dz.style.borderColor='#2c80b9'; }));
       ['dragleave','drop'].forEach(evt=> dz.addEventListener(evt, e=>{ e.preventDefault(); e.stopPropagation(); dz.style.borderColor='rgba(52,152,219,.35)'; }));
       dz.addEventListener('drop', e=>{ const file = e.dataTransfer.files[0]; if(file) parseCSV(file); });
@@ -1135,27 +1131,8 @@
       reader.readAsText(file);
     }
 
-    /* ====== Eliminar póliza ====== */
-    const DELETE_CONFIRM_MSG = "eliminando esta poliza, saldrás del ecosistema InsuraHub, no te enviaremos recordatorios de Renovación";
-    safe(policyGrid, grid=>{
-      grid.addEventListener('click', (e)=>{
-        const btn = e.target.closest('.delete-btn');
-        if(!btn) return;
-        const id = +btn.dataset.policyId;
-        if(confirm(DELETE_CONFIRM_MSG)){
-          const idx = policies.findIndex(p=>p.id===id);
-          if(idx>-1){
-            const removed = policies.splice(idx,1)[0];
-            renderPolicies();
-            toast('Póliza eliminada', `${removed.policyNumber} fue eliminada del ecosistema.`);
-          }
-        }
-      });
-    });
-
-    /* ====== “Tus pólizas” (acumulador) ====== */
+    /* ====== Subida de documentos (cualquier tipo) en “Cargar pólizas automáticamente” ====== */
     const uploadedDocs = []; // acumulador global
-
     function handleFiles(files){
       let added=0;
       [...files].forEach(file=>{
@@ -1169,10 +1146,19 @@
         added++;
         tryExtractPolicyFromFilename(file.name);
       });
-      if(docsResult) docsResult.textContent = `Agregados ${added} archivo(s).`;
-      renderVault();
+      if(docsAnyResult) docsAnyResult.textContent = `Agregados ${added} archivo(s). Ya puedes verlos en “Tus pólizas”.`;
     }
 
+    function openFileDialogDocs(){ docsAnyFile && docsAnyFile.click(); }
+    safe(docsDropZone, dz=>{
+      dz.addEventListener('click', openFileDialogDocs);
+      ['dragenter','dragover'].forEach(evt=> dz.addEventListener(evt, e=>{ e.preventDefault(); e.stopPropagation(); dz.style.borderColor='#2c80b9'; }));
+      ['dragleave','drop'].forEach(evt=> dz.addEventListener(evt, e=>{ e.preventDefault(); e.stopPropagation(); dz.style.borderColor='rgba(52,152,219,.35)'; }));
+      dz.addEventListener('drop', e=>{ e.preventDefault(); e.stopPropagation(); if(e.dataTransfer.files?.length){ handleFiles(e.dataTransfer.files); }});
+    });
+    safe(docsAnyFile, inp=> inp.addEventListener('change', e=>{ if(e.target.files?.length) handleFiles(e.target.files); e.target.value=''; }));
+
+    /* ====== “Tus pólizas” (lista + preview) ====== */
     function renderVault(){
       if(!vaultList || !vaultEmpty) return;
       vaultList.innerHTML='';
@@ -1192,7 +1178,7 @@
         vaultList.appendChild(li);
       });
 
-      // Seleccionar el primero por defecto si no hay activo
+      // Seleccionar el primero por defecto
       selectDoc(0);
     }
 
@@ -1223,14 +1209,13 @@
     }
 
     // Extracción mínima desde el NOMBRE del archivo (sin OCR)
-    // Busca número de póliza y valor asegurado; si encuentra ambos -> crea tarjeta.
     function tryExtractPolicyFromFilename(filename){
       const name = (filename||'').toLowerCase();
 
-      // Policy number: patrones como AUTO-123456 / HOME_98765 / POL-0001
+      // número de póliza aproximado
       const numMatch = name.match(/(?:auto|home|life|health|med|trav|busi|pol|policy|póliza|poliza)[-_]?\d{3,}/i);
 
-      // Coverage (valor asegurado): secuencia de 6+ dígitos (p.ej. 200000000)
+      // valor asegurado (6-12 dígitos seguidos)
       const covMatch = name.match(/(\d{6,12})/);
 
       if(numMatch && covMatch){
@@ -1256,17 +1241,10 @@
       }
     }
 
-    // Botonería del modal “Tus pólizas”
-    safe(addDocsBtn, b=> b.addEventListener('click', ()=> docsInput?.click() ));
-    safe(docsInput, inp=> inp.addEventListener('change', e=>{
-      if(e.target.files && e.target.files.length>0) handleFiles(e.target.files);
-      // reset para permitir volver a subir mismo archivo si hace falta
-      e.target.value = '';
-    }));
+    // Botón “Extraer datos” en “Tus pólizas”
     safe(extractBtn, b=> b.addEventListener('click', ()=>{
-      // Forzar intento a partir del seleccionado actual
       const active = vaultList?.querySelector('.file-item.active');
-      if(!active) { alert('Selecciona un documento.'); return; }
+      if(!active){ alert('Selecciona un documento.'); return; }
       const idx = +active.dataset.idx;
       const doc = uploadedDocs[idx];
       if(!doc){ alert('Documento no encontrado.'); return; }
