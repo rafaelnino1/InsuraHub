@@ -16,6 +16,11 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+  <!-- PDF.js (texto de PDFs) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <!-- Tesseract.js (OCR imágenes) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.1.1/tesseract.min.js"></script>
+
   <style>
     :root{
       --primary:#3498db;--primary-light:#5dade2;--primary-dark:#2c80b9;
@@ -230,6 +235,7 @@
     #renewalModal { z-index: 10001; }
     #paymentModal { z-index: 10002 !important; }  /* pago arriba de renovación */
     #conditionsModal { z-index: 10003; }          /* detalle arriba de ambos */
+    #assistExtractModal { z-index: 10004; }       /* asistido aún más arriba */
 
     /* Modal "Tus pólizas" (lista + preview) */
     #policiesVaultModal .modal-content{max-width:1100px}
@@ -252,6 +258,15 @@
       border:1px solid rgba(52,152,219,.15);border-radius:14px;padding:12px;box-shadow:var(--depth-1);
       min-height:300px
     }
+
+    /* Loading pill para extracción */
+    .pill-loading{
+      display:inline-flex;align-items:center;gap:8px;
+      background:#fff;border:1px solid rgba(52,152,219,.2);
+      padding:6px 10px;border-radius:999px;font-weight:800;color:#2c80b9
+    }
+    .spinner{width:14px;height:14px;border:2px solid rgba(52,152,219,.25);border-top-color:#2c80b9;border-radius:50%;animation:spin 0.7s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
   </style>
 </head>
 <body>
@@ -647,7 +662,7 @@
         <button class="close-modal" id="closeBulkPolicies">×</button>
       </div>
 
-      <!-- Bloque CSV (se mantiene) -->
+      <!-- Bloque CSV -->
       <div class="section-card">
         <div class="section-title"><i class="fas fa-file-csv"></i> Plantilla CSV</div>
         <p style="margin-bottom:10px">Columnas requeridas: <strong>policyNumber,type,insurer,insuredId,insuredName,coverage,expirationDate</strong> — opcional: <strong>conditions</strong></p>
@@ -663,7 +678,7 @@
         <div id="bulkResult" style="margin-top:10px;color:#155a8f;font-weight:700"></div>
       </div>
 
-      <!-- NUEVO: Bloque de subida de documentos de cualquier tipo -->
+      <!-- Subida de documentos de cualquier tipo -->
       <div class="section-card">
         <div class="section-title"><i class="fas fa-cloud-upload-alt"></i> Subir documentos de póliza (PDF / imágenes / otros)</div>
         <div id="docsDropZone" style="padding:18px;border:2px dashed rgba(52,152,219,.35);border-radius:12px;text-align:center;background:#f8fbff">
@@ -671,7 +686,7 @@
           <input type="file" id="docsAnyFile" accept="*/*" multiple style="display:none">
         </div>
         <div id="docsAnyResult" style="margin-top:10px;color:#155a8f;font-weight:800"></div>
-        <div style="margin-top:8px;color:#567;font-weight:700">Tip: usa nombres de archivo que incluyan el <strong>número de póliza</strong> y el <strong>valor asegurado</strong> (p.ej. <em>AUTO-123456_200000000.pdf</em>) para auto-relacionarlas en el tablero.</div>
+        <div style="margin-top:8px;color:#567;font-weight:700">Tip: usa nombres de archivo que incluyan el <strong>número de póliza</strong> y el <strong>valor asegurado</strong> (p.ej. <em>AUTO-123456_200000000.pdf</em>) como refuerzo.</div>
       </div>
     </div>
   </div>
@@ -695,12 +710,53 @@
         <div>
           <div class="section-title"><i class="fas fa-eye"></i> Vista previa</div>
           <div class="vault-preview" id="previewPane"></div>
+          <div id="extractStatus" style="margin-top:8px"></div>
           <div style="display:flex;gap:8px;margin-top:10px">
             <button class="btn" id="extractBtn"><i class="fas fa-magnifying-glass"></i> Extraer datos</button>
             <a class="btn" id="downloadDoc" href="#" download style="display:none"><i class="fas fa-download"></i> Descargar</a>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- MODO ASISTIDO: cuando OCR/Parsing no logran -->
+  <div class="modal" id="assistExtractModal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true" style="max-width:560px">
+      <div class="modal-header">
+        <h2>Completar datos de la póliza</h2>
+        <p>Con <strong>Número de póliza</strong> y <strong>Valor asegurado</strong> es suficiente para crear la tarjeta.</p>
+        <button class="close-modal" id="closeAssistExtract">×</button>
+      </div>
+      <form id="assistForm">
+        <div class="form-group">
+          <label class="form-label"><i class="fas fa-hashtag"></i> Número de póliza</label>
+          <div class="input-wrap"><input type="text" id="assistNumber" placeholder="#AUTO-123456" required></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label"><i class="fas fa-coins"></i> Valor asegurado (COP)</label>
+          <div class="input-wrap"><input type="number" id="assistCoverage" placeholder="200000000" required></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label"><i class="fas fa-building-shield"></i> Aseguradora (opcional)</label>
+          <div class="input-wrap">
+            <select id="assistInsurer">
+              <option value="">—</option>
+              <option value="allianz">Allianz</option>
+              <option value="axa">AXA</option>
+              <option value="generali">Generali</option>
+              <option value="cigna">Cigna</option>
+              <option value="zurich">Zurich</option>
+              <option value="liberty">Liberty Mutual</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label"><i class="fas fa-calendar-day"></i> Vencimiento (opcional)</label>
+          <div class="input-wrap"><input type="date" id="assistExp"></div>
+        </div>
+        <button type="submit" class="btn" style="width:100%"><i class="fas fa-plus"></i> Crear en el grid</button>
+      </form>
     </div>
   </div>
 
@@ -737,7 +793,7 @@
     const ringClass=d=>d>180?"status-ring-good":d>30?"status-ring-warning":"status-ring-danger";
     const ringProg=d=>Math.min(100,(d/365)*100);
 
-    /* ===== Datos demo ===== */
+    /* ===== Demo data ===== */
     const today=new Date();
     const expirationDates=[iso(addDays(today,28)),iso(addDays(today,120)),iso(addDays(today,230)),iso(addDays(today,350)),iso(addDays(today,15)),iso(addDays(today,80))];
     const policies=[
@@ -752,75 +808,30 @@
     /* ===== DOM ===== */
     const sidebar=qs('#sidebar');
     const toggleSidebar=qs('#toggleSidebar');
-
     function syncSidebarByViewport(){
-      if (window.matchMedia('(max-width:1100px)').matches){
-        sidebar.classList.add('hidden');
-      } else {
-        sidebar.classList.remove('hidden');
-      }
+      if (window.matchMedia('(max-width:1100px)').matches){ sidebar.classList.add('hidden'); } else { sidebar.classList.remove('hidden'); }
     }
-    syncSidebarByViewport();
-    window.addEventListener('resize', syncSidebarByViewport);
+    syncSidebarByViewport(); window.addEventListener('resize', syncSidebarByViewport);
     safe(toggleSidebar, btn => btn.addEventListener('click',()=> sidebar.classList.toggle('hidden')));
 
-    const sarlaftBadge=qs('#sarlaftBadge');
-    const openSARLAFTBtn=qs('#openSARLAFT');
-    const sarlaftModal=qs('#sarlaftModal');
-    const closeSarlaftModal=qs('#closeSarlaftModal');
-    const sarlaftForm=qs('#sarlaftForm');
+    const sarlaftBadge=qs('#sarlaftBadge'); const openSARLAFTBtn=qs('#openSARLAFT'); const sarlaftModal=qs('#sarlaftModal'); const closeSarlaftModal=qs('#closeSarlaftModal'); const sarlaftForm=qs('#sarlaftForm');
+    const openBulkBtn=qs('#openBulkPolicies'); const bulkModal=qs('#bulkPoliciesModal'); const closeBulk=qs('#closeBulkPolicies'); const downloadTemplate=qs('#downloadTemplate'); const csvFile=qs('#csvFile'); const dropZone=qs('#dropZone'); const bulkResult=qs('#bulkResult');
+    const docsDropZone = qs('#docsDropZone'); const docsAnyFile  = qs('#docsAnyFile'); const docsAnyResult= qs('#docsAnyResult');
 
-    const openBulkBtn=qs('#openBulkPolicies');
-    const bulkModal=qs('#bulkPoliciesModal');
-    const closeBulk=qs('#closeBulkPolicies');
-    const downloadTemplate=qs('#downloadTemplate');
-    const csvFile=qs('#csvFile');
-    const dropZone=qs('#dropZone');
-    const bulkResult=qs('#bulkResult');
-
-    // NUEVOS refs de subida de documentos en "Cargar pólizas automáticamente"
-    const docsDropZone = qs('#docsDropZone');
-    const docsAnyFile  = qs('#docsAnyFile');
-    const docsAnyResult= qs('#docsAnyResult');
-
-    const loginBtn=qs('#loginBtn');
-    const loginModal=qs('#loginModal');
-
+    const loginBtn=qs('#loginBtn'); const loginModal=qs('#loginModal');
     const policyModal=qs('#policyModal');
 
-    const renewalModal=qs('#renewalModal');
-    const conditionsModal=qs('#conditionsModal');
-    const paymentModal=qs('#paymentModal');
-    const successModal=qs('#successModal');
+    const renewalModal=qs('#renewalModal'); const conditionsModal=qs('#conditionsModal'); const paymentModal=qs('#paymentModal'); const successModal=qs('#successModal');
 
-    const openManualPolicy = qs('#openManualPolicy');
-    const openPoliciesVault = qs('#openPoliciesVault');
-    const openDataUpdateBtn = qs('#openDataUpdate');
+    const openManualPolicy = qs('#openManualPolicy'); const openPoliciesVault = qs('#openPoliciesVault'); const openDataUpdateBtn = qs('#openDataUpdate');
 
-    const policyForm=qs('#policyForm');
-    const renewalOptions=qs('#renewalOptions');
-    const compareTableBody=qs('#compareTable tbody');
-    const currentPolicyChip=qs('#currentPolicyChip');
-    const confirmRenewalBtn=qs('#confirmRenewal');
-    const policyGrid=qs('#policyGrid');
-    const totalPoliciesEl=qs('#totalPolicies');
-    const expiringPoliciesEl=qs('#expiringPolicies');
-    const totalCoverageEl=qs('#totalCoverage');
-    const payTabs=qs('#payTabs');
-    const payHint=qs('#payHint');
-    const payMethodLabel=qs('#payMethodLabel');
+    const policyForm=qs('#policyForm'); const renewalOptions=qs('#renewalOptions'); const compareTableBody=qs('#compareTable tbody'); const currentPolicyChip=qs('#currentPolicyChip'); const confirmRenewalBtn=qs('#confirmRenewal'); const policyGrid=qs('#policyGrid'); const totalPoliciesEl=qs('#totalPolicies'); const expiringPoliciesEl=qs('#expiringPolicies'); const totalCoverageEl=qs('#totalCoverage'); const payTabs=qs('#payTabs'); const payHint=qs('#payHint'); const payMethodLabel=qs('#payMethodLabel');
 
-    // Vault (Tus pólizas)
-    const policiesVaultModal = qs('#policiesVaultModal');
-    const closePoliciesVault = qs('#closePoliciesVault');
-    const vaultList = qs('#vaultList');
-    const vaultEmpty = qs('#vaultEmpty');
-    const previewPane = qs('#previewPane');
-    const extractBtn = qs('#extractBtn');
-    const downloadDoc = qs('#downloadDoc');
+    const policiesVaultModal = qs('#policiesVaultModal'); const closePoliciesVault = qs('#closePoliciesVault'); const vaultList = qs('#vaultList'); const vaultEmpty = qs('#vaultEmpty'); const previewPane = qs('#previewPane'); const extractBtn = qs('#extractBtn'); const extractStatus = qs('#extractStatus'); const downloadDoc = qs('#downloadDoc');
 
-    let currentRenewPolicyId=null;
-    let selectedPayment={method:null};
+    const assistExtractModal = qs('#assistExtractModal'); const closeAssistExtract = qs('#closeAssistExtract'); const assistForm = qs('#assistForm'); const assistNumber = qs('#assistNumber'); const assistCoverage = qs('#assistCoverage'); const assistInsurer = qs('#assistInsurer'); const assistExp = qs('#assistExp');
+
+    let currentRenewPolicyId=null; let selectedPayment={method:null};
 
     /* ===== Abrir/Cerrar modales ===== */
     const bindClose=(btnSel,modal)=>{ const b=typeof btnSel==='string'?qs(btnSel):btnSel; if(b&&modal){ b.addEventListener('click',()=>{ modal.style.display='none'; }); } };
@@ -831,15 +842,14 @@
     bindClose('#closePaymentModal',paymentModal);
     bindClose(closePoliciesVault, policiesVaultModal);
     bindClose(closeBulk, bulkModal);
+    bindClose(closeAssistExtract, assistExtractModal);
 
     safe(loginBtn, b=> b.addEventListener('click',()=>{ loginModal.style.display='flex'; }));
     safe(openManualPolicy, b=> b.addEventListener('click',()=>{ policyModal.style.display='flex'; }));
-
     safe(openBulkBtn, b=> b.addEventListener('click',()=>{ bulkModal.style.display='flex'; bulkResult.textContent=''; docsAnyResult.textContent=''; }));
-
     safe(openPoliciesVault, b=> b.addEventListener('click',()=>{ renderVault(); policiesVaultModal.style.display='flex'; }));
 
-    [loginModal,policyModal,renewalModal,conditionsModal,paymentModal,successModal,bulkModal,sarlaftModal,policiesVaultModal]
+    [loginModal,policyModal,renewalModal,conditionsModal,paymentModal,successModal,bulkModal,sarlaftModal,policiesVaultModal,assistExtractModal]
       .forEach(m=> m && m.addEventListener('click',e=>{ if(e.target===m) m.style.display='none'; }));
 
     // Social login (stubs)
@@ -915,7 +925,7 @@
       if(totalCoverageEl) totalCoverageEl.textContent=fmtCOP(total);
     }
 
-    /* ===== Carga inteligente de logos ===== */
+    /* ===== Logos ===== */
     const LOGO_EXTS=['png','svg','jpg','jpeg','webp','PNG','SVG','JPG','JPEG','WEBP'];
     function logoCandidates(key){
       const base=(key||'').toLowerCase(),cap=base.charAt(0).toUpperCase()+base.slice(1),upper=base.toUpperCase();
@@ -934,7 +944,6 @@
     /* ===== Renovación ===== */
     function highlightCheapest(){const opts=[...qsa('.insurer-option')];let m=Infinity,el=null;opts.forEach(o=>{const p=+o.dataset.price||0;if(p<m){m=p;el=o;}});opts.forEach(o=>o.classList.remove('cheapest'));if(el)el.classList.add('cheapest');}
     function highlightRow(k){if(!compareTableBody)return; compareTableBody.querySelectorAll('tr').forEach(r=>r.classList.remove('selected-row'));const r=compareTableBody.querySelector(`tr[data-insurer="${k}"]`);if(r)r.classList.add('selected-row');}
-
     function renderRenewalOptions(keys){
       if(!renewalOptions) return;
       renewalOptions.innerHTML='';
@@ -950,7 +959,6 @@
       });
       highlightCheapest();
     }
-
     function buildCompareTable(keys,policy){
       if(!compareTableBody) return;
       compareTableBody.innerHTML='';
@@ -979,7 +987,6 @@
         };
       }
     }
-
     function selectInsurerOption(el){
       if(!el) return;
       qsa('.insurer-option').forEach(o=>{o.classList.remove('selected');o.setAttribute('aria-selected','false');});
@@ -992,7 +999,6 @@
       renewalOptions.addEventListener('click',e=>{const el=e.target.closest('.insurer-option');if(!el)return;selectInsurerOption(el);});
       renewalOptions.addEventListener('keydown',e=>{const el=e.target.closest('.insurer-option');if(!el)return;if(e.key==='Enter'||e.key===' '){e.preventDefault();selectInsurerOption(el);}});
     }
-
     function openRenewal(p){
       currentRenewPolicyId=p.id;
       const rn=qs('#renewalPolicyNumber'); if(rn) rn.textContent=p.policyNumber;
@@ -1048,7 +1054,7 @@
       currentRenewPolicyId=null; selectedPayment={method:null}; if(payHint) payHint.style.display='none'; if(payMethodLabel) payMethodLabel.textContent='—';
     }));
 
-    /* ====== Sidebar: SARLAFT ====== */
+    /* ====== SARLAFT ====== */
     function sarlaftIsComplete(){
       if(!sarlaftForm) return false;
       const req = sarlaftForm.querySelectorAll('select[required], input[required]');
@@ -1076,7 +1082,6 @@
       const a = document.createElement('a'); a.href = url; a.download = 'plantilla_policies.csv'; a.click();
       URL.revokeObjectURL(url);
     }));
-
     function openFileDialogCSV(){ csvFile && csvFile.click(); }
     safe(dropZone, dz=>{
       dz.addEventListener('click', openFileDialogCSV);
@@ -1085,7 +1090,6 @@
       dz.addEventListener('drop', e=>{ const file = e.dataTransfer.files[0]; if(file) parseCSV(file); });
     });
     safe(csvFile, inp=> inp.addEventListener('change', e=>{ const file=e.target.files[0]; if(file) parseCSV(file); }));
-
     function parseCSV(file){
       const reader=new FileReader();
       reader.onload = () => {
@@ -1096,7 +1100,6 @@
         const needed = ['policyNumber','type','insurer','insuredId','insuredName','coverage','expirationDate'];
         const hasAll = needed.every(k => header.includes(k));
         if(!hasAll){ alert('La cabecera del CSV no es válida. Requeridos: '+needed.join(', ')); return; }
-
         let added=0, errors=0;
         rows.forEach(line=>{
           const cols = line.split(',');
@@ -1131,24 +1134,17 @@
       reader.readAsText(file);
     }
 
-    /* ====== Subida de documentos (cualquier tipo) en “Cargar pólizas automáticamente” ====== */
+    /* ====== Subida de documentos (cualquier tipo) ====== */
     const uploadedDocs = []; // acumulador global
     function handleFiles(files){
       let added=0;
       [...files].forEach(file=>{
         const url = URL.createObjectURL(file);
-        uploadedDocs.push({
-          name:file.name,
-          type:file.type||'archivo',
-          sizeKB:Math.max(1,Math.round(file.size/1024)),
-          url
-        });
+        uploadedDocs.push({ name:file.name, type:file.type||'archivo', sizeKB:Math.max(1,Math.round(file.size/1024)), url, blob:file });
         added++;
-        tryExtractPolicyFromFilename(file.name);
       });
       if(docsAnyResult) docsAnyResult.textContent = `Agregados ${added} archivo(s). Ya puedes verlos en “Tus pólizas”.`;
     }
-
     function openFileDialogDocs(){ docsAnyFile && docsAnyFile.click(); }
     safe(docsDropZone, dz=>{
       dz.addEventListener('click', openFileDialogDocs);
@@ -1164,7 +1160,6 @@
       vaultList.innerHTML='';
       if(uploadedDocs.length===0){ vaultEmpty.style.display='block'; previewPane.innerHTML=''; downloadDoc.style.display='none'; return; }
       vaultEmpty.style.display='none';
-
       uploadedDocs.forEach((doc,idx)=>{
         const li=document.createElement('div');
         li.className='file-item'; li.dataset.idx=idx;
@@ -1173,26 +1168,20 @@
         const thumb = doc.type.startsWith('image/')
           ? `<img src="${doc.url}" alt="" style="width:36px;height:36px;object-fit:cover;border-radius:8px;border:1px solid rgba(0,0,0,.08)">`
           : `<i class="fas ${icon}" style="font-size:20px;color:#2c80b9"></i>`;
-        li.innerHTML = `${thumb}<span class="name">${doc.name}</span><span class="meta">${doc.type} · ${doc.sizeKB} KB</span>`;
+        li.innerHTML = `${thumb}<span class="name">${doc.name}</span><span class="meta">${doc.type || 'archivo'} · ${doc.sizeKB} KB</span>`;
         li.addEventListener('click',()=>selectDoc(idx));
         vaultList.appendChild(li);
       });
-
-      // Seleccionar el primero por defecto
       selectDoc(0);
     }
-
     function selectDoc(idx){
       const items = vaultList?.children || [];
       [...items].forEach(el=>el.classList.remove('active'));
       const active = vaultList?.querySelector(`[data-idx="${idx}"]`);
       if(active) active.classList.add('active');
-
       const doc = uploadedDocs[idx];
       if(!doc){ previewPane.innerHTML='<div style="color:#567;font-weight:700">Archivo no encontrado.</div>'; downloadDoc.style.display='none'; return; }
-
       downloadDoc.href = doc.url; downloadDoc.download = doc.name; downloadDoc.style.display='inline-flex';
-
       if(doc.type.startsWith('image/')){
         previewPane.innerHTML = `<img src="${doc.url}" alt="${doc.name}" style="max-width:100%;max-height:70vh;display:block;margin:0 auto">`;
       } else if(doc.type.startsWith('application/pdf')){
@@ -1202,59 +1191,164 @@
           <div style="text-align:center;padding:20px">
             <div style="font-size:40px;margin-bottom:8px"><i class="fas fa-file"></i></div>
             <div style="font-weight:900;color:#1f2d3d">${doc.name}</div>
-            <div style="color:#567;font-weight:700;margin:6px 0">${doc.type} · ${doc.sizeKB} KB</div>
+            <div style="color:#567;font-weight:700;margin:6px 0">${doc.type||'archivo'} · ${doc.sizeKB} KB</div>
             <a class="btn" href="${doc.url}" download>Descargar</a>
           </div>`;
       }
+      extractStatus.innerHTML='';
     }
 
-    // Extracción mínima desde el NOMBRE del archivo (sin OCR)
-    function tryExtractPolicyFromFilename(filename){
-      const name = (filename||'').toLowerCase();
-
-      // número de póliza aproximado
-      const numMatch = name.match(/(?:auto|home|life|health|med|trav|busi|pol|policy|póliza|poliza)[-_]?\d{3,}/i);
-
-      // valor asegurado (6-12 dígitos seguidos)
-      const covMatch = name.match(/(\d{6,12})/);
-
-      if(numMatch && covMatch){
-        const policyNumber = `#${numMatch[0].toUpperCase()}`;
-        const coverage = parseInt(covMatch[1],10);
-
-        const newP={
-          id:policies.length+1,
-          type:'auto',
-          typeName:'Seguro de Auto',
-          insurer:'allianz',
-          insurerName:'Allianz',
-          policyNumber,
-          expirationDate: iso(addDays(new Date(), 365)),
-          insuredId:'0000000000',
-          insuredName:'Juan Pérez',
-          coverage: isNaN(coverage) ? 0 : coverage,
-          conditions:'Condiciones no especificadas.'
-        };
-        policies.push(newP);
-        renderPolicies();
-        toast('Póliza relacionada desde archivo', `${policyNumber} · Cobertura ${fmtCOP(newP.coverage)}`);
+    /* ====== Extracción de texto: PDF.js + Tesseract + fallback ====== */
+    async function extractTextFromPDF(blob){
+      const pdfData = await blob.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
+      let full = '';
+      const maxPages = Math.min(pdf.numPages, 6); // limitar por rendimiento
+      for(let p=1; p<=maxPages; p++){
+        const page = await pdf.getPage(p);
+        const content = await page.getTextContent();
+        const strings = content.items.map(it=>it.str);
+        full += '\n' + strings.join(' ');
       }
+      return full;
+    }
+    async function extractTextFromImage(blob){
+      const { data:{ text } } = await Tesseract.recognize(blob, 'spa', { tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz-_/ .:#$' });
+      return text || '';
+    }
+    function parsePolicyFromText(text, filename=''){
+      const hay = (text||'') + ' ' + (filename||'');
+      // patrón para número de póliza
+      const num = hay.match(/(p[oó]liza|poliza|policy|auto|home|life|health|med|trav|busi|pol)[\s:#\-_/]*([A-Z]{2,5}-?\d{3,}|\d{6,})/i);
+      // valor asegurado (número grande)
+      const cov = hay.match(/(\$?\s?\d{6,12}(\.\d{3})*(,\d+)?)/g);
+      // fecha (simple)
+      const fec = hay.match(/(\d{4}[-\/]\d{1,2}[-\/]\d{1,2})|(\d{1,2}[-\/]\d{1,2}[-\/]\d{4})/);
+      // aseguradora (palabras clave)
+      const insureMap = {allianz:/allianz/i, axa:/\baxa\b/i, generali:/generali/i, cigna:/cigna/i, zurich:/zurich/i, liberty:/liberty/i};
+      let insurerKey='', insurerName='';
+      for(const k in insureMap){ if(insureMap[k].test(hay)){ insurerKey=k; insurerName=insurerNames[k]; break; } }
+
+      let policyNumber = null;
+      if(num){
+        policyNumber = '#'+(num[2] || num[1]).toString().replace(/\s+/g,'').toUpperCase();
+      }
+      let coverage = null;
+      if(cov && cov.length){
+        // tomar el mayor número encontrado
+        const nums = cov.map(s=>parseInt(s.replace(/[^\d]/g,''),10)).filter(Boolean);
+        coverage = nums.length ? Math.max(...nums) : null;
+      }
+      // fecha a ISO si viene dd/mm/yyyy
+      let expirationDate = null;
+      if(fec){
+        const f = fec[0].replace(/\./g,'/').replace(/-/g,'/');
+        const parts = f.split('/');
+        if(parts[0].length===4){ // yyyy/mm/dd
+          expirationDate = f;
+        } else if(parts[2]?.length===4){ // dd/mm/yyyy
+          const dd = parts[0].padStart(2,'0'), mm = parts[1].padStart(2,'0'), yyyy = parts[2];
+          expirationDate = `${yyyy}-${mm}-${dd}`;
+        }
+      }
+      return { policyNumber, coverage, expirationDate, insurerKey, insurerName };
     }
 
-    // Botón “Extraer datos” en “Tus pólizas”
-    safe(extractBtn, b=> b.addEventListener('click', ()=>{
+    function ensureCardFromParsed(parsed){
+      // Requisito mínimo: número + cobertura
+      if(!(parsed.policyNumber && parsed.coverage)) return false;
+      const exp = parsed.expirationDate || iso(addDays(new Date(), 365));
+      const insKey = parsed.insurerKey || 'allianz';
+      const insName = parsed.insurerName || insurerNames[insKey] || 'Allianz';
+
+      const newP={
+        id:policies.length+1,
+        type:'auto',
+        typeName:'Seguro de Auto',
+        insurer:insKey,
+        insurerName:insName,
+        policyNumber: parsed.policyNumber,
+        expirationDate: exp,
+        insuredId:'0000000000',
+        insuredName:'Juan Pérez',
+        coverage: parsed.coverage,
+        conditions:'Condiciones no especificadas.'
+      };
+      policies.push(newP);
+      renderPolicies();
+      toast('Póliza creada desde documento', `${parsed.policyNumber} · Cobertura ${fmtCOP(parsed.coverage)}`);
+      return true;
+    }
+
+    function showAssistForm(prefill={}){
+      assistNumber.value = prefill.policyNumber || '';
+      assistCoverage.value = prefill.coverage || '';
+      assistInsurer.value = prefill.insurerKey || '';
+      assistExp.value = prefill.expirationDate || '';
+      assistExtractModal.style.display='flex';
+    }
+
+    // Botón “Extraer datos”
+    safe(extractBtn, b=> b.addEventListener('click', async ()=>{
       const active = vaultList?.querySelector('.file-item.active');
       if(!active){ alert('Selecciona un documento.'); return; }
       const idx = +active.dataset.idx;
       const doc = uploadedDocs[idx];
       if(!doc){ alert('Documento no encontrado.'); return; }
-      tryExtractPolicyFromFilename(doc.name);
+
+      extractStatus.innerHTML = `<span class="pill-loading"><span class="spinner"></span> Extrayendo datos...</span>`;
+
+      try{
+        let text='';
+        if(doc.type.startsWith('application/pdf')){
+          text = await extractTextFromPDF(doc.blob);
+        } else if(doc.type.startsWith('image/')){
+          text = await extractTextFromImage(doc.blob);
+        } else {
+          // Intentar como texto plano
+          try{
+            const raw = await doc.blob.text();
+            text = raw.slice(0, 5000);
+          }catch{ text=''; }
+        }
+
+        // Parseo principal
+        let parsed = parsePolicyFromText(text, doc.name);
+        // Si no alcanzó, reforzar con nombre de archivo
+        if(!(parsed.policyNumber && parsed.coverage)){
+          const byName = parsePolicyFromText('', doc.name);
+          parsed = { ...byName, ...parsed };
+        }
+
+        if(ensureCardFromParsed(parsed)){
+          extractStatus.innerHTML = `<span class="pill" style="color:#2c7a4b">Listo: creada en el grid</span>`;
+        } else {
+          extractStatus.innerHTML = `<span class="pill" style="color:#8a6a00">No automático. Completa los mínimos:</span>`;
+          showAssistForm(parsed);
+        }
+      }catch(err){
+        console.error(err);
+        extractStatus.innerHTML = `<span class="pill" style="color:#8a6a00">No automático. Completa los mínimos:</span>`;
+        showAssistForm(parsePolicyFromText('', doc.name));
+      }
+    }));
+
+    // Envío del modo asistido
+    safe(assistForm, f=> f.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const pn = assistNumber.value?.trim();
+      const cv = parseInt(assistCoverage.value||'0',10);
+      const ik = assistInsurer.value || '';
+      const ex = assistExp.value || '';
+      if(!pn || !cv || cv<=0){ alert('Ingresa número de póliza y valor asegurado.'); return; }
+      const ok = ensureCardFromParsed({ policyNumber: pn, coverage: cv, expirationDate: ex||null, insurerKey: ik||null, insurerName: ik?insurerNames[ik]:null });
+      if(ok){ assistExtractModal.style.display='none'; }
     }));
 
     /* ===== Init ===== */
     renderPolicies();
 
-    /* ===== Manifest + Service Worker (sin error en file://) ===== */
+    /* ===== Manifest + Service Worker ===== */
     (function(){
       const manifest={name:"InsuraHub",short_name:"InsuraHub",start_url:".",scope:".",display:"standalone",background_color:"#ffffff",theme_color:"#3498db",icons:[{src:"icons/icon-192.png",sizes:"192x192",type:"image/png"},{src:"icons/icon-512.png",sizes:"512x512",type:"image/png"}]};
       const blob=new Blob([JSON.stringify(manifest)],{type:"application/manifest+json"});
